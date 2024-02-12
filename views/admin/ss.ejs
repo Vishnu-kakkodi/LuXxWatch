@@ -1,0 +1,139 @@
+
+
+<% include('../layouts/header.ejs') %>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #333;
+        margin-top: 20px;
+    }
+
+    a {
+        text-decoration: none;
+        color: #3498db;
+        margin: 10px;
+        display: inline-block;
+    }
+
+    a:hover {
+        color: #2980b9;
+    }
+
+    .user-table {
+        width: 80%;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #3498db;
+        color: #fff;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 50%;
+    }
+
+    .action-buttons a {
+        text-decoration: none;
+        color: #fff;
+        padding: 8px 12px;
+        background-color: #3498db;
+        border-radius: 4px;
+        margin-right: 5px;
+    }
+
+    .action-buttons a:hover {
+        background-color: #2980b9;
+    }
+
+    .user-status {
+        color: #e74c3c;
+    }
+</style>
+
+<div class="container">
+    <h1>Dashboard</h1>
+    <a href="/admin/new-user">Add New User</a>
+
+    <div class="user-table">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <!-- <th>Image</th> -->
+                <th>Verified</th>
+                <th>Actions</th>
+            </tr>
+
+            <% if(users.length > 0) {
+                for(let i = 0; i < users.length; i++) { %>
+                    <tr>
+                        <td><%= users[i].name %></td>
+                        <td><%= users[i].email %></td>
+                        <td><%= users[i].mobile %></td>
+                        <!-- <td>
+                            <img src="<%= users[i].image %>" alt="<%= users[i].name %>">
+                        </td> -->
+                        <td>
+                            <% if(users[i].is_verified === 0) { %>
+                                <span class="user-status">Not Verified</span>
+                            <% } else { %>
+                                <span>Verified</span>
+                            <% } %>
+                        </td>
+                        <td class="action-buttons">
+                            <a href="/admin/edit-user?id=<%= users[i]._id %>">Edit</a>
+                            <a href="/admin/delete-user?id=<%= users[i]._id %>">Delete</a>
+                        </td>
+                    </tr>
+                <% }
+            } else { %>
+                <tr>
+                    <td colspan="6">Users Not Found</td>
+                </tr>
+            <% } %>
+        </table>
+    </div>
+
+    <a href="/admin/home">Go to Home</a>
+</div>
+
+<% include('../layouts/footer.ejs') %>
+
+
