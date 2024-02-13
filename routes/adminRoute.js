@@ -3,7 +3,7 @@ const admin_route = express();
 
 const session = require('express-session');
 const config = require('../configuration/config');
-
+const multer = require("multer");
 
 const bodyParser = require('body-parser');
 admin_route.use(bodyParser.json());
@@ -16,18 +16,18 @@ const path = require("path");
 
 admin_route.use(express.static('public'));
 
-// const storage = multer.diskStorage({
-//     destination:function(req,file,cb){
-//         cb(null,path.join(__dirname,'../public/userImage'));
-//         },
-//     filename:function(req,file,cb){
-//         const name = Date.now()+'-'+file.originalname;
-//         cb(null,name);
-//     }
-// });
-// const upload = multer({storage:storage});
+const storage = multer.diskStorage({
+    destination:function(req,file,cb){
+        cb(null,path.join(__dirname,'../public/productImages'));
+        },
+    filename:function(req,file,cb){
+        const name = Date.now()+'-'+file.originalname;
+        cb(null,name);
+    }
+});
+const upload = multer({storage:storage});
 
-// const auth = require("../middleware/adminAuth");
+const auth = require("../middleware/adminAuth");
 
 const adminController = require("../controller/adminController");
 
@@ -91,9 +91,15 @@ admin_route.get("/delete-category/:categoryId", categoryController.softDelete);
 admin_route.get("/product",productController.loadproduct);
 
 
-// -------------addProduct-----------------//
+// -------------loadaddProduct-----------------//
 
-admin_route.get("/add-product",productController.addproduct);
+admin_route.get("/add-product",productController.loadaddproduct);
+
+
+// -------------createaddProduct-----------------//
+
+
+admin_route.post("/create-product", upload.array('image', 5), productController.createProduct);
 
 
 

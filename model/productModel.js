@@ -9,6 +9,10 @@ const productSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    catname:{
+        type:String,
+        required:true
+    },
     description:{
         type:String,
         required:true
@@ -17,9 +21,13 @@ const productSchema = new mongoose.Schema({
         type:Number,
         required:true,
     },
+    offprice:{
+        type:Number,
+        required:true,
+    },
     image:{
-        type:String,
-        required:false
+        type:Array,
+        required:true
     },
     is_active:{
         type:Number,

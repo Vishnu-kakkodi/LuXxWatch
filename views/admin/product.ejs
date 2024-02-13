@@ -220,17 +220,19 @@
                 </header> <!-- card-header end// -->
                 <div class="card">
                     <div class="card-body">
+                        <% if(products.length > 0) {
+                            for(let i = 0; i<products.length; i++) { %>
                         <div class="row">
                             <div class="col-lg-4 col-sm-4 col-12">
                                 <!-- Image aligned to the left -->
-                                <img src="/admin-assets/imgs/items/1.jpg" class="img-sm img-thumbnail" alt="Item">
+                                <img src="/public/productImages/<%= products[i].image %>" class="img-sm img-thumbnail" alt="Item">
                             </div>
                             <div class="col-lg-8 col-sm-8 col-12">
                                 <!-- Details aligned to the right -->
-                                <h6 class="mb-0">Sonata</h6>
-                                <h6 class="mb-0">Analog Metal strap</h6>
-                                <h6 class="mb-0">Welcome to our collection of men's watches, where style meets function…</h6>
-                                <div>₹8,999</div>
+                                <h6 class="mb-0"><%= products[i].brandname %></h6>
+                                <h6 class="mb-0"><%= products[i].productname %></h6>
+                                <h6 class="mb-0"><%= products[i].description %></h6>
+                                <div>₹<%= products[i].price %></div><div>₹<%= products[i].offprice %></div>
                                 <div><span class="badge rounded-pill alert-success">Active</span></div>
                                 <div>02.11.2022</div>
                                 <div class="text-end mt-3">
@@ -243,6 +245,12 @@
                                 </div>
                             </div>
                         </div>
+                        <% }
+                                            }else { %>
+                                                    <tr>
+                                                    <td colspan="6">products Not Found</td>
+                                                    </tr>
+                                            <% } %>
                     </div>
                 </div>
                  <!-- card end// -->
