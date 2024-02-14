@@ -35,12 +35,12 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item active">
+                <li class="menu-item">
                     <a class="menu-link " href="/admin/category"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Category</span>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/product"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Product</span>
                     </a>
@@ -180,7 +180,7 @@
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Products List</h2>
+                    <h2 class="content-title card-title">Products grid</h2>
                     <p>Lorem ipsum dolor sit amet.</p>
                 </div>
                 <div>
@@ -191,68 +191,62 @@
             </div>
             <div class="card mb-4">
                 <header class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col col-check flex-grow-0">
-                            <div class="form-check ms-2">
-                                <input class="form-check-input" type="checkbox" value="">
-                            </div>
+                    <div class="row gx-3">
+                        <div class="col-lg-4 col-md-6 me-auto">
+                            <input type="text" placeholder="Search..." class="form-control">
                         </div>
-                        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                        <div class="col-lg-2 col-6 col-md-3">
                             <select class="form-select">
-                                <option selected>All category</option>
+                                <option>All category</option>
                                 <option>Electronics</option>
-                                <option>Clothes</option>
-                                <option>Automobile</option>
+                                <option>Clothings</option>
+                                <option>Something else</option>
                             </select>
                         </div>
-                        <div class="col-md-2 col-6">
-                            <input type="date" value="02.05.2022" class="form-control">
-                        </div>
-                        <div class="col-md-2 col-6">
+                        <div class="col-lg-2 col-6 col-md-3">
                             <select class="form-select">
-                                <option selected>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
+                                <option>Latest added</option>
+                                <option>Cheap first</option>
+                                <option>Most viewed</option>
                             </select>
                         </div>
                     </div>
                 </header> <!-- card-header end// -->
-                <div class="card">
-                    <div class="card-body">
-                        <% if(products.length > 0) {
-                            for(let i = 0; i<products.length; i++) { %>
-                        <div class="row">
-                            <div class="col-lg-4 col-sm-4 col-12">
-                                <!-- Image aligned to the left -->
-                                <img src="/public/productImages/<%= products[i].image %>" class="img-sm img-thumbnail" alt="Item">
-                            </div>
-                            <div class="col-lg-8 col-sm-8 col-12">
-                                <!-- Details aligned to the right -->
-                                <h6 class="mb-0"><%= products[i].brandname %></h6>
-                                <h6 class="mb-0"><%= products[i].productname %></h6>
-                                <h6 class="mb-0"><%= products[i].description %></h6>
-                                <div>₹<%= products[i].price %></div><div>₹<%= products[i].offprice %></div>
-                                <div><span class="badge rounded-pill alert-success">Active</span></div>
-                                <div>02.11.2022</div>
-                                <div class="text-end mt-3">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand">
-                                        <i class="material-icons md-edit"></i> Edit
-                                    </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded">
-                                        <i class="material-icons md-delete_forever"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <% }
-                                            }else { %>
-                                                    <tr>
-                                                    <td colspan="6">products Not Found</td>
-                                                    </tr>
-                                            <% } %>
-                    </div>
-                </div>
+                <div class="card-body">
+                    <% if(products.length > 0) { %>
+                        <div class="row row-cols-1 row-cols-md-3"> <!-- Use Bootstrap grid classes to display 3 columns in a row for medium devices and above -->
+                            <% for(let i = 0; i < products.length; i++) { %>
+                                <div class="col">
+                                    <div class="card card-product-grid">
+                                        <a href="#" class="img-wrap"> <img src="/productImages/<%= products[i].image[0] %>" class="img-sm img-thumbnail" alt="Item"> </a>
+                                        <div class="info-wrap">
+                                            <a href="#" class="title text-truncate"><%= products[i].brandname %></a>
+                                            <a href="#" class="title text-truncate"><%= products[i].productname %></a>
+                                            <div class="price mb-2">₹<%= products[i].price %></div> <!-- price.// -->
+                                        
+                                            <button style="background-color: #007bff; color: #fff;" class="btn btn-sm font-sm rounded btn-brand" onclick="window.location.href='/admin/edit-product?productId=<%= products[i]._id %>'">
+                                                <i class="material-icons md-edit"></i> Edit
+                                            </button>
+                                        
+                                            <button style="background-color: #dc3545; color: #fff;" class="btn btn-sm font-sm btn-light rounded" onclick="window.location.href='/admin/softdelete-product/<%= products[i]._id %>'">
+                                                <i class="material-icons md-delete_forever"></i> Soft Delete
+                                            </button>
+                                        
+                                            <button style="background-color: #6c757d; color: #fff;" class="btn btn-sm font-sm btn-light rounded" onclick="window.location.href='/admin/delete-product/<%= products[i]._id %>'">
+                                                <i class="material-icons md-delete_forever"></i> Delete
+                                            </button>
+                                        </div>
+                                        
+                                    </div> <!-- card-product end// -->
+                                </div> <!-- col.// -->
+                            <% } %>
+                        </div> <!-- row end// -->
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6">products Not Found</td>
+                        </tr>
+                    <% } %>
+                </div> <!-- card-body end// -->
                  <!-- card end// -->
             <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
@@ -282,13 +276,13 @@
             </div>
         </footer>
     </main>
-    <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
-    <script src="/admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
-    <script src="/admin-assets/js/vendors/select2.min.js"></script>
-    <script src="/admin-assets/js/vendors/perfect-scrollbar.js"></script>
-    <script src="/admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/admin-admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/admin-admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/admin-admin-assets/js/vendors/select2.min.js"></script>
+    <script src="/admin-admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/admin-admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
-    <script src="/admin-assets/js/main.js" type="text/javascript"></script>
+    <script src="/admin-admin-assets/js/main.js" type="text/javascript"></script>
 </body>
 
 </html>

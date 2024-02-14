@@ -35,12 +35,12 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item active">
+                <li class="menu-item">
                     <a class="menu-link " href="/admin/category"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Category</span>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/product"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Product</span>
                     </a>
@@ -180,101 +180,83 @@
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Categories </h2>
-                    <p>Add, edit or delete a category</p>
+                    <h2 class="content-title card-title">Products grid</h2>
+                    <p>Lorem ipsum dolor sit amet.</p>
                 </div>
                 <div>
-                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
+                    <a href="#" class="btn btn-light rounded font-md">Export</a>
+                    <a href="#" class="btn btn-light rounded  font-md">Import</a>
+                    <a href="#" class="btn btn-primary btn-sm rounded">Create new</a>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <form action="/admin/add-category" method="post">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" name="catname" placeholder="Type here" class="form-control" id="product_name" />
-                                </div>
-                                <%
-                                    if(typeof message !== 'undefined'){
-                                                %>
-                                    <p style="color: red;"><%= message %></p>
-                                                <%
-                                                         }
-                                        %>
-                                <div class="mb-4">
-                                    <label class="form-label">Description</label>
-                                    <textarea name="description" placeholder="Type here" class="form-control"></textarea>
-                                </div>
-                                <div class="d-grid">
-                                    <button class="btn btn-primary">Create category</button>
-                                </div>
-                            </form>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row gx-3">
+                        <div class="col-lg-4 col-md-6 me-auto">
+                            <input type="text" placeholder="Search..." class="form-control">
                         </div>
-                        <div class="col-md-9">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </th>
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                            <th>Status</th>
-                                            <th class="text-end">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                      
-                                            <% if(categories.length > 0) {
-                                                for(let i = 0; i<categories.length; i++) { %>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td><b><%= categories[i].catname %></b></td>
-                                            <td><%= categories[i].description %></td>
-                                            <td>
-                                                <span><% if(categories[i].status === 0) { %>
-                                                    <span class="user-status" style="color: green;">Active</span>
-                                                <% } else { %>
-                                                    <span style="color: red;">Inactive</span>
-                                                <% } %></span>
-                                            </div>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <form action="/admin/edit-category/<%= categories[i]._id %>" method="">
-                                                            <button type="submit">Edit</button>
-                                                        </form>
-                                                        <form action="/admin/delete-category/<%= categories[i]._id %>" method="post">
-                                                            <button type="submit">Delete</button>
-                                                        </form>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                            </tr>
-                                            <% }
-                                            }else { %>
-                                                    <tr>
-                                                    <td colspan="6">categories Not Found</td>
-                                                    </tr>
-                                            <% } %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div> <!-- .col// -->
-                    </div> <!-- .row // -->
-                </div> <!-- card body .// -->
-            </div> <!-- card .// -->
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>All category</option>
+                                <option>Electronics</option>
+                                <option>Clothings</option>
+                                <option>Something else</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>Latest added</option>
+                                <option>Cheap first</option>
+                                <option>Most viewed</option>
+                            </select>
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <% if(products.length > 0) { %>
+                        <div class="row row-cols-1 row-cols-md-3"> <!-- Use Bootstrap grid classes to display 3 columns in a row for medium devices and above -->
+                            <% for(let i = 0; i<products.length; i++) { %>
+                                <div class="col">
+                                    <div class="card card-product-grid">
+                                        <a href="#" class="img-wrap"> <img src="/productImages/<%= products[i].image[0] %>" class="img-sm img-thumbnail" alt="Item"> </a>
+                                        <!-- <a href="#" class="img-wrap"> <img src="/productImages/<%= products[i].image[1] %>" class="img-sm img-thumbnail" alt="Item"> </a>
+                                        <a href="#" class="img-wrap"> <img src="/productImages/<%= products[i].image[2] %>" class="img-sm img-thumbnail" alt="Item"> </a>
+                                        <a href="#" class="img-wrap"> <img src="/productImages/<%= products[i].image[3] %>" class="img-sm img-thumbnail" alt="Item"> </a>
+                                        <a href="#" class="img-wrap"> <img src="/productImages/<%= products[i].image[4] %>" class="img-sm img-thumbnail" alt="Item"> </a> -->
+                                        <div class="info-wrap">
+                                            <a href="#" class="title text-truncate"><%= products[i].brandname %></a>
+                                            <a href="#" class="title text-truncate"><%= products[i].productname %></a>
+                                            <div class="price mb-2">₹<%= products[i].price %></div> <!-- price.// -->
+                                            <a href="#" class="btn btn-sm font-sm rounded btn-brand">
+                                                <i class="material-icons md-edit"></i> Edit
+                                            </a>
+                                            <a href="#" class="btn btn-sm font-sm btn-light rounded">
+                                                <i class="material-icons md-delete_forever"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div> <!-- card-product end// -->
+                                </div> <!-- col.// -->
+                            <% } %>
+                        </div> <!-- row end// -->
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6">products Not Found</td>
+                        </tr>
+                    <% } %>
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            <div class="pagination-area mt-30 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                        <li class="page-item"><a class="page-link" href="#">02</a></li>
+                        <li class="page-item"><a class="page-link" href="#">03</a></li>
+                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">16</a></li>
+                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                    </ul>
+                </nav>
+            </div>
         </section> <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
@@ -291,26 +273,6 @@
             </div>
         </footer>
     </main>
-    <script>
-        function validate() {
-            const cname = document.getElementById('catname').value;
-            const des = document.getElementById('description').value;
-            // const alertDisplay = document.getElementById('alert');
-    
-            if (cname.value=="") {
-                alert('Must have a category name');
-                document.form1.username.focus();
-                return false; 
-            }
-            if (description.value=="") {
-                alert('Must have description');
-                document.form1.username.focus();
-                return false; 
-            }
-    
-            return true;
-        }
-    </script>
     <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/admin-assets/js/vendors/select2.min.js"></script>

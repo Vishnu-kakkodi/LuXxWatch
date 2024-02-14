@@ -5,7 +5,6 @@ const session = require("express-session");
 
 const config = require("../configuration/config");
 
-const auth = require("../middleware/auth");
 
 user_route.set('view engine','ejs');
 user_route.set('views','./views/user');
@@ -45,19 +44,21 @@ user_route.use(session({
 
 // user_route.get("/",auth.isLogout,userController.landingload);
 
-user_route.get("/",auth.isLogout,userController.loginload);
+user_route.get("/",userController.loginload);
 
-user_route.get("/register",auth.isLogout,userController.loadRegister);
+user_route.get("/register",userController.loadRegister);
 
-user_route.get("/otp",auth.isLogout,userController.loadOtp);
+user_route.get("/otp",userController.loadOtp);
 
 user_route.post("/resend-otp", userController.resendOTP);
 
-user_route.post("/otp",auth.isLogout,userController.insertUser);
+user_route.post("/otp",userController.insertUser);
 
-user_route.post("/verify",auth.isLogout,userController.getOtp);
+user_route.post("/verify",userController.getOtp);
 
 user_route.post("/home",userController.verifyLogin);
+
+user_route.get("/productdetails",userController.loadproductdetail);
 
 
 

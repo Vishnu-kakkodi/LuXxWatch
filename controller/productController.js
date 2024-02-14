@@ -68,9 +68,63 @@ const createProduct = async(req,res)=>{
 }
 
 
+const loadeditProduct = async (req, res) => {
+    const productId = req.query.productId;
+    try {
+        console.log("heee");
+        const products = await Product.findById(productId);
+        if (!products) {
+            // Handle the case when no product is found
+            return res.status(404).render('error', { message: 'Product not found' });
+        }
+        res.render('edit-product', { products:products });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).render('error', { message: 'Internal Server Error' });
+    }
+};
+
+const softDeleteproduct = async(req,res)=>{
+    const productId = req.params.productId;
+
+    try {
+        const products = await Product.findById(productId);
+        if (!products) {
+            return res.status(404).send('products not found');
+        }
+
+        
+        products.is_active = 1;
+        await products.save();
+        await Product.findByIdAndUpdate(productId, { $set: { is_active: 1 } });
+
+        res.redirect('/admin/product');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
+const deleteproduct = async(req,res)=>{
+    const productId = req.params.productId;
+    try{
+        await Product.findByIdAndDelete(productId);
+        res.redirect('/admin/product');
+    }catch(error){
+        console.log(error.message);
+        res.status(500).send('Internal Server Error');
+    }   
+}
+
+
+
 module.exports = {
 
     loadproduct,
     loadaddproduct,
-    createProduct
+    createProduct,
+    loadeditProduct,
+    softDeleteproduct,
+    deleteproduct
 }

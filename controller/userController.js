@@ -1,196 +1,6 @@
-// const User = require('../model/userModel');
-// const bcrypt = require('bcrypt');
-
-// const nodemailer = require("nodemailer");
-
-// const config = require("../configuration/config");
-// const randomstring = require("randomstring");
-
-// const securePassword = async (password)=>{
-//     try{
-//         const passwordHash = await bcrypt.hash(password,10);
-//         return passwordHash
-//     }catch(error){
-//         console.log(error.message);
-//     }
-// }
-
-// const landingload = async(req,res)=>{
-//     try{
-//         res.render('landing');
-//     }catch(error){
-//         console.log(error.message);
-//     }
-// }
-
-// const loginload = async(req,res)=>{
-//     try{
-//         res.render('login');
-//     }catch(error){
-//         console.log(error.message);
-//     }
-// }
-
-// const registration = async(req,res)=>{
-//     try{
-//         res.render('register');
-//     }catch(error){
-//         console.log(error.message);
-//     }
-// }
-
-// const insertUser=async(req,res)=>{
-//     try {
-//         if(req.body.password==req.body.ConfirmPassword){
-//             res.redirect('/otp')
-//         }
-//         const otp = generateOTP()
-//         console.log(otp);
-//          const {name,email,mobile,password,confirm}=req.body
-//          const data={
-//             name,
-//             email,
-//             password,
-//             ConfirmPassword,
-//             otp }
-//          req.session.Data=data
-//          req.session.save()
-       
-//          console.log(otp,'this is otp');
-//          console.log(req.session.Data,'this is session ')
-       
-//         const mailOptions=await {
-//             form:email,
-//             to:req.body.email,
-//             subject:'Your OTP for Verification',
-//             text:`your otp ${otp}`
-//         }
-//             if(mailOptions){
-//                 transporter.sendMail(mailOptions,(err)=>{
-//                     if(err){
-//                         console.log(err.message);
-//                     }else{
-                      
-//                         console.log("mail send sucessfull");
-//                     }
-//                 }) 
-//             }
-    
-//     } catch (error) {
-//       console.log(error)  
-//     }
-// }
-
-// const loadOtp=async(req,res)=>{
-//     console.log(req.session.Data+"from here");
-//     try {
-//         res.render("otp")
-//     } catch (error) {
-//         console.log(error.message)
-//     }
-    
-// }
-
-
-// // const insertUser = async(req,res)=>{
-// //     try{
-// //         const spassword = await securePassword(req.body.password);
-// //        let user = new User({
-// //             name:req.body.name,
-// //             email:req.body.email,
-// //             password:spassword,
-// //             is_admin:0
-// //         })
-
-// //        const userData = await user.save()
-
-       
-
-// if(userData){
-//     sendVerifyMail(req.body.name, req.body.email, userData._id);
-//     res.render('home');
-// }else{
-//     res.render('registration', {message:"Your registration has been failed."});
-// }
-
-//     }catch(error){
-//         console.log(error.message);
-//     }
-// }
-
-// // const otpsend = async(req,res) => {
-// //     try{
-// //         if(req.body.password==req.body.ConfirmPassword){
-// //             res.redirect('/otp')
-// //         }
-// //         const {name,email,password,ConfirmPassword}=req.body
-// //          const data={
-// //             name,
-// //             email,
-// //             password,
-// //             ConfirmPassword,
-// //             otp }
-// //          req.session.Data=data
-// //          req.session.save()
-// //         const otp = randomstring.generate({
-// //             length: 6,
-// //             charset: 'numeric'
-// //         });
-
-// //         console.log('Generated OTP:', otp);
-
-// //         const transporter = nodemailer.createTransport({
-// //             service: 'Gmail',
-// //             host:'pvishnukakkodi@gmail.com',
-// //             port:587,
-// //             secure:false,
-// //             requireTLS:true,
-// //             auth: {
-// //                 user:config.emailUser,
-// //                 pass:config.emailPassword
-// //             }
-// //         });
-
-// //         const mailOptions = {
-// //             from:config.emailUser,
-// //             to:email,
-// //             subject: 'OTP for Registration',
-// //             text: `Your OTP for registration is: ${otp}`,
-// //         };
-
-// //         transporter.sendMail(mailOptions, (error, info) => {
-// //             if (error) {
-// //                 console.error('Error occurred while sending email:', error);
-// //             } else {
-// //                 console.log('Message sent: %s', info.messageId);
-// //             }
-// //         });
-// //     }catch(error){
-// //         console.log(error.message);
-// //     }
-// // };
-
-// // const otpload = async(req,res)=>{
-// //     try{
-// //         res.render('otp');
-// //     }catch(error){
-// //         console.log(error.message);
-// //     }
-// // }
-
-
-// module.exports = {
-//     securePassword,
-//     landingload,
-//     loginload,
-//     registration,
-//     insertUser,
-//     loadOtp
-// }
-
-
 
 const User = require('../model/userModel')
+const Product = require("../model/productModel.js")
 const session = require("express-session")
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer")
@@ -396,7 +206,8 @@ const verifyLogin = async(req,res)=>{
                 if(userData.is_verified === 0){                   
                     res.render('login');
                 }else if(userData.is_verified === 1 && userData.is_blocked === 0){
-                    res.render('home');
+                    const products = await Product.find({is_active:0}).limit(8);
+                    res.render('home', { products });
                 }else if(userData.is_verified === 1 && userData.is_blocked === 1){
                     res.render('login');
                 }
@@ -412,6 +223,20 @@ const verifyLogin = async(req,res)=>{
 }
 
 
+const loadproductdetail = async(req,res)=>{
+    const productId = req.query.productId;
+    try{
+        const products = await Product.find({_id:productId});
+        res.render('productdetails',{products});
+        console.log(products);
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
+
+
 
 
 module.exports={
@@ -421,5 +246,7 @@ module.exports={
     loadOtp,
     resendOTP,
     getOtp,
-    verifyLogin
+    verifyLogin,
+    loadproductdetail,
+    
 }

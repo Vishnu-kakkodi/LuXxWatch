@@ -29,6 +29,18 @@ const productSchema = new mongoose.Schema({
         type:Array,
         required:true
     },
+    // stock:{
+    //     type:Number,
+    //     required:true
+    // },
+    // rating:{
+    //     type:Number,
+    //     required:true
+    // },
+    // review:{
+    //     type:String,
+    //     required:true
+    // },
     is_active:{
         type:Number,
         required:true,

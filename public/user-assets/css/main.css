@@ -1673,28 +1673,28 @@ label {
 
 .hero-slider-1 .single-slider-img-1 .slider-1-1 {
   position: absolute;
-  bottom: 30px;
+  bottom: 100px;
   right: 0;
 }
 
 .hero-slider-1 .single-slider-img-1 .slider-1-2 {
   position: absolute;
-  bottom: 20px;
+  bottom: 100px;
   right: 0;
 }
 
 .hero-slider-1 .single-slider-img-1 .slider-1-3 {
   position: absolute;
-  bottom: 30px;
+  bottom: 100px;
   right: 0;
 }
 
 .hero-slider-1.style-2 {
-  height: 490px;
+  height: 500px;
 }
 
 .hero-slider-1.style-2 .slider-1-height-2 {
-  height: 490px;
+  height: 500px;
   position: relative;
 }
 
@@ -1707,7 +1707,7 @@ label {
   position: absolute;
   bottom: 0;
   right: 0;
-  top: 80px;
+  top: 0px;
 }
 
 .hero-slider-1.style-2 .single-slider-img img {
@@ -1720,7 +1720,7 @@ label {
 
 .hero-slider-1.style-3 {
   position: relative;
-  height: unset;
+  height: 500px;
 }
 
 .hero-slider-1.style-3 img {
@@ -1728,7 +1728,7 @@ label {
 }
 
 .hero-slider-1.style-3 .slider-1-height-3 {
-  height: 542px;
+  height: 500px;
 }
 
 .hero-slider-1.style-3 .slider-img {
@@ -3116,7 +3116,7 @@ table .product-thumbnail img {
 }
 
 .deal .product-price .old-price {
-  color: #cccccc;
+  color: #eeecec;
   text-decoration: line-through;
 }
 
@@ -5898,7 +5898,7 @@ h6.post-title {
 }
 
 .header-bottom .header-action-right a span.pro-count {
-  background-color: #088178;
+  background-color: #d68400;
   color: #fff;
 }
 
@@ -9298,7 +9298,7 @@ span.fi-rs-apps {
   .hero-slider-1 .single-slider-img-1 {
     height: 350px;
   }
-  .home-slider.pt-50 {
+  .home-slider.pt-0 {
     padding-top: 0 !important;
   }
   .hero-slider-content-2 h1 {
@@ -9343,17 +9343,17 @@ span.fi-rs-apps {
     display: none;
   }
   .home-slider .hero-slider-1.style-2 {
-    height: 400px;
+    height: 350px;
   }
   .home-slider .hero-slider-1.style-2 .hero-slider-content-2 {
     padding-left: 0;
-    padding-top: 100px;
+    padding-top: 50px;
   }
   .home-slider .hero-slider-1.style-2 .single-slider-img img {
-    max-width: 400px;
+    max-width: 350px;
   }
   .home-slider .hero-slider-1.style-2 .slider-1-height-2 {
-    height: 400px;
+    height: 350px;
     position: relative;
   }
   .banner-img {
@@ -9363,7 +9363,7 @@ span.fi-rs-apps {
     float: none;
   }
   .hero-slider-1.style-3 .slider-1-height-3 {
-    height: 390px;
+    height: 350px;
   }
   .hero-slider-1.style-3 .hero-slider-content-2 {
     padding-left: 20px;

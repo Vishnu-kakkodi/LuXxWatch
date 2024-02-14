@@ -27,7 +27,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage:storage});
 
-const auth = require("../middleware/adminAuth");
 
 const adminController = require("../controller/adminController");
 
@@ -100,6 +99,23 @@ admin_route.get("/add-product",productController.loadaddproduct);
 
 
 admin_route.post("/create-product", upload.array('image', 5), productController.createProduct);
+
+
+// -------------editProduct-----------------//
+
+
+admin_route.get("/edit-product?productId", productController.loadeditProduct);
+
+
+// -------------softDeleteProduct-----------------//
+
+
+admin_route.get("/softdelete-product/:productId", productController.softDeleteproduct);
+
+// -------------DeleteProduct-----------------//
+
+
+admin_route.get("/delete-product/:productId", productController.deleteproduct);
 
 
 
