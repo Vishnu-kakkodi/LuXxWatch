@@ -1,10 +1,5 @@
 const User = require("../model/userModel");
 const bcrypt = require('bcrypt');
-// const session = require("express-session")
-
-const config = require("../configuration/config");
-const randomstring = require("randomstring");
-
 
 const securePassword = async (password) => {
     try {
@@ -60,6 +55,17 @@ const loadDashboard = async (req, res) => {
 }
 
 
+const adminLogout = async(req,res)=>{
+
+    try{
+        req.session.destroy();
+        res.redirect('/');
+    }catch(error){
+        console.log(error.message)
+    }
+}
+
+
 // ---------------list-user-----------------//
 
 const userAccount = async (req, res) => {
@@ -77,17 +83,10 @@ const userAccount = async (req, res) => {
 const userBlock = async (req, res) => {
 
     const userId = req.params.userId;
-
-    if (!userId) {
-        return res.status(400).send('User ID is missing');
-    }
     console.log("hai");
 
     try {
         const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).send('User not found');
-        }
         console.log(user);
 
         user.is_blocked = 1;
@@ -105,16 +104,8 @@ const userunBlock = async (req, res) => {
 
     const userId = req.params.userId;
 
-    if (!userId) {
-        return res.status(400).send('User ID is missing');
-    }
-
     try {
         const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).send('User not found');
-        }
-
         user.is_blocked = 0;
         await user.save();
         await User.findByIdAndUpdate(userId, { $set: { is_blocked: 0 } });
@@ -134,6 +125,7 @@ module.exports = {
     loadLogin,
     verifyLogin,
     loadDashboard,
+    adminLogout,
     userAccount,
     userBlock,
     userunBlock

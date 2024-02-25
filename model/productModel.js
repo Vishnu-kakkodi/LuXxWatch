@@ -18,33 +18,53 @@ const productSchema = new mongoose.Schema({
         required:true
     },
     price:{
-        type:Number,
+        type:String,
         required:true,
     },
     offprice:{
-        type:Number,
+        type:String,
         required:true,
     },
     image:{
         type:Array,
         required:true
     },
-    // stock:{
-    //     type:Number,
-    //     required:true
-    // },
-    // rating:{
-    //     type:Number,
-    //     required:true
-    // },
-    // review:{
-    //     type:String,
-    //     required:true
-    // },
+    stock:{
+        type:Number,
+        required:true
+    },
     is_active:{
         type:Number,
         required:true,
-        default:0
+        default:1
+    },
+    caseDiameter:{
+        type:String,
+        required:false
+    },
+    bandColour:{
+        type:String,
+        required:false
+    },
+    bandMaterial:{
+        type:String,
+        required:false
+    },
+    warranty:{
+        type:String,
+        required:false
+    },
+    movement:{
+        type:String,
+        required:false
+    },
+    weight:{
+        type:String,
+        required:false
+    },
+    country:{
+        type:String,
+        required:false,
     }
 
 });

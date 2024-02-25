@@ -1,15 +1,16 @@
 const Product = require("../model/productModel.js");
 const Category = require("../model/categoryModel.js");
-const bcrypt = require('bcrypt');
-// const session = require("express-session")
-
-const config = require("../configuration/config");
-const randomstring = require("randomstring");
 
 
-
-
-
+const productlist = async(req,res)=>{
+    try{ 
+        const products = await Product.find();
+        const categories = await Category.find();     
+        res.render('productlist', { products,categories });
+    }catch(error){
+        console.log(error.message);
+    }
+}
 
 const loadproduct = async(req,res)=>{
     try{ 
@@ -35,12 +36,8 @@ const loadaddproduct = async(req,res)=>{
 const createProduct = async(req,res)=>{
     
     try{
-        console.log("hai");
-        const {brandname, productname, description, price, offprice, } = req.body;
-
-        console.log(req.body.categories);
-
-
+        const {brandname, productname, description, price, offprice,stock,caseDiameter,bandColour,bandMaterial,warranty,movement,weight,country } = req.body;
+        const categories = await Category.find();
         
         const imageFileNames = req.files.map(file => file.filename);
 
@@ -51,6 +48,14 @@ const createProduct = async(req,res)=>{
             description,
             price,
             offprice,
+            stock,
+            caseDiameter,
+            bandColour,
+            bandMaterial,
+            warranty,
+            movement,
+            weight,
+            country,
             image:imageFileNames
          
         });
@@ -60,7 +65,7 @@ const createProduct = async(req,res)=>{
         const savedProduct = await product.save();
         if (savedProduct) {
             const products = await Product.find();
-            res.render('product', { products: products });
+            res.render('productlist', { products: products });
         }
     }catch(error){
         console.log(error.message);
@@ -69,62 +74,107 @@ const createProduct = async(req,res)=>{
 
 
 const loadeditProduct = async (req, res) => {
-    const productId = req.query.productId;
+    const productId = req.params.productId;
+    const categories = await Category.find();
     try {
-        console.log("heee");
         const products = await Product.findById(productId);
-        if (!products) {
-            // Handle the case when no product is found
-            return res.status(404).render('error', { message: 'Product not found' });
-        }
-        res.render('edit-product', { products:products });
+        console.log(products);
+        res.render('edit-product', {products,categories});
     } catch (error) {
         console.log(error.message);
-        res.status(500).render('error', { message: 'Internal Server Error' });
     }
 };
 
-const softDeleteproduct = async(req,res)=>{
+const updateproduct = async(req,res)=>{
+    const productId = req.params.productId;
+    const {brandname, productname, description, price, offprice,stock,caseDiameter,bandColour,bandMaterial,warranty,movement,weight,country } = req.body;
+    
+    try{
+        const imageFileNames = req.files.map(file => file.filename);
+        const product = await Product.findById(productId);
+        product.brandname = brandname;
+        product.productname = productname;
+        product.description = description;
+        product.price = price;
+        product.offprice = offprice;
+        product.stock = stock;
+        product.caseDiameter = caseDiameter;
+        product.bandColour = bandColour;
+        product.bandMaterial = bandMaterial;
+        product.warranty = warranty;
+        product.movement = movement;
+        product.weight = weight;
+        product.country = country;
+        product.image = imageFileNames;
+        
+        await product.save();
+        await Category.findByIdAndUpdate(productId, { $set: {
+            brandname:product.brandname,productname:product.productname,description:product.description,price:product.price,offprice:product.offprice,stock:product.stock,image:product.image,
+            caseDiameter:product.caseDiameter,bandColour:product.bandColour,bandMaterial:product.bandMaterial,warranty:product.warranty,movement:product.movement,weight:product.weight,country:product.country
+         } });
+        res.redirect('/admin/product');
+
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
+
+
+const enableProduct = async(req,res)=>{
     const productId = req.params.productId;
 
     try {
         const products = await Product.findById(productId);
-        if (!products) {
-            return res.status(404).send('products not found');
-        }
 
-        
         products.is_active = 1;
         await products.save();
         await Product.findByIdAndUpdate(productId, { $set: { is_active: 1 } });
 
-        res.redirect('/admin/product');
+        res.redirect('/admin/productlist');
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+    }
+};
+
+const disableProduct = async(req,res)=>{
+    const productId = req.params.productId;
+
+    try {
+        const products = await Product.findById(productId);
+
+        products.is_active = 0;
+        await products.save();
+        await Product.findByIdAndUpdate(productId, { $set: { is_active: 0 } });
+
+        res.redirect('/admin/productlist');
+    } catch (error) {
+        console.error(error);
     }
 };
 
 
-const deleteproduct = async(req,res)=>{
-    const productId = req.params.productId;
-    try{
-        await Product.findByIdAndDelete(productId);
-        res.redirect('/admin/product');
-    }catch(error){
-        console.log(error.message);
-        res.status(500).send('Internal Server Error');
-    }   
-}
+// const deleteproduct = async(req,res)=>{
+//     const productId = req.params.productId;
+//     try{
+//         await Product.findByIdAndDelete(productId);
+//         res.redirect('/admin/product');
+//     }catch(error){
+//         console.log(error.message);
+//     }   
+// }
 
 
 
 module.exports = {
 
+    productlist,
     loadproduct,
     loadaddproduct,
     createProduct,
     loadeditProduct,
-    softDeleteproduct,
-    deleteproduct
+    updateproduct,
+    enableProduct,
+    disableProduct
 }

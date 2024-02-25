@@ -1,184 +1,6 @@
-<!DOCTYPE HTML>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <title>Evara Dashboard</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="/admin-assets/imgs/theme/favicon.svg">
-    <!-- Template CSS -->
-    <link href="/admin-assets/css/main.css" rel="stylesheet" type="text/css" />
-</head>
-
-<body>
-    <div class="screen-overlay"></div>
-    <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-            <a href="index.html" class="brand-wrap">
-                <img src="/admin-assets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
-            </a>
-            <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
-            </div>
-        </div>
-        <nav>
-            <ul class="menu-aside">
-                <li class="menu-item">
-                    <a class="menu-link" href="/admin/home"> <i class="icon material-icons md-home"></i>
-                        <span class="text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link " href="/admin/category"> <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Category</span>
-                    </a>
-                </li>
-                <li class="menu-item active">
-                    <a class="menu-link" href="/admin/product"> <i class="icon material-icons md-shopping_cart"></i>
-                        <span class="text">Product</span>
-                    </a>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
-                        <span class="text">Sellers</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-sellers-cards.html">Sellers cards</a>
-                        <a href="page-sellers-list.html">Sellers list</a>
-                        <a href="page-seller-detail.html">Seller profile</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Add product</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-form-product-1.html">Add product 1</a>
-                        <a href="page-form-product-2.html">Add product 2</a>
-                        <a href="page-form-product-3.html">Add product 3</a>
-                        <a href="page-form-product-4.html">Add product 4</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
-                        <span class="text">Transactions</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-transactions-1.html">Transaction 1</a>
-                        <a href="page-transactions-2.html">Transaction 2</a>
-                        <a href="page-transactions-details.html">Transaction Details</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
-                        <span class="text">Account</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-account-login.html">User login</a>
-                        <a href="page-account-register.html">User registration</a>
-                        <a href="page-error-404.html">Error 404</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
-                        <span class="text">Reviews</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
-                        <span class="text">Statistics</span>
-                    </a>
-                </li>
-            </ul>
-            <hr>
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-settings"></i>
-                        <span class="text">Settings</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-settings-1.html">Setting sample 1</a>
-                        <a href="page-settings-2.html">Setting sample 2</a>
-                    </div>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-blank.html"> <i class="icon material-icons md-local_offer"></i>
-                        <span class="text"> Starter page </span>
-                    </a>
-                </li>
-            </ul>
-            <br>
-            <br>
-        </nav>
-    </aside>
-    <main class="main-wrap">
-        <header class="main-header navbar">
-            <div class="col-search">
-                <form class="searchform">
-                    <div class="input-group">
-                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
-                    </div>
-                    <datalist id="search_terms">
-                        <option value="Products">
-                        <option value="New orders">
-                        <option value="Apple iphone">
-                        <option value="Ahmed Hassan">
-                    </datalist>
-                </form>
-            </div>
-            <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
-                <ul class="nav">
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                    </li>
-                    <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                            <a class="dropdown-item text-brand" href="#"><img src="/admin-assets/imgs/theme/flag-us.png" alt="English">English</a>
-                            <a class="dropdown-item" href="#"><img src="/admin-assets/imgs/theme/flag-fr.png" alt="Français">Français</a>
-                            <a class="dropdown-item" href="#"><img src="/admin-assets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
-                            <a class="dropdown-item" href="#"><img src="/admin-assets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
-                        </div>
-                    </li>
-                    <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/admin-assets/imgs/people/avatar2.jpg" alt="User"></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </header>
+<%- include('../layouts/adminHeader.ejs') %>
             <section class="content-main">
-                <form action="/admin/create-product" method="post" enctype="multipart/form-data">
+                <form action="/admin/create-product" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-9">
                             <div class="content-header">
@@ -191,20 +13,30 @@
                                 <div class="card-header">
                                     <h4>Basic</h4>
                                 </div>
+                                <%
+                                if(typeof message !== 'undefined'){
+                                            %>
+                                <p style="color: red;"><%= message %></p>
+                                            <%
+                                                     }
+                                    %>
                                 <div class="card-body">
                                         <div class="mb-4">
                                             <label for="product_name" class="form-label">Brand name</label>
                                             <input type="text" name="brandname" placeholder="Type here" class="form-control"
-                                                id="product_name">
+                                                id="brandname">
+                                                <div class="error-message" id="brand-error"></div>
                                         </div>
                                         <div class="mb-4">
                                             <label for="product_name" class="form-label">Product title</label>
                                             <input type="text" name="productname" placeholder="Type here" class="form-control"
-                                                id="product_name">
+                                                id="productname">
+                                                <div class="error-message" id="title-error"></div>
                                         </div>
                                         <div class="mb-4">
                                             <label class="form-label">Full description</label>
-                                            <textarea name="description" placeholder="Type here" class="form-control" rows="4"></textarea>
+                                            <textarea id="description" name="description" placeholder="Type here" class="form-control" rows="4"></textarea>
+                                            <div class="error-message" id="description-error"></div>
                                         </div>
 
                                         
@@ -214,17 +46,72 @@
                                                 <div class="mb-4">
                                                     <label class="form-label">Regular price</label>
                                                     <div class="row gx-2">
-                                                        <input name="price" placeholder="₹" type="text" class="form-control">
+                                                        <input id="price" name="price" placeholder="₹" type="text" class="form-control">
+                                                        <div class="error-message" id="price-error"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4">
                                                 <div class="mb-4">
                                                     <label class="form-label">Special price</label>
-                                                    <input name="offprice" placeholder="₹" type="text" class="form-control">
+                                                    <input id="offprice" name="offprice" placeholder="₹" type="text" class="form-control">
+                                                    <div class="error-message" id="offprice-error"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="mb-4">
+                                                    <label class="form-label">Stock</label>
+                                                    <input id="stock" name="stock" placeholder="Type here" type="text" class="form-control">
+                                                    <div class="error-message" id="stock-error"></div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="card-header">
+                                            <h4>Product details</h4>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Case diameter</label>
+                                            <input type="text" name="caseDiameter" placeholder="Type here" class="form-control"
+                                                id="caseDiameter">
+                                                <div class="error-message" id="casedia-error"></div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Band colour</label>
+                                            <input type="text" name="bandColour" placeholder="Type here" class="form-control"
+                                                id="bandColour">
+                                                <div class="error-message" id="colour-error"></div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Band material type</label>
+                                            <input type="text" name="bandMaterial" placeholder="Type here" class="form-control"
+                                                id="bandMaterial">
+                                                <div class="error-message" id="material-error"></div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Warranty type</label>
+                                            <input type="text" name="warranty" placeholder="Type here" class="form-control"
+                                                id="warranty">
+                                                <div class="error-message" id="warranty-error"></div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Watch movement type</label>
+                                            <input type="text" name="movement" placeholder="Type here" class="form-control"
+                                                id="movement">
+                                                <div class="error-message" id="movement-error"></div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Item weight</label>
+                                            <input type="text" name="weight" placeholder="Type here" class="form-control"
+                                                id="weight">
+                                                <div class="error-message" id="weight-error"></div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="product_name" class="form-label">Country of Origin</label>
+                                            <input type="text" name="country" placeholder="Type here" class="form-control"
+                                                id="country">
+                                                <div class="error-message" id="country-error"></div>
+                                        </div>
+                                        
                                 </div>
                             </div> <!-- card end// -->
                         </div>
@@ -241,9 +128,6 @@
                                 </div>
                             </div> <!-- card end// -->
                             <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Organization</h4>
-                                </div>
                                 <div class="card-body">
                                     <div class="row gx-2">
                                         <div class="col-sm-6 mb-3">
@@ -272,21 +156,214 @@
                 </form>
             </section> <!-- content-main end// -->
 
-        <footer class="main-footer font-xs">
-            <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
-                        document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
-                    </div>
-                </div>
-            </div>
-        </footer>
+       
     </main>
+
+    <script>
+        // JavaScript code for image cropping
+        document.addEventListener('DOMContentLoaded', () => {
+            const image = document.getElementById('image-preview');
+            const input = document.getElementById('image-input');
+            let cropper;
+    
+            input.addEventListener('change', (event) => {
+                const files = event.target.files;
+                const reader = new FileReader();
+                
+                reader.onload = () => {
+                    image.src = reader.result;
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropper = new Cropper(image, {
+                        aspectRatio: 16 / 9, // Set the aspect ratio as needed
+                        crop(event) {
+                            // You can access cropped data here if needed
+                            console.log(event.detail);
+                        },
+                    });
+                };
+                
+                reader.readAsDataURL(files[0]);
+            });
+        });
+    </script>
+
+<script>
+    function validateForm() {
+        var brandname = document.getElementById('brandname').value.trim();
+        var productname = document.getElementById('productname').value.trim();
+        var description = document.getElementById('description').value.trim();
+        var stock = document.getElementById('stock').value.trim();
+        var price = document.getElementById('price').value.trim();
+        var offprice = document.getElementById('offprice').value.trim();
+        var caseDiameter = document.getElementById('caseDiameter').value.trim();
+        var bandColour = document.getElementById('bandColour').value.trim();
+        var bandMaterial = document.getElementById('bandMaterial').value.trim();
+        var warranty = document.getElementById('warranty').value.trim();
+        var movement = document.getElementById('movement').value.trim();
+        var weight = document.getElementById('weight').value.trim();
+        var country = document.getElementById('country').value.trim();
+        var isValid = true;
+
+        // Validate brandname
+        var brandnamePattern = /^[a-zA-Z]+$/;
+        if (brandname === '') {
+            document.getElementById('brand-error').innerText = 'Brand name is required';
+            isValid = false;
+        }else if (!brandnamePattern.test(brandname)) {
+                document.getElementById('brand-error').innerText = 'Brand name can only alphabets';
+                isValid = false;
+        } else {
+            document.getElementById('brand-error').innerText = '';
+        }
+
+        // Validate productname
+        var productnamePattern = /^[a-zA-Z0-9\s]*[a-zA-Z][a-zA-Z0-9\s]*$/;
+        if (productname === '') {
+            document.getElementById('title-error').innerText = 'Product name is required';
+            isValid = false;
+        }else if (!productnamePattern.test(productname)) {
+                document.getElementById('title-error').innerText = 'Product name can only alphabets and must contain text';
+                isValid = false;
+        } else {
+            document.getElementById('title-error').innerText = '';
+        }
+
+        // Validate description
+        var descriptionPattern = /^[a-zA-Z0-9\s]*[a-zA-Z][a-zA-Z0-9\s]*$/;
+        if (description === '') {
+            document.getElementById('description-error').innerText = 'Description is required';
+            isValid = false;
+        }
+        else if (!descriptionPattern.test(description)) {
+                document.getElementById('description-error').innerText = 'Description name can only alphabets and must contain text';
+                isValid = false;
+        }  else {
+            document.getElementById('description-error').innerText = '';
+        }
+
+        // Validate stock
+        if (stock === '') {
+            document.getElementById('stock-error').innerText = 'Stock is required';
+            isValid = false;
+        } else if (isNaN(stock) || parseInt(stock) <= 0) {
+            document.getElementById('stock-error').innerText = 'Stock must be a positive number';
+            isValid = false;
+        } else {
+            document.getElementById('stock-error').innerText = '';
+        }
+
+        // Validate price
+        if (price === '') {
+            document.getElementById('price-error').innerText = 'Price is required';
+            isValid = false;
+        } else if (isNaN(price) || parseFloat(price) <= 0) {
+            document.getElementById('price-error').innerText = 'Price must be a positive number';
+            isValid = false;
+        } else {
+            document.getElementById('price-error').innerText = '';
+        }
+
+        // Validate offprice
+        if (offprice === '') {
+            document.getElementById('offprice-error').innerText = 'Special price is required';
+            isValid = false;
+        } else if (isNaN(offprice) || parseFloat(offprice) <= 0) {
+            document.getElementById('offprice-error').innerText = 'Special price must be a positive number';
+            isValid = false;
+        } else if (parseFloat(offprice) >= parseFloat(price)) {
+            document.getElementById('offprice-error').innerText = 'Special price must be less than regular price';
+            isValid = false;
+        } else {
+            document.getElementById('offprice-error').innerText = '';
+        }
+
+        // Validate caseDiameter
+        if (isNaN(caseDiameter)) {
+            document.getElementById('casedia-error').innerText = 'Case diameter must contain a number';
+            isValid = false;
+        } else {
+            document.getElementById('casedia-error').innerText = '';
+        }
+
+        // Validate bandColour
+        var bandColourPattern = /^[a-zA-Z]+$/;
+        if(bandColour === ''){
+            document.getElementById('colour-error').innerText = '';
+        }
+        else if (!bandColourPattern.test(bandColour)) {
+            document.getElementById('colour-error').innerText = 'Band colour can only contain text';
+            isValid = false;
+        } else {
+            document.getElementById('colour-error').innerText = '';
+        }
+
+        // Validate bandMaterial
+        var bandMaterialPattern = /^[a-zA-Z]+$/;
+        if(bandMaterial === ''){
+            document.getElementById('material-error').innerText = '';
+        }
+        else if (!bandMaterialPattern.test(bandMaterial)) {
+            document.getElementById('material-error').innerText = 'Band material type can only contain text';
+            isValid = false;
+        } else {
+            document.getElementById('material-error').innerText = '';
+        }
+
+        // Validate warranty
+        var warrantyPattern = /^[a-zA-Z]+$/;
+        if(warranty === ''){
+            document.getElementById('warranty-error').innerText = '';
+        }
+        else if (!warrantyPattern.test(warranty)) {
+            document.getElementById('warranty-error').innerText = 'Warranty type can only contain text';
+            isValid = false;
+        } else {
+            document.getElementById('warranty-error').innerText = '';
+        }
+
+        // Validate movement
+        var movementPattern = /^[a-zA-Z]+$/;
+        if(movement === ''){
+            document.getElementById('movement-error').innerText = '';
+        }
+        else if (!movementPattern.test(movement)) {
+            document.getElementById('movement-error').innerText = 'Watch movement type can only contain text';
+            isValid = false;
+        } else {
+            document.getElementById('movement-error').innerText = '';
+        }
+
+        // Validate weight
+        if(weight === ''){
+            document.getElementById('weight-error').innerText = '';
+        }
+        else if (isNaN(weight)) {
+            document.getElementById('weight-error').innerText = 'Item weight must contain a number';
+            isValid = false;
+        } else {
+            document.getElementById('weight-error').innerText = '';
+        }
+
+        // Validate country
+        var countryPattern = /^[a-zA-Z]+$/;
+        if(country === ''){
+            document.getElementById('country-error').innerText = '';
+        }
+        else if (!countryPattern.test(country)) {
+            document.getElementById('country-error').innerText = 'Country of Origin can only contain text';
+            isValid = false;
+        } else {
+            document.getElementById('country-error').innerText = '';
+        }
+
+        return isValid;
+    }
+</script>
+
+
+
     <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/admin-assets/js/vendors/select2.min.js"></script>
