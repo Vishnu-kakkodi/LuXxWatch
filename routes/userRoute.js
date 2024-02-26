@@ -43,21 +43,21 @@ user_route.get('/logout',auth.isLogin,userController.userLogout);
 
 user_route.get('/profile',auth.isLogin,userController.profile);
 
-user_route.post('/editname/:userId',auth.isLogin,userController.editname);
+user_route.post('/editname/:userId',userController.editname);
 
-user_route.post('/editmobile/:userId',auth.isLogin,userController.editmobile);
+user_route.post('/editmobile/:userId',userController.editmobile);
 
 user_route.get('/addAddress',auth.isLogin,userController.addAddress);
 
-user_route.post('/createAddress',auth.isLogin,userController.createAddress);
+user_route.post('/createAddress',userController.createAddress);
 
 user_route.get('/editpage/:addressId',auth.isLogin,userController.editpage);
 
-user_route.post('/editAddress/:addressId',auth.isLogin,userController.editAddress);
+user_route.post('/editAddress/:addressId',userController.editAddress);
 
 user_route.get('/deleteAddress/:addressId',auth.isLogin,userController.deleteAddress);
 
-user_route.post('/cPassword/:userId',auth.isLogin,userController.cPassword);
+user_route.post('/cPassword/:userId',userController.cPassword);
 
 user_route.get('/forgot',auth.isLogout,userController.forgetLoad);
 
@@ -76,6 +76,13 @@ user_route.get("/productdetails",auth.isLogin,userController.loadproductdetail);
 user_route.get("/shop",auth.isLogin,userController.shop);
 
 user_route.get("/contact",auth.isLogin,userController.contact);
+
+
+//------------- cart management -----------------//
+
+user_route.get('/cart',auth.isLogin,userController.cartpage);
+
+user_route.get('/add-cart/:productId',auth.isLogin,userController.addTocart);
 
 
 

@@ -10,6 +10,15 @@ const nocache = require('nocache');
 const session = require('express-session');
 require('./auth');
 
+app.use(session({
+    secret: 'mysitesessionsecret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        maxAge: 3600000 // Session timeout in milliseconds (1 hour)
+    }
+}));
+
 app.use(nocache());
 app.set('view engine','ejs');
 app.set('views','./views/user');

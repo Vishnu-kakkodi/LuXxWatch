@@ -91,14 +91,13 @@
                                         </div>
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                                         <div class="detail-extralink">
-                                            <div class="detail-qty border radius">
+                                            <!-- <div class="detail-qty border radius">
                                                 <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
                                                 <span class="qty-val">1</span>
                                                 <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                                            </div>
+                                            </div> -->
                                             <div class="product-extra-link2">
-                                                <button type="submit" class="button button-add-to-cart">Add to cart</button>
-                                                <button type="submit" class="button button-add-to-cart">Buy Now</button>
+                                                <button type="button" class="button button-add-to-cart" data-product-id="<%= products[i]._id %>">Add to cart</button>
                                                 <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
@@ -309,4 +308,28 @@
             </tr>
             <% } %>
     </main>
+
+    <script>
+        const buttons = document.querySelectorAll('.button-add-to-cart');
+    
+        buttons.forEach(button => {
+            button.addEventListener('click', async () => {
+                try {
+                    const productId = button.dataset.productId;
+                    const res = await fetch(`/add-cart/${productId}`, {
+                        method: 'GET'
+                    });
+    
+                    const data = await res.json();
+    
+                    console.log(data);
+                } catch (error) {
+                    console.log(error);
+                }
+            });
+        });
+    </script>
+    
+    
+
     <%- include('../layouts/userFooter.ejs') %>

@@ -11,6 +11,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const Category = require("../model/categoryModel.js");
 const Address = require("../model/addressModel.js");
+const Cart = require("../model/cartModel.js");
 const { Long } = require('mongodb')
 
 // const generateOTP=require("../controller/otpGenerate")
@@ -28,6 +29,7 @@ const transporter=nodemailer.createTransport({
 })
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 //++++++++ */ password hashing */ +++++++++//
 const securePassword=async(password)=>{
@@ -265,7 +267,6 @@ const profile = async(req,res)=>{
         const userData = await User.findOne({email:email});
         const categories = await Category.find();
         const useraddress = await Address.find({user:userData._id});
-        console.log(useraddress);
         res.locals.categories = categories;
         res.locals.userData = userData;
         // res.locals.useraddress = useraddress;
@@ -330,7 +331,7 @@ const createAddress = async(req,res)=>{
         console.log(userData);
 
         const useraddress = new Address({
-            user:userData._id,
+            user:userId,
             name,
             email,
             mobile,
@@ -416,35 +417,38 @@ const deleteAddress = async(req,res)=>{
 const cPassword = async (req, res) => {
     const userId = req.params.userId;
     try {
-        console.log("hjjkh");
-        const password = req.body.password;
+        const { currentPassword, newPassword, confirmPassword } = req.body;
 
-        const hashedPassword = await securePassword(password);
-
-        console.log("hjjkh");
-
-
-        
-        // Find the user by email
-        const userData = await User.findOne({_id:userId });
-        if (!userData) {
-            // Handle case where user is not found
-            return res.status(404).send("User not found");
+        if (currentPassword == newPassword) {
+            return res.status(400).json({ error: 'Current password and new password must be different' });
         }
 
-        // Update the password field in the user data
-        userData.password = hashedPassword;
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ error: 'New password and confirm password are not match' });
+        }
 
-        // Save the updated user data
+        const userData = await User.findById(userId);
+        if (!userData) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const isPasswordMatch = await bcrypt.compare(currentPassword, userData.password);
+        if (!isPasswordMatch) {
+            return res.status(400).json({ error: 'Current password is incorrect' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        userData.password = hashedPassword;
         await userData.save();
 
-        // Redirect to login page
-        res.redirect('/profile');
+        res.status(200).json({ message: 'Password updated successfully' });
+
     } catch (error) {
         console.log(error.message);
-        res.status(500).send("Internal Server Error");
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-}
+};
 
 
 const forgetLoad = async(req,res)=>{
@@ -572,7 +576,6 @@ if (products.length > 0) {
         stock_message = "Outstock";
     }
     res.render('productdetails', { message: stock_message, products,userData,categories });
-    console.log(products);
 }
     }catch(error){
         console.log(error.message);
@@ -610,12 +613,71 @@ const contact = async(req,res)=>{
         }else{
             userData=req.session;
         }
-        const products = await Product.find({is_active:0}).limit(12);
-                    res.render('contact', { products,userData,categories});
+            res.render('contact', {userData,categories});
     }catch(error){
         console.log(error.message);
     }
 }
+
+
+//-----------------cart management-------------------///
+
+
+const cartpage = async(req,res)=>{
+    try{
+        const email = req.session.email;
+        const categories = await Category.find();
+        const userData = await User.findOne({email:email});
+        res.render('cart',{categories,userData});
+    }catch(error){
+        console.log(err.message);
+    }
+}
+
+const addTocart = async (req, res) => {
+    const productId = req.params.productId;
+    try {
+        const product = await Product.findById(productId);
+
+        const cartProduct = {
+            product: productId,
+            quantity: 1, // Set default quantity to 1
+            subtotal: product.offprice // Calculate subtotal based on product price
+        };
+
+        // Find the user's cart or create a new one if it doesn't exist
+        let cart = await Cart.findOne({ user: req.session.userId });
+        if (!cart) {
+            cart = new Cart({ user: req.session.userId, products: [], total: 0 });
+        }
+
+        // Check if the product already exists in the cart
+        const existingProductIndex = cart.products.findIndex(p => p.product.toString() === productId);
+        if (existingProductIndex !== -1) {
+            // If the product exists, update its quantity and subtotal
+            cart.products[existingProductIndex].quantity++;
+            cart.products[existingProductIndex].subtotal = cart.products[existingProductIndex].quantity * product.offprice;
+        } else {
+            // If the product is not in the cart, add it
+            cart.products.push(cartProduct);
+        }
+
+        // Calculate the total based on the subtotal of all products in the cart
+        const total = cart.products.reduce((acc, product) => acc + product.subtotal, 0);
+        cart.total = total;
+
+        // Save the updated cart
+        await cart.save();
+
+        res.status(200).json({ message: 'Product added to cart successfully' });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
 
 
 
@@ -649,5 +711,7 @@ module.exports={
     newPassword,
     loadproductdetail,
     shop,
-    contact
+    contact,
+    cartpage,
+    addTocart
 }

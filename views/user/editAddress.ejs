@@ -64,10 +64,16 @@
 
                 <fieldset style="margin-bottom: 15px;">
                     <legend style="font-size: 14px;">Address Type<span>*</span></legend>
-                    <label style="font-size: 14px;"><input type="radio" name="addressType" value="Home"
-                            style="width: 12px; height: 12px; margin-right: 5px;"> Home</label>
-                    <label style="font-size: 14px;"><input type="radio" name="addressType" value="Work"
-                            style="width: 12px; height: 12px; margin-right: 5px;"> Work</label>
+                    <label style="font-size: 14px;">
+                        <input type="radio" name="addressType" value="Home" style="width: 12px; height: 12px; margin-right: 5px;"
+                            <% if (useraddress.addressType === 'Home') { %> checked <% } %>
+                        > Home
+                    </label>
+                    <label style="font-size: 14px;">
+                        <input type="radio" name="addressType" value="Work" style="width: 12px; height: 12px; margin-right: 5px;"
+                            <% if (useraddress.addressType === 'Work') { %> checked <% } %>
+                        > Work
+                    </label>
                 </fieldset>
 
 
