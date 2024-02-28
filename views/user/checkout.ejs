@@ -681,18 +681,19 @@
                                             <td class="image product-thumbnail"><img src="/productImages/<%= product.product.image[0] %>" alt="Item" style="max-width: 50px; max-height: 50px;"></td>
                                             <td>
                                                 <h5><a href="#"><%= product.product.productname %></a></h5> 
-                                                <div class="detail-qty border radius m-auto">
+                                                <div class="detail-qty border radius m-auto" style="display: flex; justify-content: space-between; align-items: center; width: 100px;">
                                                     <!-- Decrease quantity -->
-                                                    <input type="radio" name="quantity-<%= product.product._id %>" id="quantity-decrement-<%= product.product._id %>" class="qty-decrement" onclick="updateQuantity('<%= product.product._id %>', 'decrement')">
-                                                    <label for="quantity-decrement-<%= product.product._id %>"><i class="fi-rs-angle-small-down"></i></label>
+                                                    <button type="button" onclick="updateQuantity('<%= product.product._id %>', 'decrement')" style="cursor: pointer;"><i class="fas fa-minus"></i></button>
                                                 
                                                     <!-- Quantity display -->
                                                     <span id="quantity-<%= product.product._id %>" class="qty-val"><%= product.quantity %></span>
                                                 
                                                     <!-- Increase quantity -->
-                                                    <input type="radio" name="quantity-<%= product.product._id %>" id="quantity-increment-<%= product.product._id %>" class="qty-increment" onclick="updateQuantity('<%= product.product._id %>', 'increment')">
-                                                    <label for="quantity-increment-<%= product.product._id %>"><i class="fi-rs-angle-small-up"></i></label>
+                                                    <button type="button" onclick="updateQuantity('<%= product.product._id %>', 'increment')" style="cursor: pointer;"><i class="fas fa-plus"></i></button>
                                                 </div>
+                                                
+                                                
+                                                
                                                 
                                             </td>
                                             <td>₹<%= product.product.offprice %></td>
