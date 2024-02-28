@@ -1,4 +1,2 @@
 .env
-./configuration
-.configuration
-
+configuration/
