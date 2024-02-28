@@ -14,6 +14,7 @@ const Address = require("../model/addressModel.js");
 const Cart = require("../model/cartModel.js");
 const { Long } = require('mongodb')
 
+
 // const generateOTP=require("../controller/otpGenerate")
 
 
@@ -620,7 +621,7 @@ const contact = async(req,res)=>{
 }
 
 
-//-----------------cart management-------------------///
+//-----------------cart management-------------------//
 
 
 const cartpage = async(req,res)=>{
@@ -628,7 +629,8 @@ const cartpage = async(req,res)=>{
         const email = req.session.email;
         const categories = await Category.find();
         const userData = await User.findOne({email:email});
-        res.render('cart',{categories,userData});
+        const cartItems = await Cart.findOne({ user: userData._id }).populate('products.product');
+        res.render('cart',{categories,userData,cartItems});
     }catch(error){
         console.log(err.message);
     }
@@ -639,37 +641,43 @@ const addTocart = async (req, res) => {
     try {
         const product = await Product.findById(productId);
 
-        const cartProduct = {
-            product: productId,
-            quantity: 1, // Set default quantity to 1
-            subtotal: product.offprice // Calculate subtotal based on product price
-        };
+        if(product.stock>0){
+            const cartProduct = {
+                product: productId,
+                quantity: 1, // Set default quantity to 1
+                subtotal: product.offprice // Calculate subtotal based on product price
+            };
+    
+            // Find the user's cart or create a new one if it doesn't exist
+            let cart = await Cart.findOne({ user: req.session.userId });
+            if (!cart) {
+                cart = new Cart({ user: req.session.userId, products: [], total: 0 });
+            }
+    
+            // Check if the product already exists in the cart
+            const existingProductIndex = cart.products.findIndex(p => p.product.toString() === productId);
+            if (existingProductIndex !== -1) {
+                // If the product exists, update its quantity and subtotal
+                cart.products[existingProductIndex].quantity++;
+                cart.products[existingProductIndex].subtotal = cart.products[existingProductIndex].quantity * product.offprice;
+            } else {
+                // If the product is not in the cart, add it
+                cart.products.push(cartProduct);
+            }
+    
+            // Calculate the total based on the subtotal of all products in the cart
+            const total = cart.products.reduce((acc, product) => acc + product.subtotal, 0);
+            cart.total = total;
+    
+            // Save the updated cart
+            await cart.save();
 
-        // Find the user's cart or create a new one if it doesn't exist
-        let cart = await Cart.findOne({ user: req.session.userId });
-        if (!cart) {
-            cart = new Cart({ user: req.session.userId, products: [], total: 0 });
+            res.status(200).json({ });
+    
+        }else{
+            res.status(400).json({ });
         }
-
-        // Check if the product already exists in the cart
-        const existingProductIndex = cart.products.findIndex(p => p.product.toString() === productId);
-        if (existingProductIndex !== -1) {
-            // If the product exists, update its quantity and subtotal
-            cart.products[existingProductIndex].quantity++;
-            cart.products[existingProductIndex].subtotal = cart.products[existingProductIndex].quantity * product.offprice;
-        } else {
-            // If the product is not in the cart, add it
-            cart.products.push(cartProduct);
-        }
-
-        // Calculate the total based on the subtotal of all products in the cart
-        const total = cart.products.reduce((acc, product) => acc + product.subtotal, 0);
-        cart.total = total;
-
-        // Save the updated cart
-        await cart.save();
-
-        res.status(200).json({ message: 'Product added to cart successfully' });
+        
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -677,6 +685,86 @@ const addTocart = async (req, res) => {
 };
 
 
+const changeQuantity =  async (req, res) => {
+    const productId = req.params.productId;
+    const action = req.body.action; // 'increment' or 'decrement'
+
+    try {
+        console.log(productId+action);
+        // Find the cart item by product ID
+        const cartItem = await Cart.findOne({ 'products.product': productId });
+        if (!cartItem) {
+            return res.status(404).json({ error: 'Cart item not found' });
+        }
+
+
+        // Find the index of the product in the products array
+        const productIndex = cartItem.products.findIndex(p => p.product.toString() === productId);
+        if (productIndex === -1) {
+            return res.status(404).json({ error: 'Product not found in cart' });
+        }
+
+        // Update the quantity based on the action
+        if (action === 'increment') {
+            cartItem.products[productIndex].quantity++;
+        } else if (action === 'decrement') {
+            if (cartItem.products[productIndex].quantity > 1) {
+                cartItem.products[productIndex].quantity--;
+            }
+        }
+
+        // Calculate the new subtotal for the product
+        const product = await Product.findById(productId);
+        const newSubtotal = cartItem.products[productIndex].quantity * product.offprice;
+
+        // Update the subtotal for the product
+        cartItem.products[productIndex].subtotal = newSubtotal;
+
+        // Calculate the total for all products in the cart
+        const newTotal = cartItem.products.reduce((acc, product) => acc + product.subtotal, 0);
+
+        // Update the total in the cart
+        cartItem.total = newTotal;
+
+        // Save the updated cart item
+        await cartItem.save();
+
+        const CartItem = await Cart.findOne({ 'products.product': productId });
+
+        const currentCartitem = CartItem.products[productIndex];
+
+        const Total = CartItem.total;
+
+        console.log(currentCartitem);
+
+        console.log(Total);
+
+        res.status(200).json({ currentCartitem, Total});
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+//-----------------checkout page-------------------//
+
+
+const checkoutpage = async (req,res)=>{
+    try{
+        console.log("hai");
+        const email = req.session.email;
+        const categories = await Category.find();
+        const userData = await User.findOne({email:email});
+        const useraddress = await Address.find({user:userData._id});
+        const cartItems = await Cart.findOne({ user: userData._id }).populate('products.product');
+        res.render('checkout',{categories,userData,useraddress,cartItems});
+        console.log("hall");
+        
+    }catch(error){
+        console.log(error.message);
+    }
+}
 
 
 
@@ -713,5 +801,7 @@ module.exports={
     shop,
     contact,
     cartpage,
-    addTocart
+    addTocart,
+    changeQuantity,
+    checkoutpage
 }

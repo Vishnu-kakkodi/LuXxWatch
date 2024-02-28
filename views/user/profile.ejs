@@ -54,7 +54,64 @@
                             <div class="col-md-8">
                                 <div class="tab-content dashboard-content">
 
-                                    <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
+                                    <div class="card" style="border-style: solid; border-color: black;">
+                                        <div class="card-header" style="background-color: aquamarine;">
+                                            <h5 class="mb-0" style="text-align: center; color: brown; font-size: medium;">Welcome <%= userData.name %></h5>
+                                        </div>
+                                        <div class="d-flex align-items-start">
+                                            <!-- Container for name, email, and mobile -->
+                                            <div class="info-container">
+                                                <div class="form-group col-md-6" style="margin-left: 5px;">
+                                                    <label for="name" style="display: inline-block; margin-left: 10px;">Name <span class="required">*</span></label>
+                                                    <a type="button" class="edit-btn" style="margin-left: 260px;" data-target="name">Edit</a>
+                                                    <form action="/editname/<%= userData._id %>" method="post" onsubmit="return validatenameForm()">
+                                                        <div class="input-group">
+                                                            <input required="" class="form-control square" value="<%= userData.name %>" name="name" type="text" id="name" disabled>
+                                                            <button type="submit" class="btn btn-success save-btn" id="save-name" style="display: none; background-color: rgb(250, 143, 232); color: black; margin-left: 15px; padding-inline: 10px; max-width: fit-content;">Save</button>
+                                                            <div class="error-message" id="name-error"></div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                    
+                                                <div class="form-group col-md-6" style="margin-left: 5px;">
+                                                    <label for="email">Email <span class="required">*</span></label>
+                                                    <div class="input-group">
+                                                        <input required="" class="form-control square" name="email" value="<%= userData.email %>" id="email" disabled>
+                                                    </div>
+                                                </div>
+                                    
+                                                <div class="form-group col-md-6" style="margin-left: 5px;">
+                                                    <label for="mobile" style="display: inline-block; margin-left: 10px;">Mobile <span class="required">*</span></label>
+                                                    <a type="button" class="edit-btn" style="margin-left: 260px;" data-target="mobile">Edit</a>
+                                                    <form action="/editmobile/<%= userData._id %>" method="post" onsubmit="return validatemobileForm()">
+                                                        <div class="input-group">
+                                                            <input required="" class="form-control square" name="mobile" value="<%= userData.mobile %>" id="mobile" disabled>
+                                                            <button type="submit" class="btn btn-success save-btn" id="save-mobile" style="display: none; background-color: rgb(250, 143, 232); color: black; margin-left: 15px; padding-inline: 10px; max-width: fit-content;">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <!-- Container for the image -->
+                                            <div class="card mb-4" style="width: 200px; height: 250px;">
+                                                <div class="card-header">
+                                                    <h4>Photo</h4>
+                                                </div>
+                                                <div class="card-body" style="margin-top: 10px;">
+                                                    <div class="input-upload" >
+                                                        <img src="/admin-assets/imgs/theme/upload.svg" alt="">
+                                                        <input class="form-control" style="padding: 12px;" type="file" name="image" single>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+
+
+
+
+                                    <!-- <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
                                         aria-labelledby="dashboard-tab">
 
                                         <div class="card" style="border-style: solid; border-color: black;">
@@ -116,8 +173,20 @@
                                             </div>
                                         </div>
 
+                                        <div class="card mb-4" style="width: 200px; height: 250px;">
+                                            <div class="card-header">
+                                                <h4>Photo</h4>
+                                            </div>
+                                            <div class="card-body" style="margin-top: 10px;">
+                                                <div class="input-upload" >
+                                                    <img src="/admin-assets/imgs/theme/upload.svg" alt="">
+                                                    <input class="form-control" style="padding: 12px;" type="file" name="image" multiple>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                    </div>
+
+                                    </div> -->
 
                                     <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                                         <div class="card">
@@ -247,7 +316,8 @@
                                         aria-labelledby="account-detail-tab">
                                         <div class="card" style="border-style: solid; border-color: black;">
                                             <div class="card-header" style="background-color: aquamarine; ">
-                                                <h5 style="text-align: center; color: brown; font-size: medium;">Change Password</h5>
+                                                <h5 style="text-align: center; color: brown; font-size: medium;">Change
+                                                    Password</h5>
                                             </div>
                                             <div class="card-body">
                                                 <form id="passwordForm">

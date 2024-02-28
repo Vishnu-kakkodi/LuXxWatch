@@ -84,8 +84,12 @@ user_route.get('/cart',auth.isLogin,userController.cartpage);
 
 user_route.get('/add-cart/:productId',auth.isLogin,userController.addTocart);
 
+user_route.patch('/update-quantity/:productId',auth.isLogin,userController.changeQuantity);
 
 
+//------------- checkout page -----------------//
+
+user_route.get('/checkout',auth.isLogin,userController.checkoutpage);
 
 
 module.exports = user_route;

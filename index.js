@@ -6,7 +6,7 @@ const express = require("express");
 const app = express();
 const path = require('path');
 const nocache = require('nocache');
-// const passport = require('passport');
+const passport = require('passport');
 const session = require('express-session');
 require('./auth');
 
@@ -19,10 +19,6 @@ app.use(session({
     }
 }));
 
-app.use(nocache());
-app.set('view engine','ejs');
-app.set('views','./views/user');
-
 //user router
 const userRoute = require('./routes/userRoute');
 app.use('/',userRoute);
@@ -31,6 +27,10 @@ app.use('/',userRoute);
 const adminRoute = require('./routes/adminRoute');
 app.use('/admin',adminRoute);
 
+app.use(nocache());
+app.set('view engine','ejs');
+app.set('views','./views/user');
+
 
 // function isLoggedin(req,res,next){
 //     req.user? next(): res.sendStatus(401);
@@ -38,10 +38,12 @@ app.use('/admin',adminRoute);
 
 
 // app.use(session({
-//     secret: 'mysecret',
+//     secret: 'mysitesessionsecret',
 //     resave: false,
 //     saveUninitialized: true,
-//     cookie: { secure: false }
+//     cookie: { secure: false,
+//         maxAge: 3600000
+//      }
 //   }))
 
 // app.use(passport.initialize());

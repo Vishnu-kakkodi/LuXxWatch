@@ -26,26 +26,33 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <% if (cartItems && cartItems.products && cartItems.products.length > 0) { %>
+                                    <% cartItems.products.forEach(product => { %>
                                 <tr>
-                                    <td class="image product-thumbnail"><img src="assets/imgs/shop/product-1-2.jpg" alt="#"></td>
+                                    <td class="image product-thumbnail"><img src="/productImages/<%= product.product.image[0] %>" alt="Item" style="max-width: 50px; max-height: 50px;"></td>
                                     <td class="product-des product-name">
-                                        <h5 class="product-name"><a href="shop-product-right.html">J.Crew Mercantile Women's Short-Sleeve</a></h5>
-                                        <p class="font-xs">Maboriosam in a tonto nesciung eget<br> distingy magndapibus.
-                                        </p>
+                                        <h5 class="product-name"><a href="shop-product-right.html"><%= product.product.productname %></a></h5>
                                     </td>
-                                    <td class="price" data-title="Price"><span>$65.00 </span></td>
+                                    <td class="price" data-title="Price"><span>₹<%= product.product.offprice %> </span></td>
                                     <td class="text-center" data-title="Stock">
                                         <div class="detail-qty border radius  m-auto">
-                                            <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                            <span class="qty-val">1</span>
-                                            <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                                            <a href="#" class="qty-down" onclick="updateQuantity('<%= product.product._id %>', 'decrement')"><i class="fi-rs-angle-small-down"></i></a>
+                                            <span id="quantity-<%= product.product._id %>" class="qty-val"><%= product.quantity %></span>
+                                            <a href="#" class="qty-up" onclick="updateQuantity('<%= product.product._id %>', 'increment')"><i class="fi-rs-angle-small-up"></i></a>
+
                                         </div>
                                     </td>
                                     <td class="text-right" data-title="Cart">
-                                        <span>$65.00 </span>
+                                        <span id="subtotal-<%= product.product._id %>">₹<%= product.subtotal %></span>
                                     </td>
                                     <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fi-rs-trash"></i></a></td>
                                 </tr>
+                                <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6">No products in cart</td>
+                                    </tr>
+                                <% } %>
                                 <tr>
                                     <td colspan="6" class="text-end">
                                         <a href="#" class="text-muted"> <i class="fi-rs-cross-small"></i> Clear Cart</a>
@@ -55,12 +62,12 @@
                         </table>
                     </div>
                     <div class="cart-action text-end">
-                        <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
+                        <!-- <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a> -->
                         <a class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
                     </div>
                     <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
                     <div class="row mb-50">
-                        <div class="col-lg-6 col-md-12">
+                        <!-- <div class="col-lg-6 col-md-12">
                             <div class="heading_s1 mb-3">
                                 <h4>Calculate Shipping</h4>
                             </div>
@@ -354,8 +361,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-6 col-md-12">
+                        </div> -->
+                        <div class="col-lg-6 col-md-12" style="margin-left: 550px;">
                             <div class="border p-md-4 p-30 border-radius cart-totals">
                                 <div class="heading_s1 mb-3">
                                     <h4>Cart Totals</h4>
@@ -365,7 +372,7 @@
                                         <tbody>
                                             <tr>
                                                 <td class="cart_total_label">Cart Subtotal</td>
-                                                <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">$240.00</span></td>
+                                                <td class="cart_total_amount"><span id="cart-subtotal" class="font-lg fw-900 text-brand">₹<%= cartItems.total %></span></td>
                                             </tr>
                                             <tr>
                                                 <td class="cart_total_label">Shipping</td>
@@ -373,12 +380,14 @@
                                             </tr>
                                             <tr>
                                                 <td class="cart_total_label">Total</td>
-                                                <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand">$240.00</span></strong></td>
+                                                <td class="cart_total_amount"><strong><span id="cart-total" class="font-xl fw-900 text-brand">₹<%= cartItems.total %></span></strong></td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <a href="#" class="btn "> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                                <a href="/checkout" class="btn " style="margin-left: 230px;"> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                                <!-- <button class="btn" style="margin-left: 230px;" onclick="checkOut()"><i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</button> -->
+
                             </div>
                         </div>
                     </div>
@@ -387,4 +396,39 @@
         </div>
     </section>
 </main>
+
+<script>
+    async function updateQuantity(productId, action) {
+        try {
+            const response = await fetch(`/update-quantity/${productId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ action: action })
+            });
+
+            if (response.ok) {
+                // Quantity updated successfully
+                const data = await response.json();
+                console.log(data);
+                // Update the quantity display
+                document.getElementById(`quantity-${productId}`).innerText = data.currentCartitem.quantity;
+                // Update the subtotal display
+                document.getElementById(`subtotal-${productId}`).innerText = data.currentCartitem.subtotal;
+                // Update the total display
+                document.getElementById('cart-subtotal').innerText = data.Total;
+                // Update the total display
+                document.getElementById('cart-total').innerText = data.Total;
+            } else {
+                // Handle error
+                console.error('Failed to update quantity');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+</script>
+
+
 <%- include('../layouts/userFooter.ejs') %>
