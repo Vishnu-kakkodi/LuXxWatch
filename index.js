@@ -19,7 +19,11 @@ app.use(session({
     cookie: { 
         maxAge: 3600000 // Session timeout in milliseconds (1 hour)
     }
+
+
 }));
+
+
 
 //user router
 const userRoute = require('./routes/userRoute');
