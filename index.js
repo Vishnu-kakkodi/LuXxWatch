@@ -10,6 +10,8 @@ const passport = require('passport');
 const session = require('express-session');
 require('./auth');
 
+
+
 app.use(session({
     secret: 'mysitesessionsecret',
     resave: false,
