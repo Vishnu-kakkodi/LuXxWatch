@@ -1,4 +1,5 @@
 const User = require("../model/userModel");
+const Order = require("../model/orderModel");
 const bcrypt = require('bcrypt');
 
 const securePassword = async (password) => {
@@ -117,7 +118,47 @@ const userunBlock = async (req, res) => {
 }
 
 
+// ---------------list-order-----------------//
 
+
+const orderList = async (req,res)=>{
+    try{
+        const orders = await Order.find().populate('products.product').populate('user');
+        res.render('listOrder', {orders});
+
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
+const detailedOrder = async (req,res)=>{
+    const orderId = req.query.orderId;
+    try{
+        const orders = await Order.findOne({_id:orderId}).populate('products.product').populate('user');
+        res.render('detailedOrder', { orders});
+
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
+const ChangeStatus = async (req,res)=>{
+    const orderId = req.params.orderId;
+    const { action } = req.body;
+    try{
+        const order = await Order.findOne({_id:orderId});
+        order.status = action;
+        const newStatus = order.status;
+        await order.save();
+        return res.status(200).json({newStatus});
+
+    }catch(error){
+        console.log(error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
 module.exports = {
@@ -128,5 +169,8 @@ module.exports = {
     adminLogout,
     userAccount,
     userBlock,
-    userunBlock
+    userunBlock,
+    orderList,
+    detailedOrder,
+    ChangeStatus
 }

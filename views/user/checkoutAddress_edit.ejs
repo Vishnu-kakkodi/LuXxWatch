@@ -11,55 +11,61 @@
         </div>
         <div class="container"
             style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-            <h2 style="margin-bottom: 20px; text-align: center;">Add New Address</h2>
-            <form action="/createAddress" method="POST" onsubmit="return validateForm()">
+            <h2 style="margin-bottom: 20px; text-align: center;">Edit Address</h2>
+            <form action="/checkoutAddress_edit/<%= useraddress._id %>" method="POST" onsubmit="return validateForm()">
                 <label for="name" style="display: block; margin-bottom: 5px;">Name<span>*</span></label>
-                <input type="text" id="name" name="name"
+                <input type="text" id="name" name="name" value="<%= useraddress.name %>"
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
                     required>
-                <div class="error-message" id="name-error"></div>
+                <div class="name-message" id="name-error"></div>
                 <label for="mobile" style="display: block; margin-bottom: 5px;">Mobile<span>*</span></label>
-                <input type="tel" id="mobile" name="mobile"
+                <input type="tel" id="mobile" name="mobile" value="<%= useraddress.mobile %>"
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
                     required>
-                <div class="error-message" id="mobile-error"></div>
+                <div class="mobile-message" id="mobile-error"></div>
 
                 <label for="pincode" style="display: block; margin-bottom: 5px;">Pincode<span>*</span></label>
-                <input type="text" id="pincode" name="pincode"
+                <input type="text" id="pincode" name="pincode" value="<%= useraddress.pincode %>"
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
                     required>
-                <div class="error-message" id="pincode-error"></div>
+                <div class="pincode-message" id="pincode-error"></div>
 
                 <label for="locality" style="display: block; margin-bottom: 5px;">Locality<span>*</span></label>
-                <input type="text" id="locality" name="locality"
+                <input type="text" id="locality" name="locality" value="<%= useraddress.locality %>"
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
                     required>
-                <div class="error-message" id="locality-error"></div>
+                <div class="locality-message" id="locality-error"></div>
 
                 <label for="address" style="display: block; margin-bottom: 5px;">Address<span>*</span></label>
-                <textarea id="address" name="address"
+                <textarea id="address" name="address" 
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
-                    required></textarea>
-                <div class="error-message" id="address-error"></div>
+                    required><%= useraddress.address %></textarea>
+                <div class="address-message" id="address-error"></div>
 
                 <label for="city" style="display: block; margin-bottom: 5px;">District<span>*</span></label>
-                <input type="text" id="district" name="district"
+                <input type="text" id="district" name="district" value="<%= useraddress.district %>"
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
                     required>
-                <div class="error-message" id="district-error"></div>
+                <div class="district-message" id="district-error"></div>
 
                 <label for="state" style="display: block; margin-bottom: 5px;">State<span>*</span></label>
-                <input type="text" id="state" name="state"
+                <input type="text" id="state" name="state" value="<%= useraddress.state %>"
                     style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
                     required>
-                <div class="error-message" id="state-error"></div>
+                <div class="state-message" id="state-error"></div>
 
                 <fieldset style="margin-bottom: 15px;">
                     <legend style="font-size: 14px;">Address Type<span>*</span></legend>
-                    <label style="font-size: 14px;"><input type="radio" name="addressType" value="Home"
-                            style="width: 12px; height: 12px; margin-right: 5px;"> Home</label>
-                    <label style="font-size: 14px;"><input type="radio" name="addressType" value="Work"
-                            style="width: 12px; height: 12px; margin-right: 5px;"> Work</label>
+                    <label style="font-size: 14px;">
+                        <input type="radio" name="addressType" value="Home" style="width: 12px; height: 12px; margin-right: 5px;"
+                            <% if (useraddress.addressType === 'Home') { %> checked <% } %>
+                        > Home
+                    </label>
+                    <label style="font-size: 14px;">
+                        <input type="radio" name="addressType" value="Work" style="width: 12px; height: 12px; margin-right: 5px;"
+                            <% if (useraddress.addressType === 'Work') { %> checked <% } %>
+                        > Work
+                    </label>
                 </fieldset>
 
 
@@ -67,6 +73,8 @@
                 <div style="text-align: center;">
                     <button type="submit" class="btn"
                         style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-align: center; text-decoration: none; font-size: 16px;">Submit</button>
+                    <button type="button" class="btn"
+                        style="background-color: #dc3545; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-align: center; text-decoration: none; font-size: 16px; margin-left: 10px;">Cancel</button>
                 </div>
             </form>
         </div>

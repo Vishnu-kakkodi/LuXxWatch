@@ -152,6 +152,16 @@ admin_route.get("/disableProduct/:productId",auth.isLogin, productController.dis
 // admin_route.get("/delete-product/:productId",auth.isLogin, productController.deleteproduct);
 
 
+// -------------Order management-----------------//
+
+
+admin_route.get("/orderlist",auth.isLogin, adminController.orderList);
+
+admin_route.get("/detailedOrder", auth.isLogin, adminController.detailedOrder);
+
+admin_route.put("/changeStatus/:orderId", auth.isLogin, adminController.ChangeStatus);
+
+
 
 admin_route.get('*',(req,res)=>{
     res.redirect('/admin')

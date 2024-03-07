@@ -5,7 +5,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/LuxXWatch");
 const express = require("express");
 const app = express();
 const path = require('path');
-const nocache = require('nocache');
 const passport = require('passport');
 const session = require('express-session');
 require('./auth');
@@ -33,7 +32,6 @@ app.use('/',userRoute);
 const adminRoute = require('./routes/adminRoute');
 app.use('/admin',adminRoute);
 
-app.use(nocache());
 app.set('view engine','ejs');
 app.set('views','./views/user');
 

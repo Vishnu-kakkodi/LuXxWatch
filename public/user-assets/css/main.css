@@ -4401,6 +4401,37 @@ table .product-thumbnail img {
   bottom: 0;
 }
 
+
+
+
+.detail-qtyy {
+  max-width: 130px;
+  padding: 9px 20px;
+  position: relative;
+  height: 40px;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.detail-qtyy > a {
+  font-size: 16px;
+  position: absolute;
+  right: 8px;
+  color: #707070;
+}
+
+.detail-qtyy > a:hover {
+  color: #088178;
+}
+
+.detail-qtyy > a.qty-up {
+  top: 0;
+}
+
+.detail-qtyy > a.qty-down {
+  bottom: 0;
+}
+
 .attr-detail .select-box select {
   height: 40px;
   width: 100%;
@@ -5382,7 +5413,7 @@ h6.post-title {
   position: absolute;
   right: -11px;
   bottom: -8px;
-  color: #ffffff;
+  color: #000000;
   height: 20px;
   width: 20px;
   border-radius: 100%;
@@ -5573,7 +5604,7 @@ h6.post-title {
 }
 
 .header-action .header-action-icon > a span.pro-count.blue {
-  background-color: #088178;
+  background-color: #ff0000;
 }
 
 .header-action .header-action-icon:hover > a {
@@ -5608,7 +5639,7 @@ h6.post-title {
 }
 
 .header-action-2 .header-action-icon-2 > a span.pro-count.blue {
-  background-color: #088178;
+  background-color: #ff0000;
 }
 
 .header-action-2 .header-action-icon-2:hover > a {

@@ -15,7 +15,7 @@ const cartSchema = new mongoose.Schema({
         quantity: {
             type: Number,
             required: true,
-            default: 1 // Default quantity is 1
+            default: 1
         },
         subtotal: {
             type: Number,
