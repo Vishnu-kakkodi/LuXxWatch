@@ -12,6 +12,8 @@ user_route.use(express.static('public'));
 const userController = require("../controller/userController");
 const cartController = require("../controller/cartController");
 const orderController = require("../controller/orderController");
+const wishlistController = require("../controller/wishlistController");
+const paymentController = require("../controller/paymentController");
 const auth = require("../middleware/userAuth");
 const nocache = require("../middleware/setNoCache");
 
@@ -90,6 +92,14 @@ user_route.get('/add-cart/:productId',nocache.user,auth.isLogin,cartController.a
 user_route.patch('/update-quantity/:productId',nocache.user,auth.isLogin,cartController.changeQuantity);
 
 
+//------------- wishlist page -----------------//
+
+user_route.get('/wishlist',nocache.user,auth.isLogin,wishlistController.wishlist);
+
+user_route.get('/add-wishlist/:productId',nocache.user,auth.isLogin,wishlistController.addTowishlist);
+
+user_route.delete('/remove-wishlistItem',nocache.user, auth.isLogin, wishlistController.removewishlistItem);
+
 //------------- checkout page -----------------//
 
 user_route.get('/checkout',nocache.user,auth.isLogin,cartController.checkoutpage);
@@ -118,10 +128,36 @@ user_route.get('/orderpage',nocache.user,auth.isLogin,orderController.Orderpage)
 
 user_route.get('/orderView',nocache.user,auth.isLogin,orderController.viewOrder);
 
+user_route.post('/verifyPayment', nocache.user, auth.isLogin, orderController.createRazorpayOrder);
+
+
 
 //------------- cancel Order -----------------//
 
 user_route.post('/cancelOrder/:orderId',nocache.user,auth.isLogin,orderController.cancelOrder);
+
+
+// -------------SortPrice-----------------//
+
+user_route.get("/sortPriceLH",nocache.user, auth.isLogin, userController.shop);
+
+user_route.get("/sortPriceHL",nocache.user, auth.isLogin, userController.shop);
+
+user_route.get("/sortAZ",nocache.user, auth.isLogin, userController.shop);
+
+user_route.get("/sortZA",nocache.user, auth.isLogin, userController.shop);
+
+user_route.get("/sortNA",nocache.user, auth.isLogin, userController.shop);
+
+
+// -------------filter-----------------//
+
+
+user_route.get("/brandFilter",nocache.user, auth.isLogin, userController.shop);
+
+user_route.get("/categoryFilter",nocache.user, auth.isLogin, userController.shop);
+
+
 
 module.exports = user_route;
 

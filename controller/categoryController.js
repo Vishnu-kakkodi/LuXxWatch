@@ -13,11 +13,6 @@ const addcategory = async (req, res) => {
     try {
         const { catname, description } = req.body;
 
-        if (!catname.trim()||!description.trim()) {
-            const categories = await Category.find();
-            return res.render('category', { message: 'Category name and description is required', categories });
-        }
-
         const category = new Category({
             catname,
             description,
@@ -36,6 +31,25 @@ const addcategory = async (req, res) => {
         console.log(error.message);
     }
 }
+
+
+// const categoryName =async(req,res)=>{
+//     try {
+//         console.log();
+//         const categoryName = req.body.categoryName;
+
+//         const existingCategory = await Category.findOne({ catname: categoryName });
+
+//         if (existingCategory) {
+//             res.json({ unique: true });
+//         } else {
+//             res.json({ unique: false });
+//         }
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).json({ error: 'Internal server error' });
+//     } 
+// }
 
 
 const loadeditcategory =async(req,res)=>{
@@ -139,6 +153,7 @@ module.exports = {
 
     loadcategory,
     addcategory,
+    // categoryName,
     loadeditcategory,
     categoryimage,
     updatecategory,

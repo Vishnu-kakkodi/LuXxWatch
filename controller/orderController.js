@@ -13,13 +13,22 @@ const Address = require("../model/addressModel.js");
 const Cart = require("../model/cartModel.js");
 const Order = require("../model/orderModel.js");
 const { Long } = require('mongodb')
+require("dotenv").config();
+const Razorpay = require('razorpay');
 
+var {RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY} = process.env;
+
+var razorpayInstance = new Razorpay({
+    key_id: RAZORPAY_ID_KEY,
+    key_secret: RAZORPAY_SECRET_KEY
+})
 
 const placeorder = async (req, res) => {
     try {
         const { addressId, cartId, paymentOption } = req.body;
 
         const address = await Address.findById(addressId);
+
         if (!address) {
             return res.status(404).json({ error: 'Address not found' });
         }
@@ -29,6 +38,9 @@ const placeorder = async (req, res) => {
             return res.status(404).json({ error: 'Cart not found' });
         }
 
+        let status = paymentOption==='Cash on Delivery'?'Placed':'Pending'
+
+        if(paymentOption==='Cash on Delivery'){
 
         let total = 0;
         cart.products.forEach(product => {
@@ -51,7 +63,7 @@ const placeorder = async (req, res) => {
             total: total,
             shippingAddress: address,
             paymentOption: paymentOption,
-            status: 'Pending',
+            status: status,
             orderId: orderId
         });
         req.session.OrderId = orderId;
@@ -61,10 +73,11 @@ const placeorder = async (req, res) => {
 
         const savedOrder = await order.save();
 
-        await Cart.updateOne(
-            { _id: cartId },
-            { $set: { products: [] } }
-        );
+        for (const product of cart.products) {
+            const orderProduct = await Product.findById(product.product._id);
+            orderProduct.stock -= product.quantity;
+            await orderProduct.save();
+        }
 
 
         await Cart.updateOne(
@@ -72,13 +85,97 @@ const placeorder = async (req, res) => {
             { $set: { products: [] } }
         );
 
+        res.json({ cod_success: true, order: savedOrder });
 
-        res.status(200).json({ success: true, order: savedOrder });
+        }else if(paymentOption==='Razorpay'){
+
+        // Calculate total amount
+        let total = 0;
+        cart.products.forEach(product => {
+            total += product.subtotal;
+        });
+
+
+        // generate orderId
+        const generateOrderId = () => {
+            const p = randomstring.generate({
+                length: 4,
+                charset: 'numeric'
+            })
+            return p;
+        };
+
+        let orderId = generateOrderId();
+
+        req.session.OrderId = orderId;
+        req.session.save();
+
+        // Create a Razorpay order
+        var options = {
+            amount: total, 
+            currency: 'INR',
+            receipt: orderId
+        };
+        razorpayInstance.orders.create(options, function (err, order) {
+            if (err) {
+                console.error('Error creating Razorpay order:', err);
+                res.status(500).json({ error: 'Error creating Razorpay order' });
+            } else {
+                console.log("New Order", order);
+                res.json({ success: true, razorpay: order });
+            }
+        });
+
+
+        }
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+
+const createRazorpayOrder = async (req,res) => {
+    try{
+        console.log("jjjjjjjjjjjjj");
+        const { selectedAddressId, cartId, selectedPaymentOption } = req.body;
+        const address = await Address.findById(selectedAddressId);
+        const cart = await Cart.findById(cartId).populate('products.product');
+        const order = new Order({
+            user: cart.user,
+            products: cart.products,
+            total: req.body.order.amount,
+            shippingAddress: address,
+            paymentOption: selectedPaymentOption,
+            status: "Placed",
+            orderId: req.body.order.receipt
+        });
+
+        await order.save();
+
+        for (const product of cart.products) {
+            const orderProduct = await Product.findById(product.product._id);
+            orderProduct.stock -= product.quantity;
+            await orderProduct.save();
+        }
+
+
+        await Cart.updateOne(
+            { _id: cartId },
+            { $set: { products: [] } }
+        );
+
+        res.json({ razorpay_success: true });
+        console.log("555555555555");
+
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
+
+
 
 
 const Orderpage = async (req, res) => {
@@ -124,6 +221,14 @@ const cancelOrder = async (req, res) => {
         const orderDetails = await Order.findOne({ _id: orderId }).populate('products.product');
         orderDetails.resonOfcancel = notes;
         orderDetails.status = 'Cancelled';
+
+        for (const product of orderDetails.products) {
+            const orderProduct = await Product.findById(product.product._id);
+            orderProduct.stock += product.quantity;
+            await orderProduct.save();
+        }
+
+
         await orderDetails.save();
         res.status(200).json({ success: 'Cancelled' });
 
@@ -146,6 +251,7 @@ const cancelOrder = async (req, res) => {
 module.exports = {
 
     placeorder,
+    createRazorpayOrder,
     Orderpage,
     viewOrder,
     cancelOrder

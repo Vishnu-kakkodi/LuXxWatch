@@ -80,6 +80,8 @@ admin_route.get("/category",auth.isLogin,categoryController.loadcategory);
 
 admin_route.post("/add-category",upload.single('image'),categoryController.addcategory);
 
+// admin_route.post("/validateCategoryName",categoryController.categoryName)
+
 
 
 // -------------editCategory-----------------//
@@ -160,7 +162,6 @@ admin_route.get("/orderlist",auth.isLogin, adminController.orderList);
 admin_route.get("/detailedOrder", auth.isLogin, adminController.detailedOrder);
 
 admin_route.put("/changeStatus/:orderId", auth.isLogin, adminController.ChangeStatus);
-
 
 
 admin_route.get('*',(req,res)=>{

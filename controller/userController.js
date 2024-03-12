@@ -5,7 +5,7 @@ const session = require("express-session")
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer")
 const randomstring = require('randomstring');
-const config=require("../configuration/config");
+const config = require("../configuration/config");
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -19,14 +19,14 @@ const { Long } = require('mongodb')
 // const generateOTP=require("../controller/otpGenerate")
 
 
-const transporter=nodemailer.createTransport({
-    host:"smtp.gmail.com",
-    port:587,
-    secure:false,
-    requireTLS:true,
-    auth:{
-        user:config.emailUser,
-        pass:config.emailPassword
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: {
+        user: config.emailUser,
+        pass: config.emailPassword
     }
 })
 
@@ -34,10 +34,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //++++++++ */ password hashing */ +++++++++//
-const securePassword=async(password)=>{
+const securePassword = async (password) => {
     try {
         const saltRounds = 10;
-        const passwordHash=await bcrypt.hash(password,saltRounds);
+        const passwordHash = await bcrypt.hash(password, saltRounds);
         return passwordHash;
     } catch (error) {
         console.log(error)
@@ -56,17 +56,17 @@ const securePassword=async(password)=>{
 
 //++++++++ */ logingload */ +++++++++//
 
-const loginload = async(req,res)=>{
-    try{
+const loginload = async (req, res) => {
+    try {
         res.render('login');
-    }catch(error){
+    } catch (error) {
         console.log(error.message);
     }
 }
 
 //++++++++ */ loadRegister */ +++++++++//
 
-const loadRegister=async(req,res)=>{
+const loadRegister = async (req, res) => {
     try {
         res.render('register')
     } catch (error) {
@@ -88,38 +88,38 @@ const generateOTP = () => {
 
 const insertUser = async (req, res) => {
     try {
-            const otp = generateOTP();
-            console.log(otp);
-            const { name, mobile, email, password } = req.body;
-            const data = {
-                name,
-                mobile,
-                email,
-                password,
-                otp,
-                otpCreatedAt: Date.now()
-            };
-            req.session.Data = data;
-            req.session.save();
-            console.log(otp, 'this is otp');
+        const otp = generateOTP();
+        console.log(otp);
+        const { name, mobile, email, password } = req.body;
+        const data = {
+            name,
+            mobile,
+            email,
+            password,
+            otp,
+            otpCreatedAt: Date.now()
+        };
+        req.session.Data = data;
+        req.session.save();
+        console.log(otp, 'this is otp');
 
 
-            const mailOptions = {
-                from: config.emailUser,
-                to: email,
-                subject: 'Your OTP for Verification',
-                text: `your otp ${otp}`
-            };
-            if (mailOptions) {
-                transporter.sendMail(mailOptions, (err) => {
-                    if (err) {
-                        console.log(err.message);
-                    } else {
-                        console.log("mail send successful");
-                    }
-                });
-            }
-            res.redirect('/otp');
+        const mailOptions = {
+            from: config.emailUser,
+            to: email,
+            subject: 'Your OTP for Verification',
+            text: `your otp ${otp}`
+        };
+        if (mailOptions) {
+            transporter.sendMail(mailOptions, (err) => {
+                if (err) {
+                    console.log(err.message);
+                } else {
+                    console.log("mail send successful");
+                }
+            });
+        }
+        res.redirect('/otp');
     } catch (error) {
         console.log(error);
     }
@@ -137,13 +137,13 @@ const loadOtp = async (req, res) => {
 
 const resendOTP = async (req, res) => {
     try {
-        const newOTP = generateOTP(); 
-        
+        const newOTP = generateOTP();
+
         // Check if req.session.Data exists before accessing its properties
         if (req.session.Data) {
-            req.session.Data.otp = newOTP; 
+            req.session.Data.otp = newOTP;
             req.session.save();
-            
+
             const mailOptions = {
                 from: config.emailUser,
                 to: req.session.Data.email,
@@ -157,7 +157,7 @@ const resendOTP = async (req, res) => {
                 } else {
                     console.log("New OTP sent successfully");
                     console.log(newOTP);
-                    res.status(200).json({message:'New otp send'});
+                    res.status(200).json({ message: 'New otp send' });
                 }
             });
         } else {
@@ -177,31 +177,31 @@ const resendOTP = async (req, res) => {
 
 //++++++++ */ getOtp */ +++++++++//
 
-const getOtp=async(req,res)=>{
+const getOtp = async (req, res) => {
     try {
         const userOtp = req.body.otp;
         const genOtp = req.session.Data.otp;
-        const otpCreatedAt  = req.session.Data.otpCreatedAt;
+        const otpCreatedAt = req.session.Data.otpCreatedAt;
         const otpExpirationTime = 60 * 1000;
         const currentTime = Date.now();
         console.log(genOtp);
         console.log(userOtp);
         if (currentTime - otpCreatedAt > otpExpirationTime) {
-    
+
             return res.status(400).json({ message: 'OTP has expired. Please request a new OTP.' });
         }
-        else if(genOtp===userOtp){
+        else if (genOtp === userOtp) {
             const hashedPassword = await securePassword(req.session.Data.password)
-            const user=new User({
-                name:req.session.Data.name,
-                mobile:req.session.Data.mobile,
-                email:req.session.Data.email,
-                password:hashedPassword,
-                is_admin:0,
-                is_verified:1
+            const user = new User({
+                name: req.session.Data.name,
+                mobile: req.session.Data.mobile,
+                email: req.session.Data.email,
+                password: hashedPassword,
+                is_admin: 0,
+                is_verified: 1
             })
-            const userData=await user.save()
-            
+            const userData = await user.save()
+
             if (userData) {
                 res.status(200).json({ success: true, message: 'User registered successfully.' });
             } else {
@@ -218,148 +218,148 @@ const getOtp=async(req,res)=>{
 
 
 
-const verifyLogin = async(req,res)=>{
-    try{
+const verifyLogin = async (req, res) => {
+    try {
         const email = req.body.email;
         const password = req.body.password;
 
-        const userData = await User.findOne({email:email});
+        const userData = await User.findOne({ email: email });
 
-            req.session.userId = userData._id
-            req.session.email = email;
-            req.session.save();
-        
+        req.session.userId = userData._id
+        req.session.email = email;
+        req.session.save();
 
-        if(userData){
-            const passwordMatch = await bcrypt.compare(password,userData.password);
-            if(passwordMatch){
-                if(userData.is_verified === 0){                   
+
+        if (userData) {
+            const passwordMatch = await bcrypt.compare(password, userData.password);
+            if (passwordMatch) {
+                if (userData.is_verified === 0) {
                     res.render('login');
-                }else if(userData.is_verified === 1 && userData.is_blocked === 0){
-                    req.session.user_id=userData._id
+                } else if (userData.is_verified === 1 && userData.is_blocked === 0) {
+                    req.session.user_id = userData._id
                     res.redirect('/home');
-                }else if(userData.is_verified === 1 && userData.is_blocked === 1){
+                } else if (userData.is_verified === 1 && userData.is_blocked === 1) {
                     res.render('login');
                 }
-            }else{
-                res.render('login',{message:"Email and password is incorrect"})
+            } else {
+                res.render('login', { message: "Email and password is incorrect" })
             }
-        }else{
-            res.render('login',{message:"Email and password is incorrect"})
+        } else {
+            res.render('login', { message: "Email and password is incorrect" })
         }
-    }catch(error){
+    } catch (error) {
         console.log(error.message);
     }
 }
 
-const loadhome = async(req,res)=>{
-    try{
+const loadhome = async (req, res) => {
+    try {
         const email = req.session.email;
-        const userdata = await User.findOne({email:email});
+        const userdata = await User.findOne({ email: email });
         const cartItems = await Cart.findOne({ user: userdata._id }).populate('products.product')
         let userData
-        if(userdata){
-            userData=userdata;
-        }else{
-            userData=req.session;
+        if (userdata) {
+            userData = userdata;
+        } else {
+            userData = req.session;
         }
-        const categories = await Category.find({status:0});
-        const products = await Product.find({is_active:1}).limit(8);
-        res.render('home', { userData,products,categories,cartItems });
+        const categories = await Category.find({ status: 0 });
+        const products = await Product.find({ is_active: 1 }).limit(8);
+        res.render('home', { userData, products, categories, cartItems });
 
-    }catch(error){
+    } catch (error) {
         console.log(error.message);
-        
+
     }
 }
 
-const userLogout = async(req,res)=>{
+const userLogout = async (req, res) => {
 
-    try{
+    try {
         req.session.destroy();
         res.redirect('/');
-    }catch(error){
+    } catch (error) {
         console.log(error.message)
     }
 }
 
 
-const profile = async(req,res)=>{
+const profile = async (req, res) => {
 
-    try{
+    try {
         const email = req.session.email;
-        const userData = await User.findOne({email:email});
+        const userData = await User.findOne({ email: email });
         const categories = await Category.find();
-        const useraddress = await Address.find({user:userData._id});
-        const order = await Order.find({user: userData._id});
+        const useraddress = await Address.find({ user: userData._id });
+        const order = await Order.find({ user: userData._id });
         console.log(order);
         res.locals.categories = categories;
         res.locals.userData = userData;
         // res.locals.useraddress = useraddress;
-        res.render('profile',{userData,useraddress,categories,order});
-    }catch(error){
+        res.render('profile', { userData, useraddress, categories, order });
+    } catch (error) {
         console.log(error.message)
     }
 }
 
 
-const editname = async(req,res)=>{
+const editname = async (req, res) => {
     const userId = req.params.userId;
-    try{
+    try {
         console.log(req.body);
-        const {name} = req.body;
-        const userData = await User.findById({_id:userId});
+        const { name } = req.body;
+        const userData = await User.findById({ _id: userId });
         userData.name = name
-        await userData.save(); 
-        await User.findByIdAndUpdate(userId, { $set:{name:userData.name}});
+        await userData.save();
+        await User.findByIdAndUpdate(userId, { $set: { name: userData.name } });
         res.redirect('/profile');
-    }catch(error){
+    } catch (error) {
         console.log(error.message)
     }
 }
 
-const editmobile = async(req,res)=>{
+const editmobile = async (req, res) => {
     const userId = req.params.userId;
-    try{
-        const {mobile} = req.body;
-        const userData = await User.findById({_id:userId});
+    try {
+        const { mobile } = req.body;
+        const userData = await User.findById({ _id: userId });
         userData.mobile = mobile
-        await userData.save(); 
-        await User.findByIdAndUpdate(userId, { $set:{mobile:userData.mobile}});
+        await userData.save();
+        await User.findByIdAndUpdate(userId, { $set: { mobile: userData.mobile } });
         res.redirect('/profile');
-    }catch(error){
+    } catch (error) {
         console.log(error.message)
     }
 }
 
-const addAddress = async(req,res)=>{
+const addAddress = async (req, res) => {
 
-    try{
+    try {
         const email = req.session.email
-        const userData = await User.findOne({email:email});
+        const userData = await User.findOne({ email: email });
         const categories = await Category.find();
         res.locals.categories = categories;
         res.locals.userData = userData;
-        res.render('addAddress',userData);
-    }catch(error){
+        res.render('addAddress', userData);
+    } catch (error) {
         console.log(error.message);
     }
 }
 
-const createAddress = async(req,res)=>{
+const createAddress = async (req, res) => {
 
-    try{
-        const {name, email, mobile, pincode, locality,address,district,state,addressType } = req.body;
+    try {
+        const { name, email, mobile, pincode, locality, address, district, state, addressType } = req.body;
 
         const userId = req.session.userId;
-        const userData = await User.findOne({_id:userId});
+        const userData = await User.findOne({ _id: userId });
         const categories = await Category.find();
 
 
         console.log(userData);
 
         const useraddress = new Address({
-            user:userId,
+            user: userId,
             name,
             email,
             mobile,
@@ -369,7 +369,7 @@ const createAddress = async(req,res)=>{
             district,
             state,
             addressType
-         
+
         });
 
         console.log(useraddress);
@@ -377,36 +377,36 @@ const createAddress = async(req,res)=>{
         const savedAddress = await useraddress.save();
         if (savedAddress) {
             res.redirect('/profile');
-            
+
         }
-    }catch(error){
+    } catch (error) {
         console.log(error.message);
     }
 }
 
 
-const editpage = async(req,res)=>{
+const editpage = async (req, res) => {
     const addressId = req.params.addressId;
-    try{
+    try {
         const email = req.session.email
-        const userData = await User.findOne({email:email});
+        const userData = await User.findOne({ email: email });
         const categories = await Category.find();
         res.locals.categories = categories;
         res.locals.userData = userData;
-        const useraddress = await Address.findById({_id:addressId});
-        res.render('editAddress',{useraddress:useraddress});
-    }catch(error){
+        const useraddress = await Address.findById({ _id: addressId });
+        res.render('editAddress', { useraddress: useraddress });
+    } catch (error) {
         console.log(error.message);
     }
 }
 
 
 
-const editAddress = async(req,res)=>{
+const editAddress = async (req, res) => {
     const addressId = req.params.addressId;
-    const {name, email, mobile, pincode, locality,address,district,state,addressType } = req.body;
+    const { name, email, mobile, pincode, locality, address, district, state, addressType } = req.body;
 
-    try{
+    try {
         const addres = await Address.findById(addressId);
         addres.name = name;
         addres.email = email;
@@ -417,28 +417,30 @@ const editAddress = async(req,res)=>{
         addres.district = district;
         addres.state = state;
         addres.addressType = addressType;
-        
+
         await addres.save();
-        await Address.findByIdAndUpdate(addressId, { $set: {
-            name:addres.name,email:addres.email,mobile:addres.mobile,pincode:addres.pincode,locality:addres.locality,
-            address:addres.address,district:addres.district,state:addres.state,addressType:addres.addressType
-         } });
+        await Address.findByIdAndUpdate(addressId, {
+            $set: {
+                name: addres.name, email: addres.email, mobile: addres.mobile, pincode: addres.pincode, locality: addres.locality,
+                address: addres.address, district: addres.district, state: addres.state, addressType: addres.addressType
+            }
+        });
         res.redirect('/profile');
 
-    }catch(error){
+    } catch (error) {
         console.log(error.message);
     }
 }
 
 
-const deleteAddress = async(req,res)=>{
+const deleteAddress = async (req, res) => {
     const addressId = req.params.addressId;
-    try{
+    try {
         await Address.findByIdAndDelete(addressId);
         res.redirect('/profile');
-    }catch(error){
+    } catch (error) {
         console.log(error.message);
-    }   
+    }
 }
 
 
@@ -479,63 +481,63 @@ const cPassword = async (req, res) => {
 };
 
 
-const forgetLoad = async(req,res)=>{
-    try{
+const forgetLoad = async (req, res) => {
+    try {
         res.render('forgotpassword');
-    }catch(error){
+    } catch (error) {
         console.log(error.message);
     }
 }
 
 const passwordchange = async (req, res) => {
     try {
-            const otp = generateOTP();
-            const { email} = req.body;
-            const data = {
-                email,
-                otp
-            };
-            req.session.Data = data;
-            req.session.save();
-            console.log(otp, 'this is otp');
+        const otp = generateOTP();
+        const { email } = req.body;
+        const data = {
+            email,
+            otp
+        };
+        req.session.Data = data;
+        req.session.save();
+        console.log(otp, 'this is otp');
 
-            const mailOptions = {
-                from: config.emailUser,
-                to: email,
-                subject: 'Your OTP for new password',
-                text: `your otp ${otp}`
-            };
-            if (mailOptions) {
-                transporter.sendMail(mailOptions, (err) => {
-                    if (err) {
-                        console.log(err.message);
-                    } else {
-                        console.log("mail send successful");
-                    }
-                });
-            }
-            res.render('forgototp');
+        const mailOptions = {
+            from: config.emailUser,
+            to: email,
+            subject: 'Your OTP for new password',
+            text: `your otp ${otp}`
+        };
+        if (mailOptions) {
+            transporter.sendMail(mailOptions, (err) => {
+                if (err) {
+                    console.log(err.message);
+                } else {
+                    console.log("mail send successful");
+                }
+            });
+        }
+        res.render('forgototp');
     } catch (error) {
         console.log(error);
     }
 };
 
 
-const forgototp = async(req,res)=>{
-    try{
+const forgototp = async (req, res) => {
+    try {
         res.render('forgototp');
-    }catch(error){
+    } catch (error) {
         console.log(error.message);
     }
 }
 
 
-const verifyotp = async(req,res)=>{
+const verifyotp = async (req, res) => {
     try {
         const userOtp = req.body.otp;
         const genOtp = await req.session.Data.otp;
 
-        if(genOtp===userOtp){
+        if (genOtp === userOtp) {
             res.redirect('/changepassword');
         }
     } catch (error) {
@@ -543,10 +545,10 @@ const verifyotp = async(req,res)=>{
     }
 }
 
-const changepassword = async(req,res)=>{
+const changepassword = async (req, res) => {
     try {
         res.render('changepassword');
-        }catch (error) {
+    } catch (error) {
         console.log(error.message)
     }
 }
@@ -555,7 +557,7 @@ const newPassword = async (req, res) => {
     try {
         const password = req.body.password;
         const hashedPassword = await securePassword(password);
-        
+
         // Find the user by email
         const userdata = await User.findOne({ email: req.session.Data.email });
         if (!userdata) {
@@ -582,67 +584,112 @@ const newPassword = async (req, res) => {
 
 
 
-const loadproductdetail = async(req,res)=>{
+const loadproductdetail = async (req, res) => {
     const productId = req.query.productId;
-    try{
+    try {
         const email = req.session.email;
         const categories = await Category.find();
-        const userdata = await User.findOne({email:email});
+        const userdata = await User.findOne({ email: email });
         let userData
-        if(userdata){
-            userData=userdata;
-        }else{
-            userData=req.session;
+        if (userdata) {
+            userData = userdata;
+        } else {
+            userData = req.session;
             console.log(req.session.user);
         }
-        const products = await Product.find({_id: productId});
-if (products.length > 0) {
-    const product = products[0];
-    if (product.stock !== 0) {
-        stock_message = "Instock";   
-    } else {
-        stock_message = "Outstock";
-    }
-    res.render('productdetails', { message: stock_message, products,userData,categories });
-}
-    }catch(error){
+        const products = await Product.find({ _id: productId });
+        if (products.length > 0) {
+            const product = products[0];
+            if (product.stock !== 0) {
+                stock_message = "Instock";
+            } else {
+                stock_message = "Outstock";
+            }
+            res.render('productdetails', { message: stock_message, products, userData, categories });
+        }
+    } catch (error) {
         console.log(error.message);
     }
 }
 
 
-const shop = async(req,res)=>{
-    try{
+const shop = async (req, res) => {
+    try {
         const email = req.session.email;
         const categories = await Category.find();
-        const userdata = await User.findOne({email:email});
-        let userData
-        if(userdata){
-            userData=userdata;
-        }else{
-            userData=req.session;
+        const userData = await User.findOne({ email: email });
+
+        var page = 1;
+        if (req.query.page) {
+            page = req.query.page;
         }
-        const products = await Product.find({is_active:1}).limit(9);
-                    res.render('shop', { products,userData,categories});
-    }catch(error){
+
+        const brand = req.query.brand;
+
+        const category = req.query.category;
+
+        const sort = req.query.sort;
+
+        let filterCriteria = { is_active: 1 };
+
+        if (brand) {
+            filterCriteria.brandname = brand;
+        } else if (category) {
+            filterCriteria.catname = category;
+        }
+
+
+        const limit = 9;
+
+        let sortCriteria = {};
+        if (sort === 'asc') {
+            sortCriteria.offprice = 1;
+        } else if (sort === 'desc') {
+            sortCriteria.offprice = -1;
+        }else if (sort === 'AZ'){
+            sortCriteria.productname = 1;
+        }else if (sort === 'ZA'){
+            sortCriteria.productname = -1;
+        }else if (sort === 'NA'){
+            sortCriteria.arrivalData = -1;
+        }
+
+        const products = await Product.find(filterCriteria)
+            .sort(sortCriteria)
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+
+        const count = await Product.find(filterCriteria).countDocuments();
+        res.render('shop', {
+            products,
+            userData,
+            categories,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            currentSort: sort || 'asc'
+        });
+    } catch (error) {
         console.log(error.message);
     }
 }
 
 
-const contact = async(req,res)=>{
-    try{
+
+
+const contact = async (req, res) => {
+    try {
         const email = req.session.email;
         const categories = await Category.find();
-        const userdata = await User.findOne({email:email});
+        const userdata = await User.findOne({ email: email });
         let userData
-        if(userdata){
-            userData=userdata;
-        }else{
-            userData=req.session;
+        if (userdata) {
+            userData = userdata;
+        } else {
+            userData = req.session;
         }
-            res.render('contact', {userData,categories});
-    }catch(error){
+        res.render('contact', { userData, categories });
+    } catch (error) {
         console.log(error.message);
     }
 }
@@ -653,7 +700,7 @@ const contact = async(req,res)=>{
 
 
 
-module.exports={
+module.exports = {
     loginload,
     loadRegister,
     insertUser,

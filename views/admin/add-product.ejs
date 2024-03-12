@@ -159,36 +159,6 @@
        
     </main>
 
-    <script>
-        // JavaScript code for image cropping
-        document.addEventListener('DOMContentLoaded', () => {
-            const image = document.getElementById('image-preview');
-            const input = document.getElementById('image-input');
-            let cropper;
-    
-            input.addEventListener('change', (event) => {
-                const files = event.target.files;
-                const reader = new FileReader();
-                
-                reader.onload = () => {
-                    image.src = reader.result;
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    cropper = new Cropper(image, {
-                        aspectRatio: 16 / 9, // Set the aspect ratio as needed
-                        crop(event) {
-                            // You can access cropped data here if needed
-                            console.log(event.detail);
-                        },
-                    });
-                };
-                
-                reader.readAsDataURL(files[0]);
-            });
-        });
-    </script>
-
 <script>
     function validateForm() {
         var brandname = document.getElementById('brandname').value.trim();

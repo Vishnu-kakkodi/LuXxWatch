@@ -86,10 +86,11 @@
                                     <div class="address"
                                         style="display: flex; align-items: center; margin-bottom: 10px;">
                                         <div style="margin-right: 5px;">
-                                            <input type="radio" id="address<%= i %>" name="deliveryAddress" value="<%= useraddress[i]._id %>"
-                                                style="transform: scale(0.9);" onclick="addressHandle()">
+                                            <input type="radio" id="address<%= i %>" name="deliveryAddress"
+                                                value="<%= useraddress[i]._id %>" style="transform: scale(0.9);"
+                                                onclick="addressHandle()">
                                         </div>
-                                        
+
                                         <div class="col-lg-12" style="margin-right: 50px;">
                                             <div class="card mb-3 mb-lg-0">
                                                 <div class="card-header"
@@ -122,74 +123,86 @@
                                 </tr>
                                 <% } %>
 
-                                <div class="col-md-6">
-                                    <div class="mb-25">
-                                        <h4>Billing Details</h4>
-                                    </div>
-                                    <div class="add-address" style="margin-bottom: 20px;">
-                                        <a href="#" id="add-address-link" style="font-weight: bold;">Add Address</a>
-                                    </div>
-                                    <form id="address-form" action="/shipAddress" method="POST" onsubmit="return validateForm()" style="display: none;">
-                                        <label for="name" style="display: block; margin-bottom: 5px;">Name<span>*</span></label>
-                                        <input type="text" id="name" name="name"
-                                            style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
-                                            required>
-                                        <div class="name-message" id="name-error"></div>
-                                         
-                                        <label for="mobile" style="display: block; margin-bottom: 5px;">Mobile<span>*</span></label>
-                                        <input type="tel" id="mobile" name="mobile"
-                                            style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
-                                            required>
-                                        <div class="mobile-message" id="mobile-error"></div>
-                        
-                                        <label for="pincode" style="display: block; margin-bottom: 5px;">Pincode<span>*</span></label>
-                                        <input type="text" id="pincode" name="pincode"
-                                            style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
-                                            required>
-                                        <div class="pincode-message" id="pincode-error"></div>
-                        
-                                        <label for="locality" style="display: block; margin-bottom: 5px;">Locality<span>*</span></label>
-                                        <input type="text" id="locality" name="locality"
-                                            style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
-                                            required>
-                                        <div class="locality-message" id="locality-error"></div>
-                        
-                                        <label for="address" style="display: block; margin-bottom: 5px;">Address<span>*</span></label>
-                                        <textarea id="address" name="address"
-                                            style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
-                                            required></textarea>
-                                        <div class="address-message" id="address-error"></div>
-                        
-                                        <label for="city" style="display: block; margin-bottom: 5px;">District<span>*</span></label>
-                                        <input type="text" id="district" name="district"
-                                            style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
-                                            required>
-                                        <div class="district-message" id="district-error"></div>
-                        
-                                        <label for="state" style="display: block; margin-bottom: 5px;">State<span>*</span></label>
-                                        <input type="text" id="state" name="state"
-                                            style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
-                                            required>
-                                        <div class="state-message" id="state-error"></div>
-                        
-                                        <fieldset style="margin-bottom: 15px;">
-                                            <legend style="font-size: 14px;">Address Type<span>*</span></legend>
-                                            <label style="font-size: 14px;"><input type="radio" name="addressType" value="Home"
-                                                    style="width: 12px; height: 12px; margin-right: 5px;"> Home</label>
-                                            <label style="font-size: 14px;"><input type="radio" name="addressType" value="Work"
-                                                    style="width: 12px; height: 12px; margin-right: 5px;"> Work</label>
-                                        </fieldset>
-                        
-                        
-                        
-                                        <div style="text-align: center;">
-                                            <button type="submit" class="btn"
-                                                style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-align: center; text-decoration: none; font-size: 16px;">Submit</button>
-                                            <button type="button" class="btn"
-                                                style="background-color: #dc3545; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-align: center; text-decoration: none; font-size: 16px; margin-left: 10px;">Cancel</button>
+                                    <div class="col-md-6">
+                                        <div class="mb-25">
+                                            <h4>Billing Details</h4>
                                         </div>
-                                    </form>
-                                </div>
+                                        <div class="add-address" style="margin-bottom: 20px;">
+                                            <a href="#" id="add-address-link" style="font-weight: bold;">Add Address</a>
+                                        </div>
+                                        <form id="address-form" action="/shipAddress" method="POST"
+                                            onsubmit="return validateForm()" style="display: none;">
+                                            <label for="name"
+                                                style="display: block; margin-bottom: 5px;">Name<span>*</span></label>
+                                            <input type="text" id="name" name="name"
+                                                style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
+                                                required>
+                                            <div class="name-message" id="name-error"></div>
+
+                                            <label for="mobile"
+                                                style="display: block; margin-bottom: 5px;">Mobile<span>*</span></label>
+                                            <input type="tel" id="mobile" name="mobile"
+                                                style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
+                                                required>
+                                            <div class="mobile-message" id="mobile-error"></div>
+
+                                            <label for="pincode"
+                                                style="display: block; margin-bottom: 5px;">Pincode<span>*</span></label>
+                                            <input type="text" id="pincode" name="pincode"
+                                                style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
+                                                required>
+                                            <div class="pincode-message" id="pincode-error"></div>
+
+                                            <label for="locality"
+                                                style="display: block; margin-bottom: 5px;">Locality<span>*</span></label>
+                                            <input type="text" id="locality" name="locality"
+                                                style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
+                                                required>
+                                            <div class="locality-message" id="locality-error"></div>
+
+                                            <label for="address"
+                                                style="display: block; margin-bottom: 5px;">Address<span>*</span></label>
+                                            <textarea id="address" name="address"
+                                                style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
+                                                required></textarea>
+                                            <div class="address-message" id="address-error"></div>
+
+                                            <label for="city"
+                                                style="display: block; margin-bottom: 5px;">District<span>*</span></label>
+                                            <input type="text" id="district" name="district"
+                                                style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
+                                                required>
+                                            <div class="district-message" id="district-error"></div>
+
+                                            <label for="state"
+                                                style="display: block; margin-bottom: 5px;">State<span>*</span></label>
+                                            <input type="text" id="state" name="state"
+                                                style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
+                                                required>
+                                            <div class="state-message" id="state-error"></div>
+
+                                            <fieldset style="margin-bottom: 15px;">
+                                                <legend style="font-size: 14px;">Address Type<span>*</span></legend>
+                                                <label style="font-size: 14px;"><input type="radio" name="addressType"
+                                                        value="Home"
+                                                        style="width: 12px; height: 12px; margin-right: 5px;">
+                                                    Home</label>
+                                                <label style="font-size: 14px;"><input type="radio" name="addressType"
+                                                        value="Work"
+                                                        style="width: 12px; height: 12px; margin-right: 5px;">
+                                                    Work</label>
+                                            </fieldset>
+
+
+
+                                            <div style="text-align: center;">
+                                                <button type="submit" class="btn"
+                                                    style="background-color: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-align: center; text-decoration: none; font-size: 16px;">Submit</button>
+                                                <button type="button" class="btn"
+                                                    style="background-color: #dc3545; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-align: center; text-decoration: none; font-size: 16px; margin-left: 10px;">Cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
 
                     </div>
                     <div class="col-md-6">
@@ -249,29 +262,28 @@
                                                     </td>
                                                 </tr>
                                                 <% }) %>
-                                                    
-                                                            <tr>
-                                                                <th>SubTotal</th>
-                                                                <td id="checkout-subtotal" class="product-subtotal"
-                                                                    colspan="2">₹<%= cartItems.total %>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Shipping</th>
-                                                                <td colspan="2"><em>Free Shipping</em></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>Total</th>
-                                                                <td id="checkout-total" colspan="2"
-                                                                    class="product-subtotal"><span
-                                                                        class="font-xl text-brand fw-900">₹<%=
-                                                                            cartItems.total %></span></td>
-                                                            </tr>
-                                                            <% } else { %>
-                                                                <tr>
-                                                                    <td colspan="6">No products in cart</td>
-                                                                </tr>
-                                                                <% } %>
+
+                                                    <tr>
+                                                        <th>SubTotal</th>
+                                                        <td id="checkout-subtotal" class="product-subtotal" colspan="2">
+                                                            ₹<%= cartItems.total %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Shipping</th>
+                                                        <td colspan="2"><em>Free Shipping</em></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Total</th>
+                                                        <td id="checkout-total" colspan="2" class="product-subtotal">
+                                                            <span class="font-xl text-brand fw-900">₹<%= cartItems.total
+                                                                    %></span></td>
+                                                    </tr>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="6">No products in cart</td>
+                                                        </tr>
+                                                        <% } %>
                                     </tbody>
                                 </table>
                             </div>
@@ -282,26 +294,36 @@
                                 </div>
                                 <div class="payment_option">
                                     <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="Cash On Delivery" checked="">
-                                        <label class="form-check-label" for="Cash On Delivery" data-bs-toggle="collapse" data-target="#bankTranfer" aria-controls="bankTranfer">Cash on Delivery</label>
+                                        <input class="form-check-input" required="" type="radio" name="payment_option"
+                                            id="Cash On Delivery" checked="">
+                                        <label class="form-check-label" for="Cash On Delivery" data-bs-toggle="collapse"
+                                            data-target="#bankTranfer" aria-controls="bankTranfer">Cash on
+                                            Delivery</label>
                                     </div>
                                     <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="Paypal" checked="">
-                                        <label class="form-check-label" for="Paypal" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Paypal</label>
+                                        <input class="form-check-input" required="" type="radio" name="payment_option"
+                                            id="Razorpay" checked="">
+                                        <label class="form-check-label" for="Razorpay" data-bs-toggle="collapse"
+                                            data-target="#Razorpay" aria-controls="Razorpay">Razorpay</label>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
                 </div>
                 <% if (cartItems.products.length> 0 ) { %>
-                <button  class="btn btn-fill-out btn-block mt-30" style="margin-left: 950px;" onclick="placeOrder('<%= cartItems._id %>')">Place Order</button>
-                <% } else { %>
-                <button  class="btn btn-fill-out btn-block mt-30" style="margin-left: 950px;" onclick="placeOrder('<%= cartItems._id %>')" disabled>Place Order</button>
-                <% } %>
+                    <button class="btn btn-fill-out btn-block mt-30" style="margin-left: 950px;"
+                        onclick="placeOrder('<%= cartItems._id %>')">Place Order</button>
+                    <% } else { %>
+                        <button class="btn btn-fill-out btn-block mt-30" style="margin-left: 950px;"
+                            onclick="placeOrder('<%= cartItems._id %>')" disabled>Place Order</button>
+                        <% } %>
         </section>
     </main>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
 
     <script>
@@ -314,14 +336,14 @@
             var district = document.getElementById('district').value.trim();
             var state = document.getElementById('state').value.trim();
             var addressType = document.querySelector('input[name="addressType"]:checked');
-    
+
             var isValid = true;
-    
+
             // Reset error messages
             document.querySelectorAll('.error-message').forEach(function (element) {
                 element.innerText = '';
             });
-    
+
             // Validate name
             var namePattern = /^[A-Za-z\s]+$/;
             if (name === '') {
@@ -332,7 +354,7 @@
                 isValid = false;
             }
 
-    
+
             // Validate mobile
             var mobilePattern = /^(?!0)(?!(\d)\1{3})\d{10}$/;
             if (mobile === '') {
@@ -342,7 +364,7 @@
                 document.getElementById('mobile-error').innerText = 'Enter a valid 10-digit mobile number';
                 isValid = false;
             }
-    
+
             // Validate pincode
             var pincodePattern = /^[1-9][0-9]{2}\s?[0-9]{3}$/;
             if (pincode === '') {
@@ -352,7 +374,7 @@
                 document.getElementById('pincode-error').innerText = 'Enter a valid pincode';
                 isValid = false;
             }
-    
+
             // Validate locality
             var localityPattern = /^[A-Za-z\s]+$/;
             if (locality === '') {
@@ -362,7 +384,7 @@
                 document.getElementById('locality-error').innerText = 'Locality can only contain alphabetic characters';
                 isValid = false;
             }
-    
+
             // Validate address
             var addressPattern = /^[A-Za-z0-9\s]+$/;
             if (address === '') {
@@ -372,7 +394,7 @@
                 document.getElementById('address-error').innerText = 'Enter a valid address';
                 isValid = false;
             }
-    
+
             // Validate district
             var districtPattern = /^[A-Za-z\s]+$/;
             if (district === '') {
@@ -382,7 +404,7 @@
                 document.getElementById('district-error').innerText = 'District can only contain alphabetic characters';
                 isValid = false;
             }
-    
+
             // Validate state
             var statePattern = /^[A-Za-z\s]+$/;
             if (state === '') {
@@ -392,32 +414,32 @@
                 document.getElementById('state-error').innerText = 'State can only contain alphabetic characters';
                 isValid = false;
             }
-    
+
             // Validate address type
             if (!addressType) {
                 document.getElementById('addressType-error').innerText = 'Please select an address type';
                 isValid = false;
             }
-    
+
             return isValid;
         }
     </script>
 
     <script>
-    // Get references to the link and the form
-    const addAddressLink = document.getElementById('add-address-link');
-    const addressForm = document.getElementById('address-form');
+        // Get references to the link and the form
+        const addAddressLink = document.getElementById('add-address-link');
+        const addressForm = document.getElementById('address-form');
 
-    // Add event listener to the link
-    addAddressLink.addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent default link behavior
-        if (addressForm.style.display === 'none') {
-            addressForm.style.display = 'block'; // Display the form
-        } else {
-            addressForm.style.display = 'none'; // Hide the form
-        }
-    });
-</script>
+        // Add event listener to the link
+        addAddressLink.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+            if (addressForm.style.display === 'none') {
+                addressForm.style.display = 'block'; // Display the form
+            } else {
+                addressForm.style.display = 'none'; // Hide the form
+            }
+        });
+    </script>
 
     <script>
         async function updateQuantity(productId, action) {
@@ -464,7 +486,7 @@
         try {
             // Find the selected payment option ID
             let selectedPaymentOption = document.querySelector('input[name="payment_option"]:checked').id;
-            
+
             // Make the fetch request to place the order
             const response = await fetch('/placeorder', {
                 method: 'POST',
@@ -474,18 +496,78 @@
                 body: JSON.stringify({ cartId: cartId, addressId: selectedAddressId, paymentOption: selectedPaymentOption })
             });
 
-            if (response.ok) {
+            const data = await response.json();
+            if (response.success) {
                 // Order placed successfully, redirect to order page
                 window.location.href = "/orderpage";
             } else {
-                // Handle error
-                console.error('Failed to place order');
+                console.log(data.razorpay);
+                razorpayPayment(data.razorpay,cartId,selectedAddressId,selectedPaymentOption);
             }
         } catch (error) {
             console.error('Error:', error);
         }
     }
+
+    function razorpayPayment(order,cartId,selectedAddressId,selectedPaymentOption) {
+        if (order) {
+            var options = {
+                "key": "rzp_test_x4yKuLEYJQuXwJ",
+                "amount": order.amount,
+                "currency": "INR",
+                "name": "LuxXWatch",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": order.id,
+                "handler": function (response) {
+                    // alert(response.razorpay_payment_id);
+                    // alert(response.razorpay_order_id);
+                    // alert(response.razorpay_signature);
+                    window.location.href = "/orderpage";
+                    verifyPayment(response, order,cartId,selectedAddressId,selectedPaymentOption);
+                },
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            // Call the Razorpay payment method
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        } else {
+            console.error('Invalid order object or amount property is missing');
+            return;
+        }
+    }
+
+    async function verifyPayment(payment, order, cartId, selectedAddressId, selectedPaymentOption) {
+        try {
+            const response = await fetch('/verifyPayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ payment, order, cartId, selectedAddressId, selectedPaymentOption })
+            });
+            if (response.razorpay_success) {
+                // Order placed successfully, redirect to order page
+                window.location.href = "/orderpage";
+            } else {
+                console.error('Failed to verify payment');
+            }
+        } catch (error) {
+            console.error('Error verifying payment:', error);
+        }
+    }
 </script>
+
 
 
     <%- include('../layouts/userFooter.ejs') %>

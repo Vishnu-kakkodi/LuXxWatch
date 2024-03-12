@@ -63,7 +63,7 @@ const addTocart = async (req, res) => {
             res.status(200).json({success: 'Successfully added to cart' });
     
         }else{
-            return res.status(400).json({error: 'Item out of stock', stock });
+            return res.status(400).json({error: 'Item out of stock' });
         }
         
     } catch (error) {

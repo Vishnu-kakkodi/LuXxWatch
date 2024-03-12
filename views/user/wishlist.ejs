@@ -1,0 +1,170 @@
+<%- include('../layouts/userHeader.ejs') %>
+    <main class="main">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="index.html" rel="nofollow">Home</a>
+                    <span></span> Shop
+                    <span></span> Wishlist
+                </div>
+            </div>
+        </div>
+        <section class="mt-50 mb-50">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table shopping-summery text-center">
+                                <% if (wishlistItems && wishlistItems.products && wishlistItems.products.length> 0) { %>
+                                <thead>
+                                    <tr class="main-heading">
+                                        <th scope="col" colspan="2">Product</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Stock Status</th>
+                                        <th scope="col">Action</th>
+                                        <th scope="col">Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <% wishlistItems.products.forEach(product=> { %>
+                                    <tr>
+                                        <td class="image product-thumbnail"><img src="/productImages/<%= product.product.image[0] %>" alt="#" style="max-width: 50px; max-height: 50px;"></td>
+                                        <td class="product-des product-name">
+                                            <h5 class="product-name"><a href="shop-product-right.html"><%= product.product.productname %></a></h5>
+                                            </p>
+                                        </td>
+                                        <td class="price" data-title="Price"><span>₹<%= product.product.offprice %> </span></td>
+                                        <td class="text-center" data-title="Stock">
+                                            <span class="stock-status color3 font-weight-bold" data-value="<%= product.product.stock %>"></span>
+                                        </td>
+                                        <td class="text-right" data-title="Cart">
+                                            <button id="button-add-to-cart" class="btn btn-sm" type="button"
+                                            data-product-id="<%= product.product._id %>"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
+                                        </td>
+                                        <td class="action" data-title="Remove"><a href="#" onclick="deleteWishlisttitem('<%= product.product._id %>' , '<%= wishlistItems._id %>')"><i class="fi-rs-trash"></i></a></td>
+                                    </tr>
+                                    <% }) %>
+                                    <% } else { %>
+                                        <div id="error-message"
+                                            style="display: flex; align-items: center; justify-content: center; background-color: #f8d7da; color: #ff0019; padding: 20px; border-radius: 5px; text-align: center;">
+                                            <p style="color: red; font-weight: bold;">Oops, Your wishlist is empty!. Please add to
+                                                wishlist...</p>
+                                        </div>
+                                        <% } %>                                   
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        var stockStatusElements = document.querySelectorAll('.stock-status');
+    
+        stockStatusElements.forEach(function(element) {
+            var stockValue = parseInt(element.getAttribute('data-value'));
+            if (stockValue > 0) {
+                element.innerText = 'In stock';
+            } else {
+                element.innerText = 'Out of stock';
+            }
+        });
+    </script>
+
+
+<script>
+    const buttons = document.querySelectorAll('#button-add-to-cart');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', async () => {
+            try {
+                const productId = button.dataset.productId;
+                const res = await fetch(`/add-cart/${productId}`, {
+                    method: 'GET'
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    console.log("data");
+                    swal({
+                        title: "Success",
+                        text: data.success,
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                text: "Go to Cart",
+                                value: true,
+                                visible: true,
+                                className: "btn btn-primary"
+                            },
+                            cancel: {
+                                text: "Close",
+                                value: null,
+                                visible: true,
+                                className: "btn btn-secondary"
+                            }
+                        }
+                    }).then((value) => {
+                        if (value) {
+                            window.location.href = "/cart";
+                        }
+                    });
+
+                } else {
+                    swal("Ooops", data.error, "error");
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    });
+</script>
+
+
+<script>
+    async function deleteWishlisttitem(productId, wishlistId) {
+            try {
+                const response = await fetch(`/remove-wishlistItem/?productId=${productId}&wishlistId=${wishlistId}`, {
+                    method: 'DELETE'
+                });
+
+
+                if (response.ok) {
+                    // Item remove successfully
+                    const data = await response.json();
+                    swal({
+                        title: "Are you sure?",
+                        text: "You want to delete this item!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                swal("Poof! Your seleted item deleted!", {
+                                    icon: "success",
+                                }).then(() => { window.location.href = "/wishlist"; });
+                            } else {
+                                swal("Your item is in cart!");
+                            }
+                        });
+                    console.error('Item remove successfully');
+
+                } else {
+                    console.error('Failed to remove');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+</script>
+    
+    
+
+
+
+    <%- include('../layouts/userFooter.ejs') %>
