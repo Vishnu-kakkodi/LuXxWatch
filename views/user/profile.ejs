@@ -40,6 +40,11 @@
                                                     class="fi-rs-marker mr-10"></i>My Address</a>
                                         </li>
                                         <li class="nav-item">
+                                            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#wallet"
+                                                role="tab" aria-controls="address" aria-selected="true"><i
+                                                    class="fi-rs-marker mr-10"></i>My Wallet</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab"
                                                 href="#account-detail" role="tab" aria-controls="account-detail"
                                                 aria-selected="true"><i class="fi-rs-user mr-10"></i>Change Password</a>
@@ -147,6 +152,59 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="tab-pane fade" id="wallet" role="tabpanel" aria-labelledby="orders-tab">
+                                        <div class="card">
+                                            <div class="card-header" style="background-color: aquamarine;" >
+                                                <div class="text-center">
+                                                    <h5 class="mb-0" style="font-size: medium;">Your Wallet</h5>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h6>Wallet Balance: ₹<%= wallet.walletbalance %></h6>
+                                                        <h6>Total Refund: ₹<%= wallet.totalRefund %></h6>
+                                                        <h6>Total Transaction Amount: ₹<%= wallet.totalTransation %></h6>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <form>
+                                                            <div class="mb-3">
+                                                                <label for="addAmount" class="form-label">Add Amount to Wallet</label>
+                                                                <input type="text" class="form-control" id="addAmount" placeholder="Enter amount">
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary" onclick="walletMoney(event)" style="background-color: rgb(252, 112, 112);" >Add</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="table-responsive mt-4">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Transaction ID</th>
+                                                                <th>Date</th>
+                                                                <th>Type</th>
+                                                                <th>Amount</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% wallet.forEach(wallet=> { %>
+                                                            <tr>
+                                                                <td><%= wallet.orderId %></td>
+                                                                <td><%= wallet.createdAt %></td>
+                                                                <td><%= wallet.orderId %></td>
+                                                                <td>₹ <%= wallet.totalTransation %></td>
+                                                            </tr>
+
+                                                            <% }) %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel"
                                         aria-labelledby="track-orders-tab">
                                         <div class="card">
@@ -280,6 +338,9 @@
             </div>
         </section>
     </main>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const editButtons = document.querySelectorAll(".edit-btn");
@@ -386,6 +447,91 @@
         });
     </script>
 
+<script>
+
+    async function walletMoney(event) {
+        try {
+            // Find the selected payment option ID
+            event.preventDefault();
+            const amount = document.getElementById('addAmount').value;
+
+            // Make the fetch request to place the order
+            const response = await fetch('/walletMoney', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ amount:amount })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                console.log(data.razorpay);
+                razorpayPayment(data.razorpay);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function razorpayPayment(order) {
+        if (order) {
+            var options = {
+                "key": "rzp_test_x4yKuLEYJQuXwJ",
+                "amount": order.amount,
+                "currency": "INR",
+                "name": "LuxXWatch",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": order.id,
+                "handler": function (response) {
+                    // alert(response.razorpay_payment_id);
+                    // alert(response.razorpay_order_id);
+                    // alert(response.razorpay_signature);
+                    window.location.href = "/profile";
+                    verifyPayment(response, order);
+                },
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            // Call the Razorpay payment method
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        } else {
+            console.error('Invalid order object or amount property is missing');
+            return;
+        }
+    }
+
+    async function verifyPayment(payment, order) {
+        try {
+            const response = await fetch('/verifywalletPayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ payment, order })
+            });
+            if (response.razorpay_success) {
+                // Order placed successfully, redirect to order page
+                window.location.href = "/profile";
+            } else {
+                console.error('Failed to verify payment');
+            }
+        } catch (error) {
+            console.error('Error verifying payment:', error);
+        }
+    }
+</script>
 
 
 

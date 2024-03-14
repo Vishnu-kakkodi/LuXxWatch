@@ -119,6 +119,21 @@
         }
     </style>
 
+<script>
+    async function searchData(event) {
+        event.preventDefault();
+        const searchItem = document.getElementById('searchItem').value;
+        try {
+            // Construct the URL based on the search input value
+            const url = `/searchItem?searchItem=${encodeURIComponent(searchItem)}`;
+            console.log(url);
+            // Redirect the user to the constructed URL
+            window.location.href = url;
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+</script>
 
 
 
@@ -140,16 +155,14 @@
                     <div class="header-right" style="display: flex; gap: 20px; align-items: center;">
                         <div style="width: 500px; border-style: solid; border-color: black;">
                             <form class="searchform" style="display: flex;">
-                                <div class="input-group"
-                                    style="display: flex; border-style: solid; border-color: black;">
-                                    <input list="search_terms" type="text" class="form-control"
-                                        style=" background-color: white; height: 40px;" placeholder="Search term">
-                                    <button class="custom-btn" type="" style="height: 40px;">
-                                        <img alt="Evara" src="/user-assets/imgs/theme/icons/search.png"
-                                            style="height: 60%;">
+                                <div class="input-group" style="display: flex; border-style: solid; border-color: black;">
+                                    <input list="search_terms" id="searchItem" type="text" class="form-control" style="background-color: white; height: 40px;" placeholder="Search term">
+                                    <button class="custom-btn" onclick="searchData(event)" style="height: 40px;">
+                                        <img alt="Evara" src="/user-assets/imgs/theme/icons/search.png" style="height: 60%;">
                                     </button>
                                 </div>
                             </form>
+                            
                         </div>
 
                         <div class="header-action-right">

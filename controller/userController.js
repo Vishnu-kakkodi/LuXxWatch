@@ -13,6 +13,7 @@ const Category = require("../model/categoryModel.js");
 const Address = require("../model/addressModel.js");
 const Cart = require("../model/cartModel.js");
 const Order = require("../model/orderModel.js");
+const Wallet = require("../model/walletModel.js");
 const { Long } = require('mongodb')
 
 
@@ -292,11 +293,12 @@ const profile = async (req, res) => {
         const categories = await Category.find();
         const useraddress = await Address.find({ user: userData._id });
         const order = await Order.find({ user: userData._id });
+        const wallet = await Wallet.find({user:userData._id});
         console.log(order);
         res.locals.categories = categories;
         res.locals.userData = userData;
         // res.locals.useraddress = useraddress;
-        res.render('profile', { userData, useraddress, categories, order });
+        res.render('profile', { userData, useraddress, categories, order, wallet });
     } catch (error) {
         console.log(error.message)
     }
@@ -646,11 +648,11 @@ const shop = async (req, res) => {
             sortCriteria.offprice = 1;
         } else if (sort === 'desc') {
             sortCriteria.offprice = -1;
-        }else if (sort === 'AZ'){
+        } else if (sort === 'AZ') {
             sortCriteria.productname = 1;
-        }else if (sort === 'ZA'){
+        } else if (sort === 'ZA') {
             sortCriteria.productname = -1;
-        }else if (sort === 'NA'){
+        } else if (sort === 'NA') {
             sortCriteria.arrivalData = -1;
         }
 
@@ -669,6 +671,98 @@ const shop = async (req, res) => {
             currentPage: page,
             currentSort: sort || 'asc'
         });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const search = async (req, res) => {
+    try {
+        const email = req.session.email;
+        const categories = await Category.find();
+        const userData = await User.findOne({ email: email });
+
+        var page = 1;
+        if (req.query.page) {
+            page = req.query.page;
+        }
+
+        const searchValue = req.query.searchItem;
+
+        const brand = req.query.brand;
+
+        const category = req.query.category;
+
+        const sort = req.query.sort;
+
+        let filterCriteria = { is_active: 1 };
+
+        if (brand) {
+            filterCriteria.brandname = brand;
+        } else if (category) {
+            filterCriteria.catname = category;
+        }
+
+
+        const limit = 9;
+
+        let sortCriteria = {};
+        if (sort === 'asc') {
+            sortCriteria.offprice = 1;
+        } else if (sort === 'desc') {
+            sortCriteria.offprice = -1;
+        } else if (sort === 'AZ') {
+            sortCriteria.productname = 1;
+        } else if (sort === 'ZA') {
+            sortCriteria.productname = -1;
+        } else if (sort === 'NA') {
+            sortCriteria.arrivalData = -1;
+        }
+
+        console.log(searchValue);
+
+        const regex = new RegExp(searchValue);
+
+        const products = await Product.find({
+            $or: [
+                { productname: { $regex: regex }},
+                { brandname: {$regex: regex}},
+                { catname: {$regex: regex}}
+            ]
+        }).sort(sortCriteria)
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec()
+
+
+        const count = await Product.countDocuments({
+            $and: [
+                filterCriteria,
+                {
+                    $or: [
+                        { productname: { $regex: searchValue, $options: 'i' } },
+                        { brandname: { $in: await Product.find({ brandname: { $regex: searchValue, $options: 'i' } }).distinct('_id') } },
+                        { catname: { $in: await Category.find({ catname: { $regex: searchValue, $options: 'i' } }).distinct('_id') } }
+                    ]
+                }
+            ]
+        });
+
+        console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjj");
+
+
+        res.render('shop', {
+            products,
+            userData,
+            categories,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            currentSort: sort || 'asc'
+        });
+
+        console.log("dfdfdfdfdfdf");
+
     } catch (error) {
         console.log(error.message);
     }
@@ -727,5 +821,6 @@ module.exports = {
     newPassword,
     loadproductdetail,
     shop,
+    search,
     contact
 }

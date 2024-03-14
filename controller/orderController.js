@@ -112,7 +112,7 @@ const placeorder = async (req, res) => {
 
         // Create a Razorpay order
         var options = {
-            amount: total, 
+            amount: total*100, 
             currency: 'INR',
             receipt: orderId
         };

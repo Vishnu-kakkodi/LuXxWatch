@@ -158,6 +158,20 @@ user_route.get("/brandFilter",nocache.user, auth.isLogin, userController.shop);
 user_route.get("/categoryFilter",nocache.user, auth.isLogin, userController.shop);
 
 
+// -------------search-----------------//
+
+user_route.get("/searchItem",nocache.user, auth.isLogin, userController.search);
+
+
+// -------------wallet-----------------//
+
+
+user_route.post("/walletMoney",nocache.user, auth.isLogin, paymentController.addWallet);
+
+user_route.post('/verifywalletPayment', nocache.user, auth.isLogin, paymentController.walletMoney);
+
+
+
 
 module.exports = user_route;
 
