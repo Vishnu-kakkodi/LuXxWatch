@@ -67,7 +67,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Placed', 'Shipped', 'Delivered', 'Cancelled'],
+        enum: ['Pending', 'Placed', 'Shipped', 'Delivered', 'Cancelled', 'Returned'],
         default: 'Pending'
     },
     resonOfcancel: {
@@ -80,6 +80,18 @@ const orderSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    refund: {
+        type: String,
+        required:false
+    },
+    coupon_applied: {
+        type:Boolean,
+        required: true
+    },
+    discountAmount: {
+        type: String,
+        required: false
     }
 });
 

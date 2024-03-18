@@ -1,0 +1,264 @@
+<%- include('../layouts/adminHeader.ejs') %>
+    <style>
+        #popup-window {
+            position: fixed;
+            width: 500px;
+            height: 620px;
+            border-radius: 20px;
+            background: white;
+            border: 1px solid black;
+            padding: 10px;
+            margin: auto;
+            top: 0px;
+            right: 0;
+            bottom: 0;
+            left: 200px;
+            z-index: 10;
+            display: none;
+        }
+    </style>
+
+    <div class="container">
+        <h2 class="mt-4 mb-4 text-center">Coupon Management</h2>
+        <div class="table-responsive container">
+            <div style="margin-left: 800px;">
+                <a href="#" id="popup-link" type="button"
+                    style="color: black; font-size: medium; padding: 5px; border-radius: 50%; background-color: rgb(77, 255, 77);">Add
+                    Coupon</a>
+            </div>
+            <div id="popup-window">
+                <form id="add-coupon-form" style="height: fit-content;">
+                    <div class="form-group">
+                        <label for="couponId">Coupon ID:</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="couponId" name="couponId"
+                                    placeholder="Enter coupon ID" required>
+                                <button type="button" class="btn btn-secondary" onclick="UniqueId()"
+                                    style="margin-left: 10px;" id="generate-coupon-id">Generate</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <input type="text" class="form-control" id="description" name="description"
+                            placeholder="Enter description" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="maximumDiscount">Maximum Discount:</label>
+                        <input type="text" class="form-control" id="maximumDiscount" name="maximumDiscount"
+                            placeholder="Enter maximum discount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="minimumAmount">Minimum Amount:</label>
+                        <input type="number" class="form-control" id="minimumAmount" name="minimumAmount"
+                            placeholder="Enter minimum Amount" required inputmode="decimal" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="maximumAmount">Maximum Amount:</label>
+                        <input type="number" class="form-control" id="maximumAmount" name="maximumAmount"
+                            placeholder="Enter maximum Amount" required inputmode="decimal" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="discountAmount">Discount Amount:</label>
+                        <input type="number" class="form-control" id="discountAmount" name="discountAmount"
+                            placeholder="Enter discount Amount" required inputmode="decimal" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="maximumUser">Maximum User:</label>
+                        <input type="number" class="form-control" id="maximumUser" name="maximumUser"
+                            placeholder="Enter maximum User" required inputmode="decimal" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="expireDate">Expire Date:</label>
+                        <input type="date" class="form-control" id="expireDate" name="expireDate" required>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Add Coupon</button>
+                    <button type="submit" id="close-button" class="btn btn-secondary">Close</button>
+                </form>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Coupon Id</th>
+                        <th>Description</th>
+                        <th>Max.Discount</th>
+                        <th>Min.Amount</th>
+                        <th>Max.Amount</th>
+                        <th>Expire date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(coupon&&coupon.length>0){ %>
+                        <% coupon.forEach((coupon,index)=>{ %>
+                            <tr>
+                                <td>
+                                    <%= coupon.createdAt.toLocaleDateString('en-US', { weekday: 'short' , month: 'short'
+                                        , day: '2-digit' , year: 'numeric' }) %>
+                                </td>
+                                <td>
+                                    <%= coupon.couponId %>
+                                </td>
+                                <td>
+                                    <%= coupon.description %>
+                                </td>
+                                <td>
+                                    <%= coupon.maximumDiscount %>
+                                </td>
+                                <td>
+                                    <%= coupon.minimumAmount %>
+                                </td>
+                                <td>
+                                    <%= coupon.maximumAmount %>
+                                </td>
+                                <td>
+                                    <%= coupon.expireDate %>
+                                </td>
+                                <td>
+                                    <span>
+                                        <% if(coupon.is_active===1) { %>
+                                            <span id="couponblock" class="user-status"
+                                                style="color: green; font-weight: bold;">Active</span>
+                                            <% } else { %>
+                                                <span id="couponunblock" style="color: red;">Deactive</span>
+                                                <% } %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <% if (coupon.is_active === 1) { %>
+                                        <a href="#" type="button" onclick="Block('<%= coupon._id %>')"
+                                            class="btn btn-sm font-sm rounded btn-brand btn-block"
+                                            id="blockBtn<%= index %>" disabled>
+                                            Active
+                                        </a>
+                                    <% } else { %>
+                                        <a href="#" type="button" onclick="Unblock('<%= coupon._id %>')"
+                                            class="btn btn-sm font-sm btn-light rounded btn-unblock"
+                                            id="unblockBtn<%= index %>" disabled>
+                                            Deactive
+                                        </a>
+                                    <% } %>
+                                </td>
+                </tbody>
+                <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6">Coupon Not Found</td>
+                        </tr>
+                        <% } %>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const closebutton = document.getElementById("close-button");
+
+        closebutton.addEventListener("click", function () {
+            document.getElementById("add-coupon-form").reset();
+        });
+    </script>
+
+    <script>
+        function UniqueId() {
+            const generateCustomCode = length => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]).join('');
+            const generateCustomCodes = (length, count) => Array.from({ length: count }, () => generateCustomCode(length));
+
+            const length = 8;
+            const count = 1;
+
+            const customCodes = generateCustomCodes(length, count);
+            const couponId = document.getElementById('couponId');
+            couponId.value = customCodes;
+
+        };
+    </script>
+
+
+    <script>
+        var popupLink = document.getElementById("popup-link");
+        var popupWindow = document.getElementById("popup-window");
+        var closeButton = document.getElementById("close-button");
+        popupLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            popupWindow.style.display = "block";
+        });
+        closeButton.addEventListener("click", function () {
+            popupWindow.style.display = "none";
+        });
+    </script>
+
+    <script>
+        const form = document.getElementById('add-coupon-form');
+        form.addEventListener('submit', function submitForm(event) {
+            event.preventDefault();
+
+            const preformData = new FormData(form);
+            const formData = new URLSearchParams(preformData);
+
+            fetch('/admin/addCoupon', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.log(data.error)
+                    } else {
+                        window.location.href = "/admin/coupon";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+        });
+    </script>
+
+
+    <script>
+        async function Block(couponId) {
+            try {
+                const response = await fetch(`/admin/blockCoupon/${couponId}`, {
+                    method: 'GET'
+                });
+                const data = await response.json();
+                if(data){
+                    console.log(data.error);
+                    document.getElementById('couponblock').innerText = 'Active'
+                    window.location.href="/admin/coupon"
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+
+        async function Unblock(couponId) {
+            try {
+                const response = await fetch(`/admin/UnblockCoupon/${couponId}`, {
+                    method: 'GET'
+                });
+                const data = await response.json();
+                if(data){
+                    document.getElementById('couponunblock').innerText = 'Deactive'
+                    window.location.href="/admin/coupon"
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+    </script>
+
+    <script src="/asset/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/asset/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/asset/js/vendors/select2.min.js"></script>
+    <script src="/asset/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/asset/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/asset/js/vendors/chart.js"></script>
+    <!-- Main Script -->
+    <script src="/asset/js/main.js" type="text/javascript"></script>
+    <script src="/asset/js/custom-chart.js" type="text/javascript"></script>

@@ -1,6 +1,6 @@
 <%- include('../layouts/userHeader.ejs') %>
     <!-- Quick view -->
-    <main class="main" style="background-color: rgb(255, 247, 230);">
+    <main class="main">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
@@ -66,15 +66,13 @@
                                             <% if(products[i].stock <=0) { %>
                                                 <!-- Check if product is out of stock -->
                                                 <div class="out-of-stock-label"
-                                                    style="position: absolute; top: 2px; left: -12px; background-color: red; color: white; padding: 3px 6px; border-radius: 100%; transform: rotate(-45deg); z-index: 1; font-size: xx-small;">
+                                                    style="display: inline;  color: red; font-size: small; margin-left: 10px;">
                                                     Out of Stock</div> <!-- Out of stock label -->
                                                 <% } %>
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="/productdetails?productId=<%= products[i]._id %>">
                                                         <img class="default-img"
-                                                            src="/productImages/<%= products[i].image[0] %>" alt="">
-                                                        <img class="hover-img"
                                                             src="/productImages/<%= products[i].image[0] %>" alt="">
                                                     </a>
                                                 </div>
@@ -144,7 +142,7 @@
                         </div>
                         
                         <!-- Fillter By Price -->
-                        <div class="sidebar-widget price_range range mb-30" style="border-radius: 8px; background-color: rgb(230, 62, 62);">
+                        <div class="sidebar-widget price_range range mb-30" style="border-radius: 8px;">
                             <div class="price-filter">
                                 <div class="price-filter-inner">
                                     <div id="slider-range"></div>
@@ -193,9 +191,9 @@
                                 </div>
                             </div>
 
-                            <a href="#" type="submit" class="btn btn-sm btn-default filter-btn" style="display: flex; font-size: medium; background-color: blue; margin-bottom: 10px;"><i class="fi-rs-filter mr-5"></i> Filter</a>
+                            <a href="#" type="submit" class="btn btn-sm btn-default filter-btn" style="display: flex; font-size: medium; margin-bottom: 10px;"><i class="fi-rs-filter mr-5"></i> Filter</a>
 
-                            <div class="widget-category mb-30" style="border-radius: 20%; background-color: rgb(230, 62, 62);">
+                            <div class="widget-category mb-30" style="border-radius: 20%;">
                                 <h5 class="section-title style-1 mb-30" style="font-weight: bold; color: #000000; font-size: small;">Filter by Category</h5>
                                 <ul class="categories">
                                     <% if(categories.length> 0) {

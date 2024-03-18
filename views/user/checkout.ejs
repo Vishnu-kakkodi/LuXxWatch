@@ -1,4 +1,29 @@
 <%- include('../layouts/userHeader.ejs') %>
+
+
+    <style>
+        #popup-window {
+            position: fixed;
+            width: 750px;
+            height: 620px;
+            border-radius: 20px;
+            background: white;
+            border: 1px solid black;
+            padding: 10px;
+            margin: auto;
+            top: 0px;
+            right: 100px;
+            bottom: 0;
+            left: 100px;
+            z-index: 10;
+            overflow: auto;
+            display: none;
+        }
+    </style>
+
+
+
+
     <main class="main">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
@@ -206,22 +231,20 @@
 
                     </div>
                     <div class="col-md-6">
-                        <div class="order_review">
-                            <div class="mb-20">
-                                <h4>Your Orders</h4>
-                            </div>
-                            <div class="table-responsive order_table text-center">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="2">Product</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-
-                                        <% if (cartItems && cartItems.products && cartItems.products.length> 0) { %>
+                        <% if (cartItems && cartItems.products && cartItems.products.length> 0 && coupons) { %>
+                            <div class="order_review">
+                                <div class="mb-20">
+                                    <h4 style="text-align: center;">Your Orders</h4>
+                                </div>
+                                <div class="table-responsive order_table text-center">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Product</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             <% cartItems.products.forEach(product=> { %>
                                                 <tr>
                                                     <td class="image product-thumbnail"><img
@@ -232,26 +255,33 @@
                                                                 <%= product.product.productname %>
                                                             </a></h5>
                                                         <div class="detail-qtyy border radius m-auto"
-                                                            style="display: flex; justify-content: space-between; align-items: center;">
+                                                            style="display: flex; justify-content: space-between;">
                                                             <!-- Decrease quantity -->
-                                                            <button type="button"
-                                                                onclick="updateQuantity('<%= product.product._id %>', 'decrement')"
-                                                                style="cursor: pointer; font-size: 8px; max-height: fit-content; background-color: lightgray;"><i
-                                                                    class="fas fa-minus">&#10134;</i></button>
+                                                            <div>
+                                                                <a type="submit"
+                                                                    onclick="updateQuantity('<%= product.product._id %>', 'decrement')"
+                                                                    style="cursor: pointer; font-size: 20px;"><i
+                                                                        class="fi-rs-angle-small-down"></i></a>
+                                                            </div>
 
                                                             <!-- Quantity display -->
-                                                            <span id="quantity-<%= product.product._id %>"
-                                                                class="qty-val"
-                                                                style="font-size: 14px; margin-left: 10px; margin-right: 10px;">
-                                                                <%= product.quantity %>
-                                                            </span>
+                                                            <div>
+                                                                <span id="quantity-<%= product.product._id %>"
+                                                                    class="qty-val"
+                                                                    style="font-size: 14px; margin-left: 10px; margin-right: 10px;">
+                                                                    <%= product.quantity %>
+                                                                </span>
+                                                            </div>
 
                                                             <!-- Increase quantity -->
-                                                            <button type="button"
-                                                                onclick="updateQuantity('<%= product.product._id %>', 'increment')"
-                                                                style="cursor: pointer; font-size: 8px; max-height: fit-content;  background-color: lightgray;"><i
-                                                                    class="fas fa-plus"></i>&#10133;</button>
+                                                            <div>
+                                                                <a type="submit"
+                                                                    onclick="updateQuantity('<%= product.product._id %>', 'increment')"
+                                                                    style="cursor: pointer; font-size: 20px;"><i
+                                                                        class="fi-rs-angle-small-up"></i></a>
+                                                            </div>
                                                         </div>
+
                                                         <!-- <div style="margin-top: 3px;">
                                                             <button style="background:none; border: none; font-weight: bold;">REMOVE</button>
                                                         </div> -->
@@ -274,42 +304,131 @@
                                                         <td colspan="2"><em>Free Shipping</em></td>
                                                     </tr>
                                                     <tr>
+                                                        <th>Discount</th>
+                                                        <td id="couponAmount" colspan="2">No coupon</td>
+                                                    </tr>
+                                                    <tr>
                                                         <th>Total</th>
                                                         <td id="checkout-total" colspan="2" class="product-subtotal">
                                                             <span class="font-xl text-brand fw-900">₹<%= cartItems.total
-                                                                    %></span></td>
+                                                                    %></span>
+                                                        </td>
                                                     </tr>
-                                                    <% } else { %>
-                                                        <tr>
-                                                            <td colspan="6">No products in cart</td>
-                                                        </tr>
-                                                        <% } %>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                            <div class="payment_method">
-                                <div class="mb-25">
-                                    <h5>Payment</h5>
+
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="payment_option">
-                                    <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option"
-                                            id="Cash On Delivery" checked="">
-                                        <label class="form-check-label" for="Cash On Delivery" data-bs-toggle="collapse"
-                                            data-target="#bankTranfer" aria-controls="bankTranfer">Cash on
-                                            Delivery</label>
+                                <div>
+                                    <a href="#" id="popup-link" onmouseover="this.style.color='red';" onmouseout="this.style.color='black';">Click for Applicable Coupons</a>
+                                    <p id="is_Applied" style="display: none;">Coupon Applied</p>
+                                    <p style="color: red;" id="error-message"></p>
+                                    <div id="couponCode" class="input-group" style="margin-top: 5px;">
+                                        <input type="text" class="form-control" id="enteredCoupon" name="couponId" placeholder="Enter coupon ID" required>
+                                        <input type="text" class="form-control" style="display: none; color: rgb(255, 115, 0);" id="appliedCoupon" name="couponId" required>
+                                        <button type="button" id="couponApplied" onclick="couponApply()" class="btn btn-secondary" style="margin-left: 10px;">Apply</button>
+                                        <button type="button" id="couponRemoved" onclick="removeCoupon()" class="btn btn-secondary" style="margin-left: 10px; display: none;">Remove</button>
                                     </div>
-                                    <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option"
-                                            id="Razorpay" checked="">
-                                        <label class="form-check-label" for="Razorpay" data-bs-toggle="collapse"
-                                            data-target="#Razorpay" aria-controls="Razorpay">Razorpay</label>
+                                </div>
+                                
+
+                                <div id="popup-window">
+                                    <div style="padding-left: 10px;">
+                                        <h5 class="mb-0" style=" color: black;">Available Coupons</h5>
+                                        <div>
+                                            <div
+                                                style="display: flexbox; width: 700px; border-style: solid; border-width: 0.5px; border-color: black;">
+                                                <% if (coupons && coupons.length> 0) { %>
+                                                    <% coupons.forEach(function(coupon) { %>
+                                                        <div class="col-md-12 mb-12">
+                                                            <div
+                                                                style="background-color: rgb(255, 255, 255); padding: 10px; border-radius: 5px;">
+                                                                <div>
+                                                                    <div style="display: flex;">
+                                                                        <p
+                                                                            style="margin-left: 0px; font-size: medium; font-weight: bold; color: rgb(1, 119, 1);">
+                                                                            <%= coupon.description %>
+                                                                        </p>
+                                                                        <p style="margin-left: 400px;">Valid till <%=
+                                                                                coupon.expireDate %>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p>Get extra <%= coupon.maximumDiscount %>
+                                                                        </p>
+                                                                        <p>Spend a minimum of <%= coupon.minimumAmount
+                                                                                %> to
+                                                                                use this coupon.</p>
+                                                                        <div style="display: flex;">
+                                                                            <p>You can use this coupon for purchases up
+                                                                                to
+                                                                                <%= coupon.maximumAmount %> max.
+                                                                            </p>
+                                                                            <div style="margin-left: auto;">
+                                                                                <p
+                                                                                    style="color: rgb(255, 153, 0); font-weight: bold;">
+                                                                                    Coupon code: <%= coupon.couponId %>
+                                                                                </p>
+                                                                            </div>
+                                                                            <div>
+                                                                                <button class="btn btn-secondary"
+                                                                                    id="close-button"
+                                                                                    style="padding: 0.125rem 0.25rem; font-size: 0.575rem; margin-left: 4px; margin-top: 3px;"
+                                                                                    onclick="copyCoupon('<%= coupon.couponId %>')">Copy</button>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            style="margin-top: 3px; border-top: 1px solid black; width: 100%;">
+                                                        </div>
+                                                        <% }); %>
+                                                            <% } else { %>
+                                                                <div class="col-md-12">
+                                                                    <p>No more coupons available right now. Keep in
+                                                                        touch
+                                                                        with us!</p>
+                                                                </div>
+                                                                <% } %>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <br>
+                                    <button type="submit" onclick="closePopup()" id="close-button"
+                                        class="btn btn-secondary">Close</button>
                                 </div>
 
+                                <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                <div class="payment_method">
+                                    <div class="mb-25">
+                                        <h5>Payment</h5>
+                                    </div>
+                                    <div class="payment_option">
+                                        <div class="custome-radio">
+                                            <input class="form-check-input" required="" type="radio"
+                                                name="payment_option" id="Cash On Delivery" checked="">
+                                            <label class="form-check-label" for="Cash On Delivery"
+                                                data-bs-toggle="collapse" data-target="#bankTranfer"
+                                                aria-controls="bankTranfer">Cash on
+                                                Delivery</label>
+                                        </div>
+                                        <div class="custome-radio">
+                                            <input class="form-check-input" required="" type="radio"
+                                                name="payment_option" id="Razorpay" checked="">
+                                            <label class="form-check-label" for="Razorpay" data-bs-toggle="collapse"
+                                                data-target="#Razorpay" aria-controls="Razorpay">Razorpay</label>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
-                        </div>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6">No products in cart</td>
+                                </tr>
+                                <% } %>
                     </div>
                 </div>
                 <% if (cartItems.products.length> 0 ) { %>
@@ -323,6 +442,102 @@
     </main>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+    <script>
+        var popupLink = document.getElementById("popup-link");
+        var popupWindow = document.getElementById("popup-window");
+        var closeButton = document.getElementById("close-button");
+        popupLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            popupWindow.style.display = "block";
+        });
+        function closePopup() {
+            popupWindow.style.display = "none";
+        };
+    </script>
+
+    <script>
+        function copyCoupon(couponId) {
+            var tempInput = document.createElement('input');
+            tempInput.value = couponId;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Coupon code copied to clipboard!');
+        }
+    </script>
+
+    <script>
+
+        async function couponApply() {
+
+            const couponId = document.getElementById('enteredCoupon').value
+            const couponApplied = document.getElementById('couponApplied');
+            const popupLink = document.getElementById('popup-link');
+            const couponCode = document.getElementById('couponCode');
+            const couponRemoved = document.getElementById('couponRemoved');
+            const is_Applied = document.getElementById('is_Applied');
+            const enteredCoupon = document.getElementById('enteredCoupon');
+            const appliedCoupon = document.getElementById('appliedCoupon');
+            const response = await fetch(`/couponApply/${couponId}`, {
+                method: 'get'
+            })
+            const data = await response.json();
+            if (response.ok) {
+                couponApplied.style.display = 'none';
+                popupLink.style.display = 'none';
+                enteredCoupon.style.display = 'none';
+                couponRemoved.style.display = 'block';
+                is_Applied.style.display = 'block';
+                enteredCoupon.style.display = 'none';
+                appliedCoupon.style.display = 'block';
+                appliedCoupon.value = couponId;
+                document.getElementById('couponAmount').innerText = data.success;
+                document.getElementById('checkout-total').innerText = "₹" + data.newTotal
+                document.getElementById("appliedCoupon").readOnly = true;               
+            }else{
+                document.getElementById('error-message').innerText = data.error;
+            }
+            removeInnerText();
+                function removeInnerText() {
+                    const message = document.getElementById('error-message');
+                    setTimeout(() => {
+                        message.innerText = '';
+                    }, 2000);
+                    document.getElementById('enteredCoupon').value = '';
+                }
+        }
+
+        async function removeCoupon() {
+            const couponId = document.getElementById('appliedCoupon').value
+            const couponApplied = document.getElementById('couponApplied');
+            const popupLink = document.getElementById('popup-link');
+            const couponCode = document.getElementById('couponCode');
+            const couponRemoved = document.getElementById('couponRemoved');
+            const is_Applied = document.getElementById('is_Applied');
+            const enteredCoupon = document.getElementById('enteredCoupon');
+            const appliedCoupon = document.getElementById('appliedCoupon');
+
+            const response = await fetch(`/couponRemove/${couponId}`, {
+                method: 'get'
+            })
+            const data = await response.json();
+            if (response.ok) {
+                couponRemoved.style.display = 'none';
+                is_Applied.style.display = 'none';
+                enteredCoupon.style.display = 'block';
+                couponApplied.style.display = 'block';
+                popupLink.style.display = 'block';
+                enteredCoupon.style.display = 'block';
+                appliedCoupon.style.display = 'none';
+                document.getElementById('couponAmount').innerText = data.success;
+                document.getElementById('checkout-total').innerText = "₹" + data.newTotal
+                document.getElementById('enteredCoupon').value = '';
+            }
+        }
+    </script>
 
 
 
@@ -474,99 +689,100 @@
         }
     </script>
 
-<script>
-    let selectedAddressId;
+    <script>
+        let selectedAddressId;
 
-    function addressHandle() {
-        // Find the selected address ID
-        selectedAddressId = document.querySelector('input[name="deliveryAddress"]:checked').value;
-    }
-
-    async function placeOrder(cartId) {
-        try {
-            // Find the selected payment option ID
-            let selectedPaymentOption = document.querySelector('input[name="payment_option"]:checked').id;
-
-            // Make the fetch request to place the order
-            const response = await fetch('/placeorder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ cartId: cartId, addressId: selectedAddressId, paymentOption: selectedPaymentOption })
-            });
-
-            const data = await response.json();
-            if (response.success) {
-                // Order placed successfully, redirect to order page
-                window.location.href = "/orderpage";
-            } else {
-                console.log(data.razorpay);
-                razorpayPayment(data.razorpay,cartId,selectedAddressId,selectedPaymentOption);
-            }
-        } catch (error) {
-            console.error('Error:', error);
+        function addressHandle() {
+            // Find the selected address ID
+            selectedAddressId = document.querySelector('input[name="deliveryAddress"]:checked').value;
         }
-    }
 
-    function razorpayPayment(order,cartId,selectedAddressId,selectedPaymentOption) {
-        if (order) {
-            var options = {
-                "key": "rzp_test_x4yKuLEYJQuXwJ",
-                "amount": order.amount,
-                "currency": "INR",
-                "name": "LuxXWatch",
-                "description": "Test Transaction",
-                "image": "https://example.com/your_logo",
-                "order_id": order.id,
-                "handler": function (response) {
-                    // alert(response.razorpay_payment_id);
-                    // alert(response.razorpay_order_id);
-                    // alert(response.razorpay_signature);
+        async function placeOrder(cartId) {
+            try {
+                // Find the selected payment option ID
+                let couponId = document.getElementById('appliedCoupon').value
+                let selectedPaymentOption = document.querySelector('input[name="payment_option"]:checked').id;
+
+                // Make the fetch request to place the order
+                const response = await fetch('/placeorder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ cartId: cartId, couponId: couponId, addressId: selectedAddressId, paymentOption: selectedPaymentOption })
+                });
+
+                const data = await response.json();
+                if (data.cod_success) {
+                    // Order placed successfully, redirect to order page
                     window.location.href = "/orderpage";
-                    verifyPayment(response, order,cartId,selectedAddressId,selectedPaymentOption);
-                },
-                "prefill": {
-                    "name": "Gaurav Kumar",
-                    "email": "gaurav.kumar@example.com",
-                    "contact": "9000090000"
-                },
-                "notes": {
-                    "address": "Razorpay Corporate Office"
-                },
-                "theme": {
-                    "color": "#3399cc"
+                } else {
+                    console.log(data.razorpay);
+                    razorpayPayment(data.razorpay, data.id, cartId, couponId, selectedAddressId, selectedPaymentOption);
                 }
-            };
-            // Call the Razorpay payment method
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
-        } else {
-            console.error('Invalid order object or amount property is missing');
-            return;
-        }
-    }
-
-    async function verifyPayment(payment, order, cartId, selectedAddressId, selectedPaymentOption) {
-        try {
-            const response = await fetch('/verifyPayment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ payment, order, cartId, selectedAddressId, selectedPaymentOption })
-            });
-            if (response.razorpay_success) {
-                // Order placed successfully, redirect to order page
-                window.location.href = "/orderpage";
-            } else {
-                console.error('Failed to verify payment');
+            } catch (error) {
+                console.error('Error:', error);
             }
-        } catch (error) {
-            console.error('Error verifying payment:', error);
         }
-    }
-</script>
+
+        function razorpayPayment(order, key_id, cartId, couponId, selectedAddressId, selectedPaymentOption) {
+            if (order) {
+                var options = {
+                    "key": key_id,
+                    "amount": order.amount,
+                    "currency": "INR",
+                    "name": "LuxXWatch",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": order.id,
+                    "handler": function (response) {
+                        // alert(response.razorpay_payment_id);
+                        // alert(response.razorpay_order_id);
+                        // alert(response.razorpay_signature);
+                        window.location.href = "/orderpage";
+                        verifyPayment(response, order, cartId, couponId, selectedAddressId, selectedPaymentOption);
+                    },
+                    "prefill": {
+                        "name": "Gaurav Kumar",
+                        "email": "gaurav.kumar@example.com",
+                        "contact": "9000090000"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                // Call the Razorpay payment method
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+            } else {
+                console.error('Invalid order object or amount property is missing');
+                return;
+            }
+        }
+
+        async function verifyPayment(payment, order, cartId, couponId, selectedAddressId, selectedPaymentOption) {
+            try {
+                const response = await fetch('/verifyPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ payment, order, cartId, couponId, selectedAddressId, selectedPaymentOption })
+                });
+                if (response.razorpay_success) {
+                    // Order placed successfully, redirect to order page
+                    window.location.href = "/orderpage";
+                } else {
+                    console.error('Failed to verify payment');
+                }
+            } catch (error) {
+                console.error('Error verifying payment:', error);
+            }
+        }
+    </script>
 
 
 

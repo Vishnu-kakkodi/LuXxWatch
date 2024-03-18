@@ -40,6 +40,11 @@
                                                     class="fi-rs-marker mr-10"></i>My Address</a>
                                         </li>
                                         <li class="nav-item">
+                                            <a class="nav-link" id="address-tab" href="/coupons" role="tab" aria-controls="coupons" aria-selected="true">
+                                                <i class="fi-rs-marker mr-10"></i>My Coupons
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#wallet"
                                                 role="tab" aria-controls="address" aria-selected="true"><i
                                                     class="fi-rs-marker mr-10"></i>My Wallet</a>
@@ -161,11 +166,11 @@
                                             </div>
                                             
                                             <div class="card-body">
+                                                <% if (wallet && wallet.transationHistory) { %>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <h6>Wallet Balance: ₹<%= wallet.walletbalance %></h6>
                                                         <h6>Total Refund: ₹<%= wallet.totalRefund %></h6>
-                                                        <h6>Total Transaction Amount: ₹<%= wallet.totalTransation %></h6>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <form>
@@ -181,27 +186,27 @@
                                                     <table class="table">
                                                         <thead>
                                                             <tr>
-                                                                <th>Transaction ID</th>
+                                                                <th>Transaction Mode</th>
                                                                 <th>Date</th>
                                                                 <th>Type</th>
                                                                 <th>Amount</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <% wallet.forEach(wallet=> { %>
-                                                            <tr>
-                                                                <td><%= wallet.orderId %></td>
-                                                                <td><%= wallet.createdAt %></td>
-                                                                <td><%= wallet.orderId %></td>
-                                                                <td>₹ <%= wallet.totalTransation %></td>
-                                                            </tr>
-
-                                                            <% }) %>
+                                                                <% wallet.transationHistory.forEach((transation) => { %>
+                                                                    <tr>
+                                                                        <td><%= transation.transationMode %></td>
+                                                                        <td><%= transation.createdAt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }) %></td>
+                                                                        <td><%= transation.paymentType %></td>
+                                                                        <td>₹ <%= transation.transationamount %></td>
+                                                                    </tr>
+                                                                <% }) %> 
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
+                                        <% } %>
                                     </div>
                                     
                                     
@@ -467,17 +472,17 @@
             const data = await response.json();
             if (data.success) {
                 console.log(data.razorpay);
-                razorpayPayment(data.razorpay);
+                razorpayPayment(data.razorpay,data.id);
             }
         } catch (error) {
             console.error('Error:', error);
         }
     }
 
-    function razorpayPayment(order) {
+    function razorpayPayment(order, key_id) {
         if (order) {
             var options = {
-                "key": "rzp_test_x4yKuLEYJQuXwJ",
+                "key": key_id,
                 "amount": order.amount,
                 "currency": "INR",
                 "name": "LuxXWatch",

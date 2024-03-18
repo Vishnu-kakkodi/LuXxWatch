@@ -55,7 +55,7 @@ const addWallet = async (req, res) => {
                 res.status(500).json({ error: 'Error creating Razorpay order' });
             } else {
                 console.log("New Order", order);
-                res.json({ success: true, razorpay: order });
+                res.json({ success: true, razorpay: order, id: RAZORPAY_ID_KEY });
             }
         });
 
@@ -72,19 +72,18 @@ const addWallet = async (req, res) => {
 
 const walletMoney = async (req, res) => {
     try {
-        console.log("walletmoney");
         const email = req.session.email;
         const userData = await User.findOne({ email: email });
 
         const wallet = await Wallet.findOne({ user: userData._id });
 
-        let balance = wallet ? wallet.walletbalance : 0; // If wallet exists, get balance; otherwise, set to 0
+        let balance = wallet ? wallet.walletbalance : 0;
         balance = balance + req.body.order.amount;
 
         if (wallet) {
             wallet.walletbalance = balance;
             wallet.transationHistory.push({
-                date: new Date().toISOString(),
+                createdAt: Date.now(),
                 paymentType: "Razorpay",
                 transationMode: "Credit",
                 transationamount: req.body.order.amount
@@ -95,7 +94,7 @@ const walletMoney = async (req, res) => {
                 user: userData._id,
                 walletbalance: balance,
                 transationHistory: [{
-                    date: new Date().toISOString(),
+                    createdAt: Date.now(),
                     paymentType: "Razorpay",
                     transationMode: "Credit",
                     transationamount: req.body.order.amount
@@ -113,9 +112,36 @@ const walletMoney = async (req, res) => {
 };
 
 
+const cancelRefund = async (req,res)=>{
+    try{
+        const orderId = req.params.orderId;
+        console.log(orderId);
+        const order = await Order.findOne({_id: orderId}).populate('user');
+        const wallet = await Wallet.findOne({ user: order.user });
+        wallet.walletbalance = wallet.walletbalance + order.total;
+        wallet.transationHistory.push({
+            createdAt: Date.now(),
+            paymentType: "Refund",
+            transationMode: "Credit",
+            transationamount: order.total
+        });
+        let refund = wallet ? wallet.totalRefund : 0;
+        refund = refund + order.total;
+        wallet.totalRefund = refund;
+        await wallet.save();
+        order.refund = "1";
+        await order.save();
+        res.json({success: true})
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
 module.exports = {
 
     addWallet,
-    walletMoney
+    walletMoney,
+    cancelRefund
 
 }

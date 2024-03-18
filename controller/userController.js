@@ -293,12 +293,12 @@ const profile = async (req, res) => {
         const categories = await Category.find();
         const useraddress = await Address.find({ user: userData._id });
         const order = await Order.find({ user: userData._id });
-        const wallet = await Wallet.find({user:userData._id});
-        console.log(order);
+        const wallet = await Wallet.findOne({user:userData._id});
+        console.log(wallet);
         res.locals.categories = categories;
         res.locals.userData = userData;
         // res.locals.useraddress = useraddress;
-        res.render('profile', { userData, useraddress, categories, order, wallet });
+        res.render('profile', { userData:userData, useraddress:useraddress, categories:categories, order:order, wallet:wallet });
     } catch (error) {
         console.log(error.message)
     }

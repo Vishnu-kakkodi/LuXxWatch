@@ -12,6 +12,7 @@ const Category = require("../model/categoryModel.js");
 const Address = require("../model/addressModel.js");
 const Cart = require("../model/cartModel.js");
 const Order = require("../model/orderModel.js");
+const Coupon = require("../model/couponModel.js");
 const { Long } = require('mongodb')
 
 
@@ -44,9 +45,12 @@ const addTocart = async (req, res) => {
             };
     
             let cart = await Cart.findOne({ user: req.session.userId });
+            console.log("hoooo");
             if (!cart) {
-                cart = new Cart({ user: req.session.userId, products: [], total: 0 });
+                cart = new Cart({ user: req.session.userId, products: [], total: 0, coupon_applied: 'false' });
             }
+            console.log("hoooo");
+            await cart.save();
     
             const existingProductIndex = cart.products.findIndex(p => p.product.toString() === productId);
             if (existingProductIndex !== -1) {
@@ -144,7 +148,18 @@ const checkoutpage = async (req,res)=>{
         const userData = await User.findOne({email:email});
         const useraddress = await Address.find({user:userData._id});
         const cartItems = await Cart.findOne({ user: userData._id }).populate('products.product');
-        res.render('checkout',{categories,userData,useraddress,cartItems});
+        var totalAmount = cartItems.total;
+        console.log(userData.appliedCoupon);
+        const couponIds = userData.appliedCoupon.map(coupon => coupon);
+        console.log(couponIds);
+        let coupons;
+        coupons = await Coupon.find({$and:[
+            {minimumAmount:{$lte:totalAmount}},
+            {maximumAmount:{$gte:totalAmount}},
+            {couponId:{$nin:couponIds}}
+        ]});
+        console.log(coupons);
+        res.render('checkout',{categories,userData,useraddress,cartItems,coupons});
         console.log("hall");
         
     }catch(error){

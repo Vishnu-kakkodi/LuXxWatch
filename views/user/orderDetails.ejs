@@ -134,9 +134,13 @@
                                     Phone: +1 (800) 555-154-52
                                 </p> -->
                                 <p>
-                                    <%= orderDetails.paymentOption %>
+                                <p style="color: black;">Payment Mode: <%= orderDetails.paymentOption %></p>
+                                <% if((orderDetails.paymentOption === 'Cash On Delivery' && (orderDetails.status === 'Returned'))|| (orderDetails.paymentOption === 'Razorpay' && (orderDetails.status === 'Cancelled' || orderDetails.status === 'Returned'))) { %>
+                                <p id="statusRefund" style="color: black;"></p>
                                 </p>
+                                <% } %>
                             </div>
+                            <% if(orderDetails.status !== 'Cancelled' && orderDetails.status !== 'Returned' && orderDetails.status !== 'Delivered') { %>
                             <form id="Formcancel">
                                 <div id="cancel" class="h-25 pt-4">
                                     <div class="mb-3">
@@ -147,6 +151,19 @@
                                     <button type="submit" class="btn btn-primary">Cancel</button>
                                 </div>
                             </form>
+                            <% } %>
+                            <% if(orderDetails.status === 'Delivered') { %>
+                                <form id="Formreturn">
+                                    <div id="return" class="h-25 pt-4">
+                                        <div class="mb-3">
+                                            <label style="color: red; font-weight: bold;">Return</label>
+                                            <textarea class="form-control" name="notes" id="notes"
+                                                placeholder="Type reson"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Return</button>
+                                    </div>
+                                </form>
+                                <% } %>
                         </div> <!-- col// -->
                     </div>
                 </div> <!-- card-body end// -->
@@ -155,15 +172,20 @@
 
 
         <script>
-            if ('<%= orderDetails.status %>' !== 'Cancelled') {
-                const cancel = document.getElementById('cancel');
-                cancel.style.display = 'block'
-            } else {
+            if ('<%= orderDetails.status %>' === "Cancelled") {
+                document.getElementById('stausOforder').innerText = data.success;
                 const cancel = document.getElementById('cancel');
                 cancel.style.display = 'none'
             }
+        </script>
 
 
+        <script>
+            if (('<%= orderDetails.status %>' === "Cancelled" || '<%= orderDetails.status %>' === "Returned") && '<%= orderDetails.refund %>' === "1") {
+                document.getElementById('statusRefund').innerText = 'Successfully refunded your bill amount'
+            }else if(('<%= orderDetails.status %>' === "Cancelled" || '<%= orderDetails.status %>' === "Returned") && '<%= orderDetails.refund %>' === "0"){
+                document.getElementById('statusRefund').innerText = 'Refund is underprocess'
+            }
         </script>
 
 
@@ -181,10 +203,11 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) {
+                        if (data.success || data.cancelRefund) {
                             document.getElementById('stausOforder').innerText = data.success;
-                                const cancel = document.getElementById('cancel');
-                                cancel.style.display = 'none'                              
+                            const cancel = document.getElementById('cancel');
+                            cancel.style.display = 'none'
+                            document.getElementById('statusRefund').innerText = data.cancelRefund;
 
                         } else {
                             alert('Order Cancellation failed');
@@ -196,6 +219,37 @@
 
             });
         </script>
+
+<script>
+    const formreturn = document.getElementById('Formreturn');
+    formreturn.addEventListener('submit', function submitForm(event) {
+        event.preventDefault();
+
+        const preformData = new FormData(formreturn);
+        const formData = new URLSearchParams(preformData);
+
+        fetch('/returnOrder/<%= orderDetails._id %>', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success || data.returnRefund) {
+                    document.getElementById('stausOforder').innerText = data.success;
+                    const returnOrder = document.getElementById('return');
+                    returnOrder.style.display = 'none'
+                    document.getElementById('statusRefund').innerText = data.returnRefund;
+
+                } else {
+                    alert('Order Return failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+    });
+</script>
 
 
         <%- include('../layouts/userFooter.ejs') %>

@@ -68,44 +68,44 @@
         }
 
         .dropdown {
-    position: relative;
-    display: inline-block;
-}
+            position: relative;
+            display: inline-block;
+        }
 
-.dropdown-toggle {
-    text-decoration: none;
-    color: black;
-    font-size: medium;
-    font-weight: bold;
-    padding: 8px 12px;
-}
+        .dropdown-toggle {
+            text-decoration: none;
+            color: black;
+            font-size: medium;
+            font-weight: bold;
+            padding: 8px 12px;
+        }
 
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 8px 0;
-    z-index: 1;
-}
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px 0;
+            z-index: 1;
+        }
 
-.dropdown-menu option {
-    display: block;
-    padding: 8px 12px;
-    font-size: medium;
-    font-weight: bold;
-    text-decoration: none;
-    color: black;
-}
+        .dropdown-menu option {
+            display: block;
+            padding: 8px 12px;
+            font-size: medium;
+            font-weight: bold;
+            text-decoration: none;
+            color: black;
+        }
 
-.dropdown-menu option:hover {
-    background-color: #a994f8;
-}
+        .dropdown-menu option:hover {
+            background-color: #a994f8;
+        }
 
-.dropdown:hover .dropdown-menu {
-    display: block;
-}
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
 
 
 
@@ -115,25 +115,27 @@
         }
 
         .svgInject {
-            filter: invert(25%) sepia(88%) saturate(5000%);
+            filter: invert(100%) sepia(0%) saturate(0%);
+            /* Change color to white */
+            color: white;
         }
     </style>
 
-<script>
-    async function searchData(event) {
-        event.preventDefault();
-        const searchItem = document.getElementById('searchItem').value;
-        try {
-            // Construct the URL based on the search input value
-            const url = `/searchItem?searchItem=${encodeURIComponent(searchItem)}`;
-            console.log(url);
-            // Redirect the user to the constructed URL
-            window.location.href = url;
-        } catch (error) {
-            console.error('Error:', error);
+    <script>
+        async function searchData(event) {
+            event.preventDefault();
+            const searchItem = document.getElementById('searchItem').value;
+            try {
+                // Construct the URL based on the search input value
+                const url = `/searchItem?searchItem=${encodeURIComponent(searchItem)}`;
+                console.log(url);
+                // Redirect the user to the constructed URL
+                window.location.href = url;
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
-    }
-</script>
+    </script>
 
 
 
@@ -144,25 +146,28 @@
 
 <body>
 
-    <header class="header-area header-style-1 header-height-2">
-        <div class="header-middle header-middle-ptb-1 d-none d-lg-block"
-            style="background: linear-gradient(to right, #9d34ff, #d4aaaa), linear-gradient(to right, #5ff0fa, #8e35e2);">
+    <header class="header-area header-style-1 header-height-2"
+        style="background-color: rgb(17, 16, 16); margin-bottom: 0px;">
+        <div class="header-middle header-middle-ptb-1 d-none d-lg-block">
             <div class="container" style="position: sticky; z-index: 100;">
                 <div class="header-wrap" style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="logo logo-width-1">
-                        <a href="index.html"><img src="/user-assets/imgs/theme/Logg.png" alt="logo"></a>
+                        <a href="index.html"><img src="/user-assets/imgs/theme/Loggimg.png" alt="logo"></a>
                     </div>
                     <div class="header-right" style="display: flex; gap: 20px; align-items: center;">
-                        <div style="width: 500px; border-style: solid; border-color: black;">
+                        <div style="width: 500px; border-style: solid; border-color: rgb(255, 255, 255);">
                             <form class="searchform" style="display: flex;">
-                                <div class="input-group" style="display: flex; border-style: solid; border-color: black;">
-                                    <input list="search_terms" id="searchItem" type="text" class="form-control" style="background-color: white; height: 40px;" placeholder="Search term">
+                                <div class="input-group"
+                                    style="display: flex; border-style: solid; border-color: rgb(255, 255, 255);">
+                                    <input list="search_terms" id="searchItem" type="text" class="form-control"
+                                        style="background-color: white; height: 40px;" placeholder="Search term">
                                     <button class="custom-btn" onclick="searchData(event)" style="height: 40px;">
-                                        <img alt="Evara" src="/user-assets/imgs/theme/icons/search.png" style="height: 60%;">
+                                        <img alt="Evara" src="/user-assets/imgs/theme/icons/search.png"
+                                            style="height: 60%;">
                                     </button>
                                 </div>
                             </form>
-                            
+
                         </div>
 
                         <div class="header-action-right">
@@ -175,7 +180,8 @@
                                 </div>
                                 <div class="header-action-icon-2">
                                     <a class="mini-cart-icon" href="/cart">
-                                        <img alt="Evara" src="/user-assets/imgs/theme/icons/icon-cart.svg">
+                                        <img class="svgInject" alt="Evara"
+                                            src="/user-assets/imgs/theme/icons/icon-cart.svg">
                                         <span id="cartQty" class="pro-count blue"
                                             style="display: none; width: 20px; height: 20px; color: rgb(0, 0, 0); font-weight: bold; font-size: medium;"></span>
                                     </a>
@@ -186,15 +192,14 @@
                                             <img src="/user-assets/imgs/theme/dummy-profile-pic-300x300.jpg"
                                                 class="img-sm img-thumbnail rounded-circle" alt="Item"
                                                 style="max-width: 40px; max-height: 40px; margin-right: 5px;">
-                                            <a href="#">
+                                            <a href="#" style="color: white;">
                                                 <%= userData.name %><i class="fi-rs-angle-small-down"></i>
                                             </a>
-                                            <ul class="language-dropdown"
-                                                style="border-radius: 50%; margin-top: 20px; background-color: #ffd7dd;">
+                                            <ul class="language-dropdown" style=" margin-top: 20px;">
                                                 <li><a href="/profile" onmouseover="this.style.color='blue'"
-                                                        onmouseout="this.style.color='black'">My Profile</a></li>
+                                                        onmouseout="this.style.color='white'">My Profile</a></li>
                                                 <li><a href="/logout" onmouseover="this.style.color='blue'"
-                                                        onmouseout="this.style.color='black'">Logout</a></li>
+                                                        onmouseout="this.style.color='white'">Logout</a></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -204,19 +209,19 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 3px; border-top: 1px solid black; width: 100%;"></div>
+                <div style="margin-top: 3px; border-top: 1px solid rgb(255, 255, 255); width: 100%;"></div>
 
                 <div class="nav-container" style="margin-top: 20px;">
                     <nav>
                         <ul class="flex-container">
                             <li>
-                                <a class="active" href="/home">Home</a>
+                                <a class="active" style="color: white;" href="/home">Home</a>
                             </li>
                             <li>
-                                <a href="/shop">Shop</a>
+                                <a href="/shop" style="color: white;">Shop</a>
                             </li>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle">Category</a>
+                                <a href="#" class="dropdown-toggle" style="color: white;">Category</a>
                                 <div class="dropdown-menu">
                                     <option value="#" selected disabled>Category</option>
                                     <option value="/men">Men</option>
@@ -225,11 +230,11 @@
                                     <option value="/couple">Couple</option>
                                 </div>
                             </li>
-                            
-                            
+
+
 
                             <li>
-                                <a href="/contact">Contact</a>
+                                <a href="/contact" style="color: white;">Contact</a>
                             </li>
                         </ul>
                     </nav>

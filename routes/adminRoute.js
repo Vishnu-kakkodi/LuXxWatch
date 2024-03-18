@@ -40,6 +40,8 @@ const categoryController = require("../controller/categoryController");
 
 const productController = require("../controller/productController");
 
+const paymentController = require("../controller/paymentController");
+
 const auth = require("../middleware/adminAuth");
 
 admin_route.use(session({
@@ -162,6 +164,27 @@ admin_route.get("/orderlist",auth.isLogin, adminController.orderList);
 admin_route.get("/detailedOrder", auth.isLogin, adminController.detailedOrder);
 
 admin_route.put("/changeStatus/:orderId", auth.isLogin, adminController.ChangeStatus);
+
+// -------------cancelRefund-----------------//
+
+
+admin_route.get("/cancelRefund/:orderId",auth.isLogin, paymentController.cancelRefund);
+
+
+// -------------salesReport-----------------//
+
+admin_route.get("/salereport",auth.isLogin, adminController.saleReport);
+
+
+// -------------CouponManagement-----------------//
+
+admin_route.get("/coupon",auth.isLogin, adminController.couponPage);
+
+admin_route.post("/addcoupon",auth.isLogin, adminController.addCoupon);
+
+admin_route.get("/blockCoupon/:couponId",auth.isLogin, adminController.blockCoupon);
+
+admin_route.get("/UnblockCoupon/:couponId",auth.isLogin, adminController.unblockCoupon);
 
 
 admin_route.get('*',(req,res)=>{

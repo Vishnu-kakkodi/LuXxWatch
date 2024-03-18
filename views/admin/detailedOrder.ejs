@@ -17,6 +17,7 @@
                                     <%= orders.status %>
                                 </option>
                                 <option>Pending</option>
+                                <option>Placed</option>
                                 <option>Processing</option>
                                 <option>Shipped</option>
                                 <option>Delivered</option>
@@ -152,7 +153,8 @@
                             <div class="box shadow-sm bg-light">
                                 <h6 class="mb-15">Payment info</h6>
                                 <p>
-                                    <%= orders.paymentOption %>
+                                    <p style="color: black;">Payment Mode: <%= orders.paymentOption %></p>
+                                    <p id="refundstatus" style="color: black; display: none;">Amount <%= orders.total %> Successfully refunded</p>
                                 </p>
                             </div>
                             <div class="h-25 pt-4">
@@ -162,12 +164,25 @@
                                     readonly><%= orders.resonOfcancel %></textarea>
                                 </div>
                             </div>
+                            <div class="h-25 pt-4 mt-50">
+                                <div class="mb-3">
+                                    <a class="btn btn-primary" type="button" id="refund" style="display: none;" href="#" onclick="refund('<%= orders._id %>')">Approve for Refund</a>
+                                </div>
+                            </div>
                         </div> <!-- col// -->
                     </div>
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
         </section> <!-- content-main end// -->
     </main>
+
+    <script>
+            if ((('<%= orders.status %>' === 'Cancelled' || '<%= orders.status %>' === 'Returned')  && '<%= orders.paymentOption %>' === 'Razorpay') || ('<%= orders.status %>' === 'Returned' && '<%= orders.paymentOption %>' === 'Cash On Delivery') ) {
+                const refund = document.getElementById('refund');
+                refund.style.display = 'block';
+            }
+
+    </script>
 
     <script>
         async function changeStatus(OrderId) {
@@ -190,6 +205,25 @@
 
             } catch (error) {
                 console.error('Error:', error);
+            }
+        }
+    </script>
+
+    <script>
+        async function refund(orderId){
+            try{
+                const response = await fetch (`/admin/cancelRefund/${orderId}`, {
+                    method:'GET'
+                });
+                const data = await response.json();
+                if(data.success){
+                    const refundstatus = document.getElementById('refundstatus');
+                    refundstatus.style.display = 'block';
+                    const refund = document.getElementById('refund');
+                    refund.style.display = 'none';
+                }
+            }catch(error){
+                console.log(error.message);
             }
         }
     </script>

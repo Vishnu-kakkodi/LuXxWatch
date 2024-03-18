@@ -1,5 +1,7 @@
 const User = require("../model/userModel");
 const Order = require("../model/orderModel");
+const Wallet = require("../model/walletModel");
+const Coupon = require("../model/couponModel");
 const bcrypt = require('bcrypt');
 
 const securePassword = async (password) => {
@@ -161,6 +163,78 @@ const ChangeStatus = async (req,res)=>{
 }
 
 
+const saleReport = async(req,res)=>{
+    try{
+        res.render('salesreport');
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
+const couponPage = async(req,res)=>{
+    try{
+        const coupon = await Coupon.find();
+        res.render('coupon',{coupon});
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
+const addCoupon = async(req,res)=>{
+    try{
+        const {couponId,description,maximumDiscount,minimumAmount,maximumAmount,expireDate,maximumUser,discountAmount} = req.body;
+        const coupon = new Coupon ({
+            couponId,
+            description,
+            maximumDiscount,
+            minimumAmount,
+            maximumAmount,
+            expireDate,
+            is_active:1,
+            maximumUser,
+            discountAmount,
+            maximumUser
+        })
+        await coupon.save();
+        res.json({ success: true });
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
+const blockCoupon = async(req,res)=>{
+    try{
+        const couponId = req.params.couponId;
+        const coupon = await Coupon.findById({_id:couponId})
+        coupon.is_active = 0
+        await coupon.save();
+        await Coupon.findByIdAndUpdate(couponId, { $set: { is_active: 0 } });
+        res.status(200).json({ Success: true });
+    }catch(error){
+        console.log(error.message);
+        res.status(500).json({ error: 'Failed to block' });
+    }
+}
+
+
+const unblockCoupon = async(req,res)=>{
+    try{
+        const couponId = req.params.couponId;
+        const coupon = await Coupon.findById({_id:couponId})
+        coupon.is_active = 1
+        await coupon.save();
+        await Coupon.findByIdAndUpdate(couponId, { $set: { is_active: 1 } });
+        res.status(200).json({ Success: true });
+    }catch(error){
+        console.log(error.message);
+        res.status(500).json({ error: 'Failed to unblock' });
+    }
+}
+
+
 module.exports = {
     securePassword,
     loadLogin,
@@ -172,5 +246,10 @@ module.exports = {
     userunBlock,
     orderList,
     detailedOrder,
-    ChangeStatus
+    ChangeStatus,
+    saleReport,
+    couponPage,
+    addCoupon,
+    blockCoupon,
+    unblockCoupon
 }

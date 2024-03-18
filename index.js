@@ -16,7 +16,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        maxAge: 3600000 // Session timeout in milliseconds (1 hour)
+        maxAge: 3600000 
     }
 
 

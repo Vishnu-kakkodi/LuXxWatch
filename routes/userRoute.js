@@ -14,6 +14,7 @@ const cartController = require("../controller/cartController");
 const orderController = require("../controller/orderController");
 const wishlistController = require("../controller/wishlistController");
 const paymentController = require("../controller/paymentController");
+const couponsController = require("../controller/couponsController");
 const auth = require("../middleware/userAuth");
 const nocache = require("../middleware/setNoCache");
 
@@ -137,6 +138,11 @@ user_route.post('/verifyPayment', nocache.user, auth.isLogin, orderController.cr
 user_route.post('/cancelOrder/:orderId',nocache.user,auth.isLogin,orderController.cancelOrder);
 
 
+//------------- return Order -----------------//
+
+user_route.post('/returnOrder/:orderId',nocache.user,auth.isLogin,orderController.returnOrder);
+
+
 // -------------SortPrice-----------------//
 
 user_route.get("/sortPriceLH",nocache.user, auth.isLogin, userController.shop);
@@ -169,6 +175,21 @@ user_route.get("/searchItem",nocache.user, auth.isLogin, userController.search);
 user_route.post("/walletMoney",nocache.user, auth.isLogin, paymentController.addWallet);
 
 user_route.post('/verifywalletPayment', nocache.user, auth.isLogin, paymentController.walletMoney);
+
+
+// -------------Coupons-----------------//
+
+user_route.get("/coupons",nocache.user, auth.isLogin, couponsController.couponPage);
+
+
+// -------------UserCouponApply-----------------//
+
+user_route.get("/couponApply/:couponId",nocache.user, auth.isLogin, couponsController.applyCoupon);
+
+// -------------UserCouponRemove-----------------//
+
+user_route.get("/couponRemove/:couponId",nocache.user, auth.isLogin, couponsController.removeCoupon);
+
 
 
 

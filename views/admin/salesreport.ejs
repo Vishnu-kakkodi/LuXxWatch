@@ -1,0 +1,92 @@
+
+<%- include('../layouts/adminHeader.ejs') %>
+
+  <div class="container">
+    <h2 class="mt-4 mb-4 text-center">Sales Report</h2>
+    <div class="flex mb-30" style="display: flex; justify-content: space-evenly; align-items: center;">
+      <p>Stating-Date <input type="date">
+      </p>
+      <p>Ending-Date <input type="date">
+      </p>
+
+      <p class="btn btn-light">
+        Today Sales
+      </p>
+      <p class="btn btn-light">
+        Weekly
+      </p>
+      <p class="btn btn-light">
+        year
+      </p>
+    </div>
+    <div class="table-responsive container">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Order Number</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Quantity Sold</th>
+            <th>Unit Price (Rs)</th>
+            <th>Coupon (Amount)</th>
+            <th>Total Sales (Rs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (salereport && salereport.length> 0) { %>
+            <% salereport.forEach(order=> { %>
+              <% order.items.forEach(item=> { %>
+                <tr>
+                  <td>
+                    <%= new Date(order.orderDate).toLocaleDateString(); %>
+                  </td>
+                  <td>
+                    <%= order.orderNumber %>
+                  </td>
+                  <td>
+                    <%= order.userId.username %>
+                  </td>
+                  <td>
+                    <%= item.product.productName %>
+                  </td>
+                  <td>
+                    <%= item.quantity %>
+                  </td>
+                  <td>
+                    <%= item.price %>
+                  </td>
+                  <td>
+                    <%= order.couponDiscount %>
+                  </td>
+                  <td>
+                    <%= item.quantity * item.price %>
+                  </td>
+                </tr>
+                <% }); %>
+                  <% }); %>
+                    <% } else { %>
+                      <tr>
+                        <td colspan="8">No sales data</td>
+                      </tr>
+                      <% } %>
+        </tbody>
+      </table>
+      <div class="container mb-30"  style="display: flex; justify-content:end; ">
+      <div >
+        <button class="btn btn-success" style="margin-right: 80px;"> Download PDF </button>
+        <button class="btn btn-success"> Download to Excel </button>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <script src="/asset/js/vendors/jquery-3.6.0.min.js"></script>
+  <script src="/asset/js/vendors/bootstrap.bundle.min.js"></script>
+  <script src="/asset/js/vendors/select2.min.js"></script>
+  <script src="/asset/js/vendors/perfect-scrollbar.js"></script>
+  <script src="/asset/js/vendors/jquery.fullscreen.min.js"></script>
+  <script src="/asset/js/vendors/chart.js"></script>
+  <!-- Main Script -->
+  <script src="/asset/js/main.js" type="text/javascript"></script>
+  <script src="/asset/js/custom-chart.js" type="text/javascript"></script>
