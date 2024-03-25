@@ -4,7 +4,7 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
+                    <a href="/home" rel="nofollow">Home</a>
                     <span></span> Shop
                 </div>
             </div>
@@ -12,148 +12,130 @@
         <section class="mt-50 mb-50">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-9">
-                        <!-- <div class="shop-product-fillter">
-                            <div class="totall-product">
-                                <p> We found <strong class="text-brand">688</strong> items for you!</p>
-                            </div>
-                            <div class="sort-by-product-area">
-                                <div class="sort-by-cover mr-10">
-                                    <div class="sort-by-product-wrap">
-                                        <div class="sort-by">
-                                            <span><i class="fi-rs-apps"></i>Show:</span>
-                                        </div>
-                                        <div class="sort-by-dropdown-wrap">
-                                            <span> 50 <i class="fi-rs-angle-small-down"></i></span>
-                                        </div>
-                                    </div>
-                                    <div class="sort-by-dropdown">
-                                        <ul>
-                                            <li><a class="active" href="#">50</a></li>
-                                            <li><a href="#">100</a></li>
-                                            <li><a href="#">150</a></li>
-                                            <li><a href="#">200</a></li>
-                                            <li><a href="#">All</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="sort-by-cover">
-                                    <div class="sort-by-product-wrap">
-                                        <div class="sort-by">
-                                            <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
-                                        </div>
-                                        <div class="sort-by-dropdown-wrap">
-                                            <span> Featured <i class="fi-rs-angle-small-down"></i></span>
-                                        </div>
-                                    </div>
-                                    <div class="sort-by-dropdown">
-                                        <ul>
-                                            <li><a class="active" href="#">Featured</a></li>
-                                            <li><a href="#">Price: Low to High</a></li>
-                                            <li><a href="#">Price: High to Low</a></li>
-                                            <li><a href="#">Release Date</a></li>
-                                            <li><a href="#">Avg. Rating</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
+                    <div id="productsContainer" class="col-lg-9">
                         <% if(products.length> 0) { %>
-                            <div class="row product-grid-3">
-                                <% for(let i=0; i<products.length; i++) { %>
-                                    <div class="col-lg-4 col-md-4 col-12 col-sm-6">
-                                        <div class="product-cart-wrap mb-30" style="border-style: solid; border-color: rgb(167, 167, 248);">
-                                            <% if(products[i].stock <=0) { %>
-                                                <!-- Check if product is out of stock -->
-                                                <div class="out-of-stock-label"
-                                                    style="display: inline;  color: red; font-size: small; margin-left: 10px;">
-                                                    Out of Stock</div> <!-- Out of stock label -->
-                                                <% } %>
-                                            <div class="product-img-action-wrap">
-                                                <div class="product-img product-img-zoom">
-                                                    <a href="/productdetails?productId=<%= products[i]._id %>">
-                                                        <img class="default-img"
-                                                            src="/productImages/<%= products[i].image[0] %>" alt="">
-                                                    </a>
-                                                </div>
-                                                <div class="product-action-1">
-                                                    <!-- <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-<i class="fi-rs-search"></i></a> -->
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                        href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                    <!-- <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> -->
-                                                </div>
-                                                <!-- <div class="product-badges product-badges-position product-badges-mrg">
+                        <div class="row product-grid-3">
+                            <% for(let i=0; i<products.length; i++) { %>
+                            <div class="col-lg-4 col-md-4 col-12 col-sm-6">
+                                <div class="product-cart-wrap mb-30" style="border-style: solid; border-color: rgb(167, 167, 248);">
+                                    <% if(products[i].stock <=0) { %>
+                                    <!-- Check if product is out of stock -->
+                                    <div class="out-of-stock-label" style="display: inline; color: red; font-size: small; margin-left: 10px;">
+                                        Out of Stock
+                                    </div> <!-- Out of stock label -->
+                                    <% } %>
+                                    <div class="product-img-action-wrap">
+                                        <div class="product-img product-img-zoom">
+                                            <a href="/productdetails?productId=<%= products[i]._id %>">
+                                                <img class="default-img" src="/productImages/<%= products[i].image[0] %>" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="product-action-1">
+                                            <!-- <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                                                <i class="fi-rs-search"></i>
+                                            </a> -->
+                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html">
+                                                <i class="fi-rs-heart"></i>
+                                            </a>
+                                            <!-- <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html">
+                                                <i class="fi-rs-shuffle"></i>
+                                            </a> -->
+                                        </div>
+                                        <!-- <div class="product-badges product-badges-position product-badges-mrg">
                                             <span class="hot">Hot</span>
                                         </div> -->
-                                            </div>
-                                            <div class="product-content-wrap" style="background-color: rgb(243, 243, 243);">
-                                                <div class="product-category">
-                                                    <a href="shop-grid-right.html">
-                                                        <%= products[i].brandname %>
-                                                    </a>
-                                                </div>
-                                                <h2><a href="shop-product-right.html">
-                                                        <%= products[i].productname %>
-                                                    </a></h2>
-                                                <div class="rating-result" title="90%">
-                                                    <span>
-                                                        <span>90%</span>
-                                                    </span>
-                                                </div>
-                                                <div class="product-price">
-                                                    <span>₹<%= products[i].offprice %> </span>
-                                                    <span class="old-price">₹<%= products[i].price %></span>
-                                                </div>
-                                                <div class="product-action-1 show">
-                                                    <a aria-label="Add To Cart" id="button-add-to-cart" class="action-btn hover-up"
-                                                    data-product-id="<%= products[i]._id %>"
-                                                        href="#"><i class="fi-rs-shopping-bag-add"></i></a>
-                                                </div>
-                                            </div>
+                                    </div>
+                                    <div class="product-content-wrap" style="background-color: rgb(243, 243, 243);">
+                                        <div class="product-category">
+                                            <a href="shop-grid-right.html">
+                                                <%= products[i].brandname %>
+                                            </a>
+                                        </div>
+                                        <h2>
+                                            <a href="shop-product-right.html">
+                                                <%= products[i].productname %>
+                                            </a>
+                                        </h2>
+                                        <div class="rating-result" title="90%">
+                                            <span><span>90%</span></span>
+                                        </div>
+                                        <div class="product-price">
+                                            <% if(products[i].offprice){ %>
+                                            <span>₹<%= products[i].offprice %> </span>
+                                            <span class="old-price">₹<%= products[i].price %></span>
+                                            <% } else{ %>
+                                            <span>₹<%= products[i].price %></span>
+                                            <% } %>
+                                        </div>
+                                        <div class="product-action-1 show">
+                                            <a aria-label="Add To Cart" id="button-add-to-cart" class="action-btn hover-up"
+                                                data-product-id="<%= products[i]._id %>" href="#">
+                                                <i class="fi-rs-shopping-bag-add"></i>
+                                            </a>
                                         </div>
                                     </div>
-                                    <% } %>
+                                </div>
                             </div>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="6">products Not Found</td>
-                                </tr>
-                                <% } %>
-                                    <!--pagination-->
-                                    <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
-                                        <nav aria-label="Page navigation example">
-                                            <ul class="pagination justify-content-start">
-                                                <% for(let i = 1; i<=totalPages; i++){ %>
-                                                    <li class="page-item active">
-                                                        <a class="page-link" href="?page=<%= i %>&sort=<%= currentSort %>"><%= i %></a>
-                                                    </li>
-                                                    
-                                                <% } %>
-                                                
-                                            </ul>
-                                        </nav>
-                                    </div> 
+                            <% } %>
+                        </div>
+                        <% } else { %>
+                        <tr>
+                            <td colspan="6">products Not Found</td>
+                        </tr>
+                        <% } %>
+                        <!--pagination-->
+                        <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-start">
+                                    <% for(let i=1; i<=totalPages; i++){ %>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="?page=<%= i %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                    <% } %>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                     <div class="col-lg-3 primary-sidebar sticky-sidebar">
                         <div class="row">
                             <div class="col-lg-12 col-mg-6"></div>
                             <div class="col-lg-12 col-mg-6"></div>
                         </div>
-                        
+        
                         <!-- Fillter By Price -->
                         <div class="sidebar-widget price_range range mb-30" style="border-radius: 8px;">
                             <div class="price-filter">
                                 <div class="price-filter-inner">
-                                    <div id="slider-range"></div>
                                     <div class="price_slider_amount">
+                                        <div>
+                                            <% if(searchValue) { %>
+                                            <p style="margin-bottom: 5px;">Searched by</p>
+                                            <div id="searchDiv" class="cart-title" style="display: flex; align-items: center;">
+                                                <input type="text" id="keyvalue" class="form-control" value="<%= searchValue %>"
+                                                    style="height: 20px; flex: 1;" disabled>
+                                                <a class="remove_from_cart" href="#">
+                                                    <svg style="cursor: pointer;" width="45" height="45" viewBox="0 0 45 45"
+                                                        fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <circle cx="22.5" cy="22.5" r="22.5" fill="white"></circle>
+                                                        <path d="M28.75 16.25L16.25 28.75" stroke="#1A1A1A" stroke-width="1.5"
+                                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        <path d="M16.25 16.25L28.75 28.75" stroke="#1A1A1A" stroke-width="1.5"
+                                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                            <% } %>
+                                        </div>
                                         <div class="label-input">
                                             <span style="color: #000; font-weight: bold; font-size: medium;">Sorting</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="price-ranges" style="margin-bottom: 8px;">
-                                    <select id="priceSortSelect" onchange="handlePriceSort(this)" style="color: #000; font-weight: bold; border-style: solid; border-color: black;">
+                                    <select onchange="filter()" id="priceSortSelect"
+                                        style="color: #000; font-weight: bold; border-style: solid; border-color: black;">
                                         <option>Select</option>
                                         <option value="asc">Price Low to High</option>
                                         <option value="desc">Price High to Low</option>
@@ -162,171 +144,309 @@
                                         <option value="NA">New Arrivals</option>
                                     </select>
                                 </div>
-                                
                             </div>
-                            
+        
                             <div class="list-group">
                                 <div class="list-group-item mb-10 mt-10">
                                     <label class="fw-900" style="color: #000000;">Filter by Brand</label>
                                     <div class="custome-checkbox" style="color: #000000; font-weight: bold;">
-                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox" id="exampleCheckbox1" value="Titan">
-                                        <label class="form-check-label" for="exampleCheckbox1" style="color: #000; font-weight: bold;"><span>Titan</span></label>
+                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox"
+                                            id="exampleCheckbox1" value="Titan">
+                                        <label class="form-check-label" for="exampleCheckbox1"
+                                            style="color: #000; font-weight: bold;"><span>Titan</span></label>
                                         <br>
-                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox" id="exampleCheckbox2" value="Fastrack">
-                                        <label class="form-check-label" for="exampleCheckbox2" style="color: #000; font-weight: bold;"><span>Fastrack</span></label>
+                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox"
+                                            id="exampleCheckbox2" value="Fastrack">
+                                        <label class="form-check-label" for="exampleCheckbox2"
+                                            style="color: #000; font-weight: bold;"><span>Fastrack</span></label>
                                         <br>
-                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox" id="exampleCheckbox3" value="Sonata">
-                                        <label class="form-check-label" for="exampleCheckbox3" style="color: #000; font-weight: bold;"><span>Sonata</span></label>
+                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox"
+                                            id="exampleCheckbox3" value="Sonata">
+                                        <label class="form-check-label" for="exampleCheckbox3"
+                                            style="color: #000; font-weight: bold;"><span>Sonata</span></label>
                                         <br>
-                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox" id="exampleCheckbox4" value="Casio">
-                                        <label class="form-check-label" for="exampleCheckbox4" style="color: #000; font-weight: bold;"><span>Casio</span></label>
+                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox"
+                                            id="exampleCheckbox4" value="Casio">
+                                        <label class="form-check-label" for="exampleCheckbox4"
+                                            style="color: #000; font-weight: bold;"><span>Casio</span></label>
                                         <br>
-                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox" id="exampleCheckbox5" value="Timex">
-                                        <label class="form-check-label" for="exampleCheckbox5" style="color: #000; font-weight: bold;"><span>Timex</span></label>
+                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox"
+                                            id="exampleCheckbox5" value="Timex">
+                                        <label class="form-check-label" for="exampleCheckbox5"
+                                            style="color: #000; font-weight: bold;"><span>Timex</span></label>
                                         <br>
-                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox" id="exampleCheckbox6" value="Fossil">
-                                        <label class="form-check-label" for="exampleCheckbox6" style="color: #000; font-weight: bold;"><span>Fossil</span></label>
+                                        <input class="form-check-input brand-checkbox" type="checkbox" name="checkbox"
+                                            id="exampleCheckbox6" value="Fossil">
+                                        <label class="form-check-label" for="exampleCheckbox6"
+                                            style="color: #000; font-weight: bold;"><span>Fossil</span></label>
                                         <!-- Add more brands following the same pattern -->
                                     </div>
                                 </div>
                             </div>
-
-                            <a href="#" type="submit" class="btn btn-sm btn-default filter-btn" style="display: flex; font-size: medium; margin-bottom: 10px;"><i class="fi-rs-filter mr-5"></i> Filter</a>
-
+        
                             <div class="widget-category mb-30" style="border-radius: 20%;">
                                 <h5 class="section-title style-1 mb-30" style="font-weight: bold; color: #000000; font-size: small;">Filter by Category</h5>
                                 <ul class="categories">
                                     <% if(categories.length> 0) {
                                         for(let i = 0; i<categories.length; i++) { %>
-                                            <li>
-                                                <a href="/categoryFilter?category=<%= categories[i].catname %>" style="color: #000; font-weight: bold;">
-                                                    <%= categories[i].catname %>
-                                                </a>
-                                            </li>
-                                            <% } } else { %>
-                                                <% } %>
+                                    <input class="form-check-input category-checkbox" type="checkbox" name="checkbox"
+                                        id="exampleCheckbox1" value="<%= categories[i].catname %>">
+                                    <label class="form-check-label" for="exampleCheckbox1" style="color: #000; font-weight: bold;"><span>
+                                            <%= categories[i].catname %>
+                                        </span></label>
+                                    <br>
+                                    <% } } else { %>
+                                    <% } %>
                                 </ul>
                             </div>
+        
+                            <a href="#" type="submit" id="filterBtn" class="btn btn-sm btn-default filter-btn"
+                                onclick="filter()" style="display: flex; font-size: medium; margin-bottom: 10px;"><i
+                                    class="fi-rs-filter mr-5"></i> Filter</a>
                         </div>
-                        
+        
                     </div>
                 </div>
             </div>
         </section>
+        
+        
     </main>
 
 
 
     <script>
-        let sortUrl;
-        function handlePriceSort(select) {
-    const selectedValue = select.value;
-    switch (selectedValue) {
-        case "asc":
-            sortUrl = "/sortPriceLH?sort=asc";
-            break;
-        case "desc":
-            sortUrl = "/sortPriceHL?sort=desc";
-            break;
-        case "az":
-            sortUrl = "/sortAZ?sort=AZ";
-            break;
-        case "za":
-            sortUrl = "/sortZA?sort=ZA";
-            break;
-            case "NA":
-            sortUrl = "/sortNA?sort=NA";
-            break;
-        default:
-            sortUrl = "/sortPriceLH?sort=asc";
+   async function filter() {
+    try {
+        let keyvalue = '';
+        if (document.getElementById('keyvalue')) {
+            keyvalue = document.getElementById('keyvalue').value;
+        }
+
+        const selectedValue = document.getElementById('priceSortSelect').value;
+        console.log("Selected Sorting Value:", selectedValue);
+
+        const conditions = await productSearch(selectedValue, keyvalue);
+        console.log(conditions);
+
+        const response = await fetch('/filter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ conditions })
+        });
+
+        const { products, userData, categories, totalPages, currentPage, currentSort, searchValue } = await response.json();
+
+        console.log(products);
+
+        // Update HTML content
+        const productsContainer = document.getElementById('productsContainer');
+
+        if (products.length > 0) {
+            productsContainer.innerHTML = '';
+            const productGridHTML = generateProductGridHTML(products);
+            productsContainer.innerHTML = productGridHTML;
+        } else {
+            productsContainer.innerHTML = '<p>Products Not Found</p>';
+        }
+
+        // Update pagination
+        updatePagination(totalPages, currentPage);
+    } catch (error) {
+        console.error('Error:', error.message);
     }
-    window.location.href = sortUrl;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+
+
+
+ function productSearch(sortingValue,search) {
     const brandCheckboxes = document.querySelectorAll('.brand-checkbox');
-    const filterBtn = document.querySelector('.btn-default');
+    const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
 
-    filterBtn.addEventListener('click', function (event) {
-        event.preventDefault();
-        let queryParams = '';
-        brandCheckboxes.forEach(function (checkbox) {
-            if (checkbox.checked) {
-                if (queryParams === '') {
-                    queryParams += `?brand=${checkbox.value}`;
-                } else {
-                    queryParams += `&brand=${checkbox.value}`;
-                }
+    const selectedBrands = Array.from(brandCheckboxes)
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.value);
+
+    const selectedCategories = Array.from(categoryCheckboxes)
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.value);
+
+    let conditions = {
+        search:search,
+        sort: sortingValue,
+        brand: selectedBrands,
+        category: selectedCategories
+    };
+
+    return conditions;
+}
+
+
+
+// Function to generate product grid HTML
+function generateProductGridHTML(products) {
+    let html = '<div class="product-grid">';
+
+    if (products.length > 0) {
+        for (let i = 0; i < products.length; i++) {
+            html += '<div class="product-item">';
+            html += '<div class="product-cart-wrap">';
+            if (products[i].stock <= 0) {
+                html += '<div class="out-of-stock-label">Out of Stock</div>';
             }
-        });
-
-        window.location.href = `/shop${queryParams}`;
-    });
-    
-    const sortSelect = document.querySelector('#sort-select');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', function () {
-            const sortValue = sortSelect.value;
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('sort', sortValue);
-            window.location.href = currentUrl.toString();
-        });
+            html += '<div class="product-img-action-wrap">';
+            html += '<div class="product-img product-img-zoom">';
+            html += '<a href="/productdetails?productId=' + products[i]._id + '">';
+            html += '<img class="default-img" src="/productImages/' + products[i].image[0] + '" alt="">';
+            html += '</a></div>';
+            html += '<div class="product-action-1">';
+            html += '<a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="product-content-wrap">';
+            html += '<div class="product-category">';
+            html += '<a href="shop-grid-right.html">' + products[i].brandname + '</a>';
+            html += '</div>';
+            html += '<h2><a href="shop-product-right.html">' + products[i].productname + '</a></h2>';
+            html += '<div class="rating-result" title="90%"><span><span>90%</span></span></div>';
+            html += '<div class="product-price">';
+            if (products[i].offprice) {
+                html += '<span>₹' + products[i].offprice + '</span><span class="old-price">₹' + products[i].price + '</span>';
+            } else {
+                html += '<span>₹' + products[i].price + '</span>';
+            }
+            html += '</div>';
+            html += '<div class="product-action-1 show">';
+            html += '<a aria-label="Add To Cart" id="button-add-to-cart" class="action-btn hover-up" data-product-id="' + products[i]._id + '" href="#"><i class="fi-rs-shopping-bag-add"></i></a>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+        }
+    } else {
+        html += '<div class="product-item">';
+        html += '<div class="product-content-wrap">';
+        html += '<p class="no-products-msg">Products Not Found</p>';
+        html += '</div>';
+        html += '</div>';
     }
-});
 
+    html += '</div>';
+    return html;
+}
+
+
+// Function to update pagination
+function updatePagination(totalPages, currentPage) {
+    const paginationArea = document.querySelector('.pagination-area');
+    paginationArea.innerHTML = ''; // Clear previous content
+
+    if (totalPages > 0) {
+        let paginationHTML = `<nav aria-label="Page navigation example"><ul class="pagination justify-content-start">`;
+        for (let i = 1; i <= totalPages; i++) {
+            paginationHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="?page=${i}">${i}</a></li>`;
+        }
+        paginationHTML += `</ul></nav>`;
+        paginationArea.innerHTML = paginationHTML;
+    }
+}
 
 
     </script>
 
-<script>
-    const buttons = document.querySelectorAll('#button-add-to-cart');
+    <script>
+        const buttons = document.querySelectorAll('#button-add-to-cart');
 
-    buttons.forEach(button => {
-        button.addEventListener('click', async () => {
-            try {
-                const productId = button.dataset.productId;
-                const res = await fetch(`/add-cart/${productId}`, {
-                    method: 'GET'
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    console.log("data");
-                    swal({
-                        title: "Success",
-                        text: data.success,
-                        icon: "success",
-                        buttons: {
-                            confirm: {
-                                text: "Go to Cart",
-                                value: true,
-                                visible: true,
-                                className: "btn btn-primary"
-                            },
-                            cancel: {
-                                text: "Close",
-                                value: null,
-                                visible: true,
-                                className: "btn btn-secondary"
-                            }
-                        }
-                    }).then((value) => {
-                        if (value) {
-                            window.location.href = "/cart";
-                        }
+        buttons.forEach(button => {
+            button.addEventListener('click', async () => {
+                try {
+                    const productId = button.dataset.productId;
+                    const res = await fetch(`/add-cart/${productId}`, {
+                        method: 'GET'
                     });
 
-                } else {
-                    swal("Ooops", data.error, "error");
-                }
+                    const data = await res.json();
 
-            } catch (error) {
-                console.log(error);
-            }
+                    if (res.ok) {
+                        console.log("data");
+                        swal({
+                            title: "Success",
+                            text: data.success,
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    text: "Go to Cart",
+                                    value: true,
+                                    visible: true,
+                                    className: "btn btn-primary"
+                                },
+                                cancel: {
+                                    text: "Close",
+                                    value: null,
+                                    visible: true,
+                                    className: "btn btn-secondary"
+                                }
+                            }
+                        }).then((value) => {
+                            if (value) {
+                                window.location.href = "/cart";
+                            }
+                        });
+
+                    } else {
+                        swal("Ooops", data.error, "error");
+                    }
+
+                } catch (error) {
+                    console.log(error);
+                }
+            });
         });
-    });
-</script>
+    </script>
+
+    <style>
+        .product-grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.product-item {
+    width: calc(33.33% - 20px); /* Adjust the width as needed */
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.product-img img {
+    max-width: 100%;
+    height: auto;
+}
+
+.out-of-stock-label {
+    display: inline;
+    color: red;
+    font-size: small;
+    margin-left: 10px;
+}
+
+.product-action-1 {
+    margin-top: 10px;
+}
+
+.product-price {
+    font-weight: bold;
+}
+
+.no-products-msg {
+    font-weight: bold;
+    color: red;
+}
+
+    </style>
 
 
     <%- include('../layouts/userFooter.ejs') %>

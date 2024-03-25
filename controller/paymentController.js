@@ -45,7 +45,7 @@ const addWallet = async (req, res) => {
 
         // Create a Razorpay order
         var options = {
-            amount: amount, 
+            amount: amount*100, 
             currency: 'INR',
             receipt: orderId
         };
@@ -118,15 +118,15 @@ const cancelRefund = async (req,res)=>{
         console.log(orderId);
         const order = await Order.findOne({_id: orderId}).populate('user');
         const wallet = await Wallet.findOne({ user: order.user });
-        wallet.walletbalance = wallet.walletbalance + order.total;
+        wallet.walletbalance = wallet.walletbalance + order.grandTotal;
         wallet.transationHistory.push({
             createdAt: Date.now(),
             paymentType: "Refund",
             transationMode: "Credit",
-            transationamount: order.total
+            transationamount: order.grandTotal
         });
         let refund = wallet ? wallet.totalRefund : 0;
-        refund = refund + order.total;
+        refund = refund + order.grandTotal;
         wallet.totalRefund = refund;
         await wallet.save();
         order.refund = "1";

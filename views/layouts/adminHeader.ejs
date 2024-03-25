@@ -15,6 +15,10 @@
     <link rel="shortcut icon" type="image/x-icon" href="/admin-assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-Vo8JSRJNwANzD1jGpq+37v6gZQmzAWGJAtV9INdwDMYvVxe37gmuF8LeT+bzdg12fF5TQ+M6VQZTmE0m7EUgZw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -35,10 +39,14 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item has-submenu">
                     <a class="menu-link " href="/admin/category"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Category</span>
                     </a>
+                    <div class="submenu">
+                        <a href="/admin/category">Category List</a>
+                        <a href="/admin/categoryInsert">Add category</a>
+                    </div>
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="#"> <i class="icon material-icons md-shopping_cart"></i>
@@ -69,8 +77,19 @@
                 </li>
                 <li class="menu-item">
                     <a class="menu-link " href="/admin/coupon"> <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Coupon</span>
+                        <span class="text">Coupon Management</span>
                     </a>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link " href="#"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Offer Management</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="/admin/productoffer">Product Offer</a>
+                        <a href="/admin/categoryOffer">Category Offer</a>
+                        <a href="/admin/offer">Brand Offer</a>
+                        <a href="/admin/offer">Referral Offer</a>
+                    </div>
                 </li>
             </ul>
             <br>

@@ -12,140 +12,55 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-12">
                         <form action="/admin/add-category" method="post" onsubmit="return validateForm()"
                             enctype="multipart/form-data">
-                            <div class="mb-4">
-                                <label for="product_name" class="form-label">Category</label>
-                                <input type="text" name="catname" placeholder="Type here" class="form-control"
-                                    id="catname" />
-                                <div class="error-message" id="catname-error"></div>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Description</label>
-                                <textarea id="description" name="description" placeholder="Type here"
-                                    class="form-control"></textarea>
-                                <div class="error-message" id="description-error"></div>
-                            </div>
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Media</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="input-upload">
-                                        <img src="/admin-assets/imgs/theme/upload.svg" alt="">
-                                        <input class="form-control" type="file" name="image" single>
+                            <% if(typeof errorMessage !=='undefined' ){ %>
+                                <p style="color: red;">
+                                    <%= errorMessage %>
+                                </p>
+                                <% } %>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <div style="margin-right: 40px;">
+                                            <div class="mb-4">
+                                                <label for="product_name" class="form-label">Category</label>
+                                                <input type="text" name="catname" placeholder="Type here" class="form-control" style="width: 400px;"
+                                                    id="catname" />
+                                                <div class="error-message" id="catname-error"></div>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label class="form-label">Description</label>
+                                                <textarea id="description" name="description" placeholder="Type here"
+                                                    class="form-control"></textarea>
+                                                <div class="error-message" id="description-error"></div>
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4>Media</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="input-upload">
+                                                    <img src="/admin-assets/imgs/theme/upload.svg" alt="">
+                                                    <input class="form-control" type="file" name="image" single>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Create category</button>
-                            </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary" style="width: fit-content;">Create category</button>
+                                    </div>
                         </form>
-                    </div>
-                    <div class="col-md-9">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <!-- <th class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </th> -->
-                                        <th>Category</th>
-                                        <th>Description</th>
-                                        <th>Status</th>
-                                        <th class="text-end">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <% if(categories.length> 0) {
-                                        for(let i = 0; i<categories.length; i++) { %>
-                                            <tr>
-                                                <!-- <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td> -->
-                                                <td><b>
-                                                        <%= categories[i].catname %>
-                                                    </b></td>
-                                                <td>
-                                                    <%= categories[i].description %>
-                                                </td>
-                                                <td>
-                                                    <span>
-                                                        <% if(categories[i].status===0) { %>
-                                                            <span class="user-status"
-                                                                style="color: green;">Active</span>
-                                                            <% } else { %>
-                                                                <span style="color: red;">Inactive</span>
-                                                                <% } %>
-                                                    </span>
-                        </div>
-                        </td>
-                        <td class="text-end">
-                            <div class="dropdown">
-                                <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i
-                                        class="material-icons md-more_horiz"></i> </a>
-                                <div class="dropdown-menu">
-                                    <button style="background-color: #007bff; color: #fff;"
-                                        class="btn btn-sm font-sm rounded btn-brand"
-                                        onclick="window.location.href='/admin/edit-category/<%= categories[i]._id %>'">
-                                        <i class="material-icons md-edit"></i> Edit
-                                    </button>
-
-                                    <button style="background-color: #dc3545; color: #fff;"
-                                        class="btn btn-sm font-sm btn-light rounded"
-                                        onclick="window.location.href='/admin/enableCategory/<%= categories[i]._id %>'">
-                                        <i class="material-icons md-delete_forever"></i> Enable
-                                    </button>
-
-                                    <button style="background-color: #dc3545; color: #fff;"
-                                        class="btn btn-sm font-sm btn-light rounded"
-                                        onclick="window.location.href='/admin/disableCategory/<%= categories[i]._id %>'">
-                                        <i class="material-icons md-delete_forever"></i> Disable
-                                    </button>
-
-                                    <!-- <button style="background-color: #dc3545; color: #fff;" class="btn btn-sm font-sm btn-light rounded" onclick="window.location.href='/admin/delete-category/<%= categories[i]._id %>'">
-                                                            <i class="material-icons md-delete_forever"></i> Delete
-                                                        </button> -->
-                                </div>
-                            </div> <!-- dropdown //end -->
-                        </td>
-                        </tr>
-                        <% } }else { %>
-                            <tr>
-                                <td colspan="6">categories Not Found</td>
-                            </tr>
-                            <% } %>
-                                </tbody>
-                                </table>
                     </div>
                 </div> <!-- .col// -->
             </div> <!-- .row // -->
         </div> <!-- card body .// -->
-        </div> <!-- card .// -->
-        <div class="pagination-area mt-30 mb-50">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-start">
-                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                    <li class="page-item"><a class="page-link" href="#"><i
-                                class="material-icons md-chevron_right"></i></a></li>
-                </ul>
-            </nav>
-        </div>
+
     </section> <!-- content-main end// -->
 
     </main>
     <script>
-            function validateForm() {
+        function validateForm() {
             var catname = document.getElementById('catname').value.trim();
             var description = document.getElementById('description').value.trim();
             var isValid = true;
@@ -161,16 +76,6 @@
             } else {
                 document.getElementById('description-error').innerText = '';
             }
-            // else {
-            //     // Check if category name is unique
-            //     const isUnique = await checkUniqueCategoryName(catname);
-            //     if (!isUnique) {
-            //         document.getElementById('catname-error').innerText = 'Category name must be unique';
-            //         isValid = false;
-            //     } else {
-            //         document.getElementById('catname-error').innerText = '';
-            //     }
-            // }
 
             // Validate description
             var descriptionPattern = /^[a-zA-Z0-9\s]*[a-zA-Z][a-zA-Z0-9\s]*$/;
@@ -186,29 +91,6 @@
 
             return isValid;
         }
-
-        // function checkUniqueCategoryName(catname) {
-        //     return fetch('/admin/validateCategoryName', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({ categoryName: catname })
-        //     })
-        //         .then(response => {
-        //             if (!response.ok) {
-        //                 throw new Error('Network response was not ok');
-        //             }
-        //             return response.json();
-        //         })
-        //         .then(data => {
-        //             return data.unique;
-        //         })
-        //         .catch(error => {
-        //             console.error('Error:', error);
-        //             return false;
-        //         });
-        // }
 
 
     </script>

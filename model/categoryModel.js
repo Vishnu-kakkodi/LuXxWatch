@@ -16,6 +16,10 @@ const categorySchema = new mongoose.Schema({
     image:{
         type:Array,
         required:true
+    },
+    offer:{
+        type:String,
+        required:false
     }
 
 });

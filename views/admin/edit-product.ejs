@@ -1,52 +1,53 @@
 <%- include('../layouts/adminHeader.ejs') %>
-            <section class="content-main">
-                <form action="/admin/update-product/<%= products._id %>" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-9">
-                            <div class="content-header">
-                                <h2 class="content-title">Edit Product</h2>
-                                
+    <section class="content-main">
+        <form action="/admin/editProduct/<%= products._id %>" method="post" onsubmit="return validateForm()">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Edit Product</h2>
+
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Basic</h4>
                             </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Basic</h4>
-                                </div>
-                                <%
-                                if(typeof message !== 'undefined'){
-                                            %>
-                                <p style="color: red;"><%= message %></p>
-                                            <%
-                                                     }
-                                    %>
+                            <% if(typeof message !=='undefined' ){ %>
+                                <p style="color: red;">
+                                    <%= message %>
+                                </p>
+                                <% } %>
                                     <div class="card-body">
                                         <div class="mb-4">
                                             <label for="product_name" class="form-label">Brand name</label>
-                                            <input type="text" name="brandname" value="<%= products.brandname %>" placeholder="Type here" class="form-control"
-                                                id="brandname">
-                                                <div class="error-message" id="brand-error"></div>
+                                            <input type="text" name="brandname" value="<%= products.brandname %>"
+                                                placeholder="Type here" class="form-control" id="brandname">
+                                            <div class="error-message" id="brand-error"></div>
                                         </div>
                                         <div class="mb-4">
                                             <label for="product_name" class="form-label">Product title</label>
-                                            <input type="text" name="productname" value="<%= products.productname %>" placeholder="Type here" class="form-control"
-                                                id="productname">
-                                                <div class="error-message" id="title-error"></div>
+                                            <input type="text" name="productname" value="<%= products.productname %>"
+                                                placeholder="Type here" class="form-control" id="productname">
+                                            <div class="error-message" id="title-error"></div>
                                         </div>
                                         <div class="mb-4">
                                             <label class="form-label">Full description</label>
-                                            <textarea id="description" name="description" placeholder="Type here" class="form-control" rows="4"> <%= products.description %></textarea>
+                                            <textarea id="description" name="description" placeholder="Type here"
+                                                class="form-control" rows="4"> <%= products.description %></textarea>
                                             <div class="error-message" id="description-error"></div>
                                         </div>
 
-                                        
-                                        
+
+
                                         <div class="row">
                                             <div class="col-lg-4">
                                                 <div class="mb-4">
                                                     <label class="form-label">Regular price</label>
                                                     <div class="row gx-2">
-                                                        <input id="price" name="price" value="<%= products.price %>" placeholder="₹" type="text" class="form-control">
+                                                        <input id="price" name="price" value="<%= products.price %>"
+                                                            placeholder="₹" type="text" class="form-control">
                                                         <div class="error-message" id="price-error"></div>
                                                     </div>
                                                 </div>
@@ -54,348 +55,376 @@
                                             <div class="col-lg-4">
                                                 <div class="mb-4">
                                                     <label class="form-label">Special price</label>
-                                                    <input id="offprice" name="offprice" value="<%= products.offprice %>" placeholder="₹" type="text" class="form-control">
+                                                    <input id="offprice" name="offprice"
+                                                        value="<%= products.offprice %>" placeholder="₹" type="text"
+                                                        class="form-control">
                                                     <div class="error-message" id="offprice-error"></div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4">
                                                 <div class="mb-4">
                                                     <label class="form-label">Stock</label>
-                                                    <input id="stock" name="stock" value="<%= products.stock %>" placeholder="Type here" type="text" class="form-control">
+                                                    <input id="stock" name="stock" value="<%= products.stock %>"
+                                                        placeholder="Type here" type="text" class="form-control">
                                                     <div class="error-message" id="stock-error"></div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-header">
-                                            <h4>Product details</h4>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="product_name" class="form-label">Case diameter</label>
-                                            <input type="text" name="caseDiameter" value="<%= products.caseDiameter %>" placeholder="Type here" class="form-control"
-                                                id="caseDiameter">
-                                                <div class="error-message" id="casedia-error"></div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="product_name" class="form-label">Band colour</label>
-                                            <input type="text" name="bandColour" value="<%= products.bandColour %>" placeholder="Type here" class="form-control"
-                                                id="bandColour">
-                                                <div class="error-message" id="colour-error"></div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="product_name" class="form-label">Band material type</label>
-                                            <input type="text" name="bandMaterial" value="<%= products.bandMaterial %>" placeholder="Type here" class="form-control"
-                                                id="bandMaterial">
-                                                <div class="error-message" id="material-error"></div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="product_name" class="form-label">Warranty type</label>
-                                            <input type="text" name="warranty" value="<%= products.warranty %>" placeholder="Type here" class="form-control"
-                                                id="warranty">
-                                                <div class="error-message" id="warranty-error"></div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="product_name" class="form-label">Watch movement type</label>
-                                            <input type="text" name="movement" value="<%= products.movement %>" placeholder="Type here" class="form-control"
-                                                id="movement">
-                                                <div class="error-message" id="movement-error"></div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="product_name" class="form-label">Item weight</label>
-                                            <input type="text" name="weight" value="<%= products.weight %>" placeholder="Type here" class="form-control"
-                                                id="weight">
-                                                <div class="error-message" id="weight-error"></div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="product_name" class="form-label">Country of Origin</label>
-                                            <input type="text" name="country" value="<%= products.country %>" placeholder="Type here" class="form-control"
-                                                id="country">
-                                                <div class="error-message" id="country-error"></div>
-                                        </div>
                                         
-                                </div>
-                            </div> <!-- card end// -->
+                                    </div>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Media</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="input-upload">
-                                        <img src="/productImages/<%= products.image[0] %>" alt="">
-                                        <input class="form-control" type="file" value="<%= products.image[0] %>" name="image" multiple>
-                                    </div>
-                                </div>
-                                <!-- <div class="card-body">
-                                    <div class="input-upload">
-                                        <img src="/productImages/<%= products.image[1] %>" alt="">
-                                        <input class="form-control" type="file" value="<%= products.image[1] %>" name="image" single>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="input-upload">
-                                        <img src="/productImages/<%= products.image[2] %>" alt="">
-                                        <input class="form-control" type="file" value="<%= products.image[2] %>" name="image" single>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="input-upload">
-                                        <img src="/productImages/<%= products.image[3] %>" alt="">
-                                        <input class="form-control" type="file" value="<%= products.image[3] %>" name="image" single>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="input-upload">
-                                        <img src="/productImages/<%= products.image[4] %>" alt="">
-                                        <input class="form-control" type="file" value="<%= products.image[4] %>" name="image" single>
-                                    </div>
-                                </div> -->
-                            </div> <!-- card end// -->
-                            <div class="card mb-4">
-                                <div class="card-body">
-                                    <div class="row gx-2">
-                                        <div class="col-sm-6 mb-3">
-                                            <label class="form-label">Category</label>
-                                            <select class="form-select" name="catname">
-                                                <% if(categories.length > 0) { %>
-                                                    <!-- Show the category of the particular image first -->
-                                                    <option value="<%= products.catname %>">
-                                                        <%= products.catname %>
-                                                    </option>
-                                            
-                                                    <!-- Show other categories as submenu -->
-                                                    <% for(let i = 0; i < categories.length; i++) { %>
-                                                        <% if(categories[i].catname !== products.catname) { %>
-                                                            <option value="<%= categories[i].catname %>">
-                                                                <%= categories[i].catname %>
-                                                            </option>
+                    </div>
+                    <div class="col-lg-6">
+                        <div  class="card-header">
+                            <label class="form-label">Category</label>
+                                        <select class="form-select" name="catname">
+                                            <% if(categories.length> 0) { %>
+                                                <!-- Show the category of the particular image first -->
+                                                <option value="<%= products.catname %>">
+                                                    <%= products.catname %>
+                                                </option>
+
+                                                <!-- Show other categories as submenu -->
+                                                <% for(let i=0; i < categories.length; i++) { %>
+                                                    <% if(categories[i].catname !==products.catname) { %>
+                                                        <option value="<%= categories[i].catname %>">
+                                                            <%= categories[i].catname %>
+                                                        </option>
                                                         <% } %>
-                                                    <% } %>
-                                                <% } else { %>
-                                                    <option value="">No categories found</option>
-                                                <% } %>
-                                            </select>
-                                            
-                                        </div>
-                                    </div> <!-- row.// -->
-                                </div>
-                            </div> <!-- card end// -->
+                                                            <% } %>
+                                                                <% } else { %>
+                                                                    <option value="">No categories found</option>
+                                                                    <% } %>
+                                        </select>
                         </div>
+                        <div class="card-header">
+                            <h4>Product details</h4>
+                            <input class="form-check-input category-checkbox" type="checkbox" name="checkbox2"
+                                id="adiDetails">
+                        </div>
+                        <div style="display: none;" id="details">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Case diameter</label>
+                                <input type="text" name="caseDiameter" value="<%= products.caseDiameter %>"
+                                    placeholder="Type here" class="form-control" id="caseDiameter">
+                                <div class="error-message" id="casedia-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Band colour</label>
+                                <input type="text" name="bandColour" value="<%= products.bandColour %>"
+                                    placeholder="Type here" class="form-control" id="bandColour">
+                                <div class="error-message" id="colour-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Band material type</label>
+                                <input type="text" name="bandMaterial" value="<%= products.bandMaterial %>"
+                                    placeholder="Type here" class="form-control" id="bandMaterial">
+                                <div class="error-message" id="material-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Warranty type</label>
+                                <input type="text" name="warranty" value="<%= products.warranty %>"
+                                    placeholder="Type here" class="form-control" id="warranty">
+                                <div class="error-message" id="warranty-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Watch movement type</label>
+                                <input type="text" name="movement" value="<%= products.movement %>"
+                                    placeholder="Type here" class="form-control" id="movement">
+                                <div class="error-message" id="movement-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Item weight</label>
+                                <input type="text" name="weight" value="<%= products.weight %>" placeholder="Type here"
+                                    class="form-control" id="weight">
+                                <div class="error-message" id="weight-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Country of Origin</label>
+                                <input type="text" name="country" value="<%= products.country %>"
+                                    placeholder="Type here" class="form-control" id="country">
+                                <div class="error-message" id="country-error"></div>
+                            </div>
+                        </div>
+
                     </div>
-                    <div>
-                        <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to
-                            draft</button> -->
-                        <button type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
+                </div>
+        </form>
+        
+        <div style="margin-top: 10px;">
+            <input class="form-check-input category-checkbox" type="checkbox" name="checkbox" id="imageEdit" value="">
+        <label class="form-check-label" for="exampleCheckbox1" style="color: #000; font-weight: bold;">
+            <span>Image Edit</span>
+        </label>
+        <div style="display: flexbox; justify-content: space-between;">
+                <div id="imageID" class="card mb-4" style="display: none;">
+                    <% products.image.forEach((image,index)=>{ %>
+                    <div class="card-body" style="display: flex; justify-content: space-between;">
+                        <% if(image=="nill" ){ %>
+                        <div>
+                        <input id="newImage" class="" type="file" name="imageNew">
+                        <input type="button" class="btn" onclick="add('<%= products._id %>', '<%= index %>')" value="Add">
+                        </div>
+                        <% }else{ %>
+                        <div class="input-upload" style="display: flex; justify-content: flex-end;">
+                            <img src="/productImages/<%= image %>" alt="">
+                            <input type="button" class="btn" onclick="replace('<%= products._id %>', '<%= index %>')" value="Remove">
+                        </div>
+                        <% } %>
                     </div>
-                </form>
-            </section> <!-- content-main end// -->
+                    <% }) %>
+            </div>
+        </div>
+        </div>
+
+
+    </section> <!-- content-main end// -->
 
     </main>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
     <script>
-        // JavaScript code for image cropping
-        document.addEventListener('DOMContentLoaded', () => {
-            const image = document.getElementById('image-preview');
-            const input = document.getElementById('image-input');
-            let cropper;
-    
-            input.addEventListener('change', (event) => {
-                const files = event.target.files;
-                const reader = new FileReader();
-                
-                reader.onload = () => {
-                    image.src = reader.result;
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    cropper = new Cropper(image, {
-                        aspectRatio: 16 / 9, // Set the aspect ratio as needed
-                        crop(event) {
-                            // You can access cropped data here if needed
-                            console.log(event.detail);
-                        },
-                    });
-                };
-                
-                reader.readAsDataURL(files[0]);
-            });
+        function validateForm() {
+            var brandname = document.getElementById('brandname').value.trim();
+            var productname = document.getElementById('productname').value.trim();
+            var description = document.getElementById('description').value.trim();
+            var stock = document.getElementById('stock').value.trim();
+            var price = document.getElementById('price').value.trim();
+            var offprice = document.getElementById('offprice').value.trim();
+            var caseDiameter = document.getElementById('caseDiameter').value.trim();
+            var bandColour = document.getElementById('bandColour').value.trim();
+            var bandMaterial = document.getElementById('bandMaterial').value.trim();
+            var warranty = document.getElementById('warranty').value.trim();
+            var movement = document.getElementById('movement').value.trim();
+            var weight = document.getElementById('weight').value.trim();
+            var country = document.getElementById('country').value.trim();
+            var isValid = true;
+
+            // Validate brandname
+            var brandnamePattern = /^[a-zA-Z]+$/;
+            if (brandname === '') {
+                document.getElementById('brand-error').innerText = 'Brand name is required';
+                isValid = false;
+            } else if (!brandnamePattern.test(brandname)) {
+                document.getElementById('brand-error').innerText = 'Brand name can only alphabets';
+                isValid = false;
+            } else {
+                document.getElementById('brand-error').innerText = '';
+            }
+
+            // Validate productname
+            var productnamePattern = /^[a-zA-Z0-9\s\-,.&']*$/;
+            if (productname === '') {
+                document.getElementById('title-error').innerText = 'Product name is required';
+                isValid = false;
+            } else if (!productnamePattern.test(productname)) {
+                document.getElementById('title-error').innerText = 'Product name can only alphabets and must contain text';
+                isValid = false;
+            } else {
+                document.getElementById('title-error').innerText = '';
+            }
+
+            // Validate description
+            var descriptionPattern = /^[a-zA-Z0-9\s\-,.&']*$/;
+            if (description === '') {
+                document.getElementById('description-error').innerText = 'Description is required';
+                isValid = false;
+            }
+            else if (!descriptionPattern.test(description)) {
+                document.getElementById('description-error').innerText = 'Description name can only alphabets and must contain text';
+                isValid = false;
+            } else {
+                document.getElementById('description-error').innerText = '';
+            }
+
+            // Validate stock
+            if (stock === '') {
+                document.getElementById('stock-error').innerText = 'Stock is required';
+                isValid = false;
+            } else if (isNaN(stock) || parseInt(stock) <= 0) {
+                document.getElementById('stock-error').innerText = 'Stock must be a positive number';
+                isValid = false;
+            } else {
+                document.getElementById('stock-error').innerText = '';
+            }
+
+            // Validate price
+            if (price === '') {
+                document.getElementById('price-error').innerText = 'Price is required';
+                isValid = false;
+            } else if (isNaN(price) || parseFloat(price) <= 0) {
+                document.getElementById('price-error').innerText = 'Price must be a positive number';
+                isValid = false;
+            } else {
+                document.getElementById('price-error').innerText = '';
+            }
+
+            // Validate offprice
+            if (isNaN(offprice) || parseFloat(offprice) <= 0) {
+                document.getElementById('offprice-error').innerText = 'Special price must be a positive number';
+                isValid = false;
+            } else if (parseFloat(offprice) >= parseFloat(price)) {
+                document.getElementById('offprice-error').innerText = 'Special price must be less than regular price';
+                isValid = false;
+            } else {
+                document.getElementById('offprice-error').innerText = '';
+            }
+
+            // Validate caseDiameter
+            if (isNaN(caseDiameter)) {
+                document.getElementById('casedia-error').innerText = 'Case diameter must contain a number';
+                isValid = false;
+            } else {
+                document.getElementById('casedia-error').innerText = '';
+            }
+
+            // Validate bandColour
+            var bandColourPattern = /^[a-zA-Z]+$/;
+            if (bandColour === '') {
+                document.getElementById('colour-error').innerText = '';
+            }
+            else if (!bandColourPattern.test(bandColour)) {
+                document.getElementById('colour-error').innerText = 'Band colour can only contain text';
+                isValid = false;
+            } else {
+                document.getElementById('colour-error').innerText = '';
+            }
+
+            // Validate bandMaterial
+            var bandMaterialPattern = /^[a-zA-Z]+$/;
+            if (bandMaterial === '') {
+                document.getElementById('material-error').innerText = '';
+            }
+            else if (!bandMaterialPattern.test(bandMaterial)) {
+                document.getElementById('material-error').innerText = 'Band material type can only contain text';
+                isValid = false;
+            } else {
+                document.getElementById('material-error').innerText = '';
+            }
+
+            // Validate warranty
+            var warrantyPattern = /^[a-zA-Z]+$/;
+            if (warranty === '') {
+                document.getElementById('warranty-error').innerText = '';
+            }
+            else if (!warrantyPattern.test(warranty)) {
+                document.getElementById('warranty-error').innerText = 'Warranty type can only contain text';
+                isValid = false;
+            } else {
+                document.getElementById('warranty-error').innerText = '';
+            }
+
+            // Validate movement
+            var movementPattern = /^[a-zA-Z]+$/;
+            if (movement === '') {
+                document.getElementById('movement-error').innerText = '';
+            }
+            else if (!movementPattern.test(movement)) {
+                document.getElementById('movement-error').innerText = 'Watch movement type can only contain text';
+                isValid = false;
+            } else {
+                document.getElementById('movement-error').innerText = '';
+            }
+
+            // Validate weight
+            if (weight === '') {
+                document.getElementById('weight-error').innerText = '';
+            }
+            else if (isNaN(weight)) {
+                document.getElementById('weight-error').innerText = 'Item weight must contain a number';
+                isValid = false;
+            } else {
+                document.getElementById('weight-error').innerText = '';
+            }
+
+            // Validate country
+            var countryPattern = /^[a-zA-Z]+$/;
+            if (country === '') {
+                document.getElementById('country-error').innerText = '';
+            }
+            else if (!countryPattern.test(country)) {
+                document.getElementById('country-error').innerText = 'Country of Origin can only contain text';
+                isValid = false;
+            } else {
+                document.getElementById('country-error').innerText = '';
+            }
+            return isValid
+        }
+    </script>
+
+
+    <script>
+        const checkbox = document.getElementById('imageEdit');
+        const checkbox2 = document.getElementById('adiDetails');
+        const imageID = document.getElementById('imageID');
+        const details = document.getElementById('details');
+
+        checkbox.addEventListener('change', function () {
+            if (checkbox.checked) {
+                imageID.style.display = 'block';
+            } else {
+                imageID.style.display = 'none';
+            }
+        });
+        checkbox2.addEventListener('change', function () {
+            if (checkbox2.checked) {
+                details.style.display = 'block';
+            } else {
+                details.style.display = 'none';
+            }
         });
     </script>
 
-<script>
-    function validateForm() {
-        var brandname = document.getElementById('brandname').value.trim();
-        var productname = document.getElementById('productname').value.trim();
-        var description = document.getElementById('description').value.trim();
-        var stock = document.getElementById('stock').value.trim();
-        var price = document.getElementById('price').value.trim();
-        var offprice = document.getElementById('offprice').value.trim();
-        var caseDiameter = document.getElementById('caseDiameter').value.trim();
-        var bandColour = document.getElementById('bandColour').value.trim();
-        var bandMaterial = document.getElementById('bandMaterial').value.trim();
-        var warranty = document.getElementById('warranty').value.trim();
-        var movement = document.getElementById('movement').value.trim();
-        var weight = document.getElementById('weight').value.trim();
-        var country = document.getElementById('country').value.trim();
-        var isValid = true;
+    <script>
+        async function replace(productId, index) {
+            const response = await fetch('/admin/replaceImage', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId, index })
+            })
 
-        // Validate brandname
-        var brandnamePattern = /^[a-zA-Z]+$/;
-        if (brandname === '') {
-            document.getElementById('brand-error').innerText = 'Brand name is required';
-            isValid = false;
-        }else if (!brandnamePattern.test(brandname)) {
-                document.getElementById('brand-error').innerText = 'Brand name can only alphabets';
-                isValid = false;
-        } else {
-            document.getElementById('brand-error').innerText = '';
+            const data = await response.json();
+
+            if (data.success) {
+                alert("This test")
+                window.location.href = `/admin/edit-product/${productId}`
+            }
         }
 
-        // Validate productname
-        var productnamePattern = /^[a-zA-Z0-9\s]*[a-zA-Z][a-zA-Z0-9\s]*$/;
-        if (productname === '') {
-            document.getElementById('title-error').innerText = 'Product name is required';
-            isValid = false;
-        }else if (!productnamePattern.test(productname)) {
-                document.getElementById('title-error').innerText = 'Product name can only alphabets and must contain text';
-                isValid = false;
-        } else {
-            document.getElementById('title-error').innerText = '';
+
+        async function add(productId, index) {
+            const fileInput = document.getElementById('newImage');
+            const file = fileInput.files[0];
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('productId', productId);
+            formData.append('index', index);
+
+            const response = await fetch('/admin/addImage', {
+                method: 'POST',
+                body: formData // No need to set headers for FormData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                window.location.href = `/admin/edit-product/${productId}`;
+            }
         }
 
-        // Validate description
-        var descriptionPattern = /^[a-zA-Z0-9\s]*[a-zA-Z][a-zA-Z0-9\s]*$/;
-        if (description === '') {
-            document.getElementById('description-error').innerText = 'Description is required';
-            isValid = false;
-        }
-        else if (!descriptionPattern.test(description)) {
-                document.getElementById('description-error').innerText = 'Description name can only alphabets and must contain text';
-                isValid = false;
-        }  else {
-            document.getElementById('description-error').innerText = '';
-        }
+    </script>
 
-        // Validate stock
-        if (stock === '') {
-            document.getElementById('stock-error').innerText = 'Stock is required';
-            isValid = false;
-        } else if (isNaN(stock) || parseInt(stock) <= 0) {
-            document.getElementById('stock-error').innerText = 'Stock must be a positive number';
-            isValid = false;
-        } else {
-            document.getElementById('stock-error').innerText = '';
-        }
 
-        // Validate price
-        if (price === '') {
-            document.getElementById('price-error').innerText = 'Price is required';
-            isValid = false;
-        } else if (isNaN(price) || parseFloat(price) <= 0) {
-            document.getElementById('price-error').innerText = 'Price must be a positive number';
-            isValid = false;
-        } else {
-            document.getElementById('price-error').innerText = '';
-        }
 
-        // Validate offprice
-        if (offprice === '') {
-            document.getElementById('offprice-error').innerText = 'Special price is required';
-            isValid = false;
-        } else if (isNaN(offprice) || parseFloat(offprice) <= 0) {
-            document.getElementById('offprice-error').innerText = 'Special price must be a positive number';
-            isValid = false;
-        } else if (parseFloat(offprice) >= parseFloat(price)) {
-            document.getElementById('offprice-error').innerText = 'Special price must be less than regular price';
-            isValid = false;
-        } else {
-            document.getElementById('offprice-error').innerText = '';
-        }
-
-        // Validate caseDiameter
-        if (isNaN(caseDiameter)) {
-            document.getElementById('casedia-error').innerText = 'Case diameter must contain a number';
-            isValid = false;
-        } else {
-            document.getElementById('casedia-error').innerText = '';
-        }
-
-        // Validate bandColour
-        var bandColourPattern = /^[a-zA-Z]+$/;
-        if(bandColour === ''){
-            document.getElementById('colour-error').innerText = '';
-        }
-        else if (!bandColourPattern.test(bandColour)) {
-            document.getElementById('colour-error').innerText = 'Band colour can only contain text';
-            isValid = false;
-        } else {
-            document.getElementById('colour-error').innerText = '';
-        }
-
-        // Validate bandMaterial
-        var bandMaterialPattern = /^[a-zA-Z]+$/;
-        if(bandMaterial === ''){
-            document.getElementById('material-error').innerText = '';
-        }
-        else if (!bandMaterialPattern.test(bandMaterial)) {
-            document.getElementById('material-error').innerText = 'Band material type can only contain text';
-            isValid = false;
-        } else {
-            document.getElementById('material-error').innerText = '';
-        }
-
-        // Validate warranty
-        var warrantyPattern = /^[a-zA-Z]+$/;
-        if(warranty === ''){
-            document.getElementById('warranty-error').innerText = '';
-        }
-        else if (!warrantyPattern.test(warranty)) {
-            document.getElementById('warranty-error').innerText = 'Warranty type can only contain text';
-            isValid = false;
-        } else {
-            document.getElementById('warranty-error').innerText = '';
-        }
-
-        // Validate movement
-        var movementPattern = /^[a-zA-Z]+$/;
-        if(movement === ''){
-            document.getElementById('movement-error').innerText = '';
-        }
-        else if (!movementPattern.test(movement)) {
-            document.getElementById('movement-error').innerText = 'Watch movement type can only contain text';
-            isValid = false;
-        } else {
-            document.getElementById('movement-error').innerText = '';
-        }
-
-        // Validate weight
-        if(weight === ''){
-            document.getElementById('weight-error').innerText = '';
-        }
-        else if (isNaN(weight)) {
-            document.getElementById('weight-error').innerText = 'Item weight must contain a number';
-            isValid = false;
-        } else {
-            document.getElementById('weight-error').innerText = '';
-        }
-
-        // Validate country
-        var countryPattern = /^[a-zA-Z]+$/;
-        if(country === ''){
-            document.getElementById('country-error').innerText = '';
-        }
-        else if (!countryPattern.test(country)) {
-            document.getElementById('country-error').innerText = 'Country of Origin can only contain text';
-            isValid = false;
-        } else {
-            document.getElementById('country-error').innerText = '';
-        }
-
-        return isValid;
-    }
-</script>
-
-    
 
     <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -404,6 +433,6 @@
     <script src="/admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="/admin-assets/js/main.js" type="text/javascript"></script>
-</body>
+    </body>
 
-</html>
+    </html>

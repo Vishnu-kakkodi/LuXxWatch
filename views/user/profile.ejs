@@ -3,8 +3,7 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
-                    <span></span> Pages
+                    <a href="/home" rel="nofollow">Home</a>
                     <span></span> Account
                 </div>
             </div>
@@ -21,7 +20,7 @@
                                             <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab"
                                                 href="#dashboard" role="tab" aria-controls="dashboard"
                                                 aria-selected="false"><i
-                                                    class="fi-rs-settings-sliders mr-10"></i>Personal Information</a>
+                                                    class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders"
@@ -40,7 +39,8 @@
                                                     class="fi-rs-marker mr-10"></i>My Address</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="address-tab" href="/coupons" role="tab" aria-controls="coupons" aria-selected="true">
+                                            <a class="nav-link" id="address-tab" href="/coupons" role="tab"
+                                                aria-controls="coupons" aria-selected="true">
                                                 <i class="fi-rs-marker mr-10"></i>My Coupons
                                             </a>
                                         </li>
@@ -61,65 +61,129 @@
                                     </ul>
                                 </div>
                             </div>
+
                             <div class="col-md-8">
                                 <div class="tab-content dashboard-content">
-
                                     <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
                                         aria-labelledby="dashboard-tab">
-
-                                        <div class="card" style="border-style: solid; border-color: black;">
-                                            <div class="card-header" style="background-color: aquamarine;">
-                                                <h5 class="mb-0" style="text-align: center; color: brown; font-size: medium;">Welcome <%= userData.name %></h5>
+                                        <div
+                                            style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <a href="#" id="popupLink" style="font-size: medium;" type="button">My
+                                                    profile</a>
                                             </div>
-                                            <div class="d-flex align-items-start">
-                                                <!-- Container for name, email, and mobile -->
-                                                <div class="info-container">
-                                                    <div class="form-group col-md-6" style="margin-left: 5px;">
-                                                        <label for="name" style="display: inline-block; margin-left: 10px;">Name <span class="required">*</span></label>
-                                                        <a type="button" class="edit-btn" style="margin-left: 260px;" data-target="name">Edit</a>
-                                                        <form action="/editname/<%= userData._id %>" method="post" onsubmit="return validatenameForm()">
-                                                            <div class="input-group">
-                                                                <input required="" class="form-control square" value="<%= userData.name %>" name="name" type="text" id="name" disabled>
-                                                                <button type="submit" class="btn btn-success save-btn" id="save-name" style="display: none; background-color: rgb(250, 143, 232); color: black; margin-left: 15px; padding-inline: 10px; max-width: fit-content;">Save</button>
-                                                                <div class="error-message" id="name-error"></div>
-                                                            </div>
-                                                        </form>
+                                            <div>
+                                                <img class="img-xs rounded-circle" style="width: 40px; height: 40px;"
+                                                    src="/admin-assets/imgs/people/avatar2.jpg" alt="User">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="couponId">Referral ID:</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group" style="display: flex; justify-content: start;">
+                                                    <div>
+                                                        <input type="text"
+                                                            style="color: rgb(255, 153, 0); font-weight: bold;"
+                                                            value="Referral code: <%= userData.referralCode %>"
+                                                            disabled>
                                                     </div>
-                                        
-                                                    <div class="form-group col-md-6" style="margin-left: 5px;">
-                                                        <label for="email">Email <span class="required">*</span></label>
-                                                        <div class="input-group">
-                                                            <input required="" class="form-control square" name="email" value="<%= userData.email %>" id="email" disabled>
-                                                        </div>
-                                                    </div>
-                                        
-                                                    <div class="form-group col-md-6" style="margin-left: 5px;">
-                                                        <label for="mobile" style="display: inline-block; margin-left: 10px;">Mobile <span class="required">*</span></label>
-                                                        <a type="button" class="edit-btn" style="margin-left: 260px;" data-target="mobile">Edit</a>
-                                                        <form action="/editmobile/<%= userData._id %>" method="post" onsubmit="return validatemobileForm()">
-                                                            <div class="input-group">
-                                                                <input required="" class="form-control square" name="mobile" value="<%= userData.mobile %>" id="mobile" disabled>
-                                                                <button type="submit" class="btn btn-success save-btn" id="save-mobile" style="display: none; background-color: rgb(250, 143, 232); color: black; margin-left: 15px; padding-inline: 10px; max-width: fit-content;">Save</button>
-                                                            </div>
-                                                        </form>
+                                                    <div>
+                                                        <button class="btn btn-secondary" style=" margin-left: 4px;"
+                                                            onclick="copyCoupon('<%= userData.referralCode %>')">
+                                                            Copy
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <!-- Container for the image -->
-                                                <div class="card mb-4" style="width: 200px; height: 250px;">
-                                                    <div class="card-header">
-                                                        <h4>Photo</h4>
+                                            </div>
+                                        </div>
+                                        <div id="popupWindow" style="display: none;">
+                                            <div class="card" style="border-style: solid; border-color: black;">
+                                                <div class="card-header" style="background-color: aquamarine;">
+                                                    <div
+                                                        style="display: flex; justify-content: space-between; align-items: center;">
+                                                        <div>
+                                                            <h5 class="mb-0"
+                                                                style="text-align: center; color: brown; font-size: medium;">
+                                                                Welcome <%= userData.name %>
+                                                            </h5>
+                                                        </div>
+                                                        <div>
+                                                            <span type="button" id="closeButton"
+                                                                style='font-size:10px;'>&#10060;</span>
+                                                        </div>
                                                     </div>
-                                                    <div class="card-body" style="margin-top: 10px;">
-                                                        <div class="input-upload" >
-                                                            <img src="/admin-assets/imgs/theme/upload.svg" alt="">
-                                                            <input class="form-control" style="padding: 12px;" type="file" name="image" single>
+                                                </div>
+
+                                                <div class="d-flex align-items-start">
+                                                    <!-- Container for name, email, and mobile -->
+                                                    <div class="info-container">
+                                                        <div class="form-group col-md-6" style="margin-left: 5px;">
+                                                            <label for="name"
+                                                                style="display: inline-block; margin-left: 10px;">Name
+                                                                <span class="required">*</span></label>
+                                                            <a type="button" class="edit-btn"
+                                                                style="margin-left: 260px;" data-target="name">Edit</a>
+                                                            <form action="/editname/<%= userData._id %>" method="post"
+                                                                onsubmit="return validatenameForm()">
+                                                                <div class="input-group">
+                                                                    <input required="" class="form-control square"
+                                                                        value="<%= userData.name %>" name="name"
+                                                                        type="text" id="name" disabled>
+                                                                    <button type="submit"
+                                                                        class="btn btn-success save-btn" id="save-name"
+                                                                        style="display: none; background-color: rgb(250, 143, 232); color: black; margin-left: 15px; padding-inline: 10px; max-width: fit-content;">Save</button>
+                                                                    <div class="error-message" id="name-error"></div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+
+                                                        <div class="form-group col-md-6" style="margin-left: 5px;">
+                                                            <label for="email">Email <span
+                                                                    class="required">*</span></label>
+                                                            <div class="input-group">
+                                                                <input required="" class="form-control square"
+                                                                    name="email" value="<%= userData.email %>"
+                                                                    id="email" disabled>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group col-md-6" style="margin-left: 5px;">
+                                                            <label for="mobile"
+                                                                style="display: inline-block; margin-left: 10px;">Mobile
+                                                                <span class="required">*</span></label>
+                                                            <a type="button" class="edit-btn"
+                                                                style="margin-left: 260px;"
+                                                                data-target="mobile">Edit</a>
+                                                            <form action="/editmobile/<%= userData._id %>" method="post"
+                                                                onsubmit="return validatemobileForm()">
+                                                                <div class="input-group">
+                                                                    <input required="" class="form-control square"
+                                                                        name="mobile" value="<%= userData.mobile %>"
+                                                                        id="mobile" disabled>
+                                                                    <button type="submit"
+                                                                        class="btn btn-success save-btn"
+                                                                        id="save-mobile"
+                                                                        style="display: none; background-color: rgb(250, 143, 232); color: black; margin-left: 15px; padding-inline: 10px; max-width: fit-content;">Save</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Container for the image -->
+                                                    <div class="card mb-4" style="width: 200px; height: 250px;">
+                                                        <div class="card-header">
+                                                            <h4>Photo</h4>
+                                                        </div>
+                                                        <div class="card-body" style="margin-top: 10px;">
+                                                            <div class="input-upload">
+                                                                <img src="/admin-assets/imgs/theme/upload.svg" alt="">
+                                                                <input class="form-control" style="padding: 12px;"
+                                                                    type="file" name="image" single>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        
-
 
                                     </div>
 
@@ -142,74 +206,127 @@
                                                         </thead>
                                                         <tbody>
                                                             <% order.forEach(order=> { %>
-                                                            <tr>
-                                                                <td><%= order.orderId %></td>
-                                                                <td><%= order.createdAt %></td>
-                                                                <td><%= order.status %></td>
-                                                                <td><%= order.total %></td>
-                                                                <td><a href="/orderView/?orderId=<%= order._id %>" class="btn-small d-block">View</a></td>
+                                                                <tr>
+                                                                    <td>
+                                                                        <%= order.orderId %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= order.createdAt %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= order.status %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= order.grandTotal %>
+                                                                    </td>
+                                                                    <td><a href="/orderView/?orderId=<%= order._id %>"
+                                                                            class="btn-small d-block">View</a></td>
 
-                                                            </tr>
-                                                            <% }) %>
+                                                                </tr>
+                                                                <% }) %>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <!--pagination-->
+                                        <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+                                            <nav aria-label="Page navigation example">
+                                                <ul class="pagination justify-content-start">
+                                                    <% for(let i=1; i<=totalPages; i++){ %>
+                                                        <li class="page-item active">
+                                                            <a class="page-link" href="?page=<%= i %>">
+                                                                <%= i %>
+                                                            </a>
+                                                        </li>
+                                                        <% } %>
+                                                </ul>
+                                            </nav>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="wallet" role="tabpanel" aria-labelledby="orders-tab">
                                         <div class="card">
-                                            <div class="card-header" style="background-color: aquamarine;" >
+                                            <div class="card-header" style="background-color: aquamarine;">
                                                 <div class="text-center">
                                                     <h5 class="mb-0" style="font-size: medium;">Your Wallet</h5>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="card-body">
                                                 <% if (wallet && wallet.transationHistory) { %>
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <h6>Wallet Balance: ₹<%= wallet.walletbalance %></h6>
-                                                        <h6>Total Refund: ₹<%= wallet.totalRefund %></h6>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <h6>Wallet Balance: ₹<%= wallet.walletbalance %>
+                                                            </h6>
+                                                            <h6>Total Refund: ₹<%= wallet.totalRefund %>
+                                                            </h6>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <form>
+                                                                <div class="mb-3">
+                                                                    <label for="addAmount" class="form-label">Add Amount
+                                                                        to Wallet</label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="addAmount" placeholder="Enter amount">
+                                                                </div>
+                                                                <button type="submit" class="btn btn-primary"
+                                                                    onclick="walletMoney(event)"
+                                                                    style="background-color: rgb(252, 112, 112);">Add</button>
+                                                            </form>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <form>
-                                                            <div class="mb-3">
-                                                                <label for="addAmount" class="form-label">Add Amount to Wallet</label>
-                                                                <input type="text" class="form-control" id="addAmount" placeholder="Enter amount">
-                                                            </div>
-                                                            <button type="submit" class="btn btn-primary" onclick="walletMoney(event)" style="background-color: rgb(252, 112, 112);" >Add</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                                <div class="table-responsive mt-4">
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Transaction Mode</th>
-                                                                <th>Date</th>
-                                                                <th>Type</th>
-                                                                <th>Amount</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                                <% wallet.transationHistory.forEach((transation) => { %>
+                                                    <div class="table-responsive mt-4">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Transaction Mode</th>
+                                                                    <th>Date</th>
+                                                                    <th>Type</th>
+                                                                    <th>Amount</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% wallet.transationHistory.forEach((transation)=> { %>
                                                                     <tr>
-                                                                        <td><%= transation.transationMode %></td>
-                                                                        <td><%= transation.createdAt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }) %></td>
-                                                                        <td><%= transation.paymentType %></td>
-                                                                        <td>₹ <%= transation.transationamount %></td>
+                                                                        <td>
+                                                                            <%= transation.transationMode %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= transation.createdAt.toLocaleDateString('en-US',
+                                                                                { weekday: 'short' , month: 'short' ,
+                                                                                day: '2-digit' , year: 'numeric' }) %>
+                                                                        </td>
+                                                                        <td>
+                                                                            <%= transation.paymentType %>
+                                                                        </td>
+                                                                        <td>₹ <%= transation.transationamount %>
+                                                                        </td>
                                                                     </tr>
-                                                                <% }) %> 
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                                    <% }) %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <% } else { %>
+                                                        <div class="col-md-6">
+                                                            <h5>Your wallet is empty</h5>
+                                                            <form>
+                                                                <div class="mb-3">
+                                                                    <label for="addAmount" class="form-label">Add Amount
+                                                                        to Wallet</label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="addAmount" placeholder="Enter amount">
+                                                                </div>
+                                                                <button type="submit" class="btn btn-primary"
+                                                                    onclick="walletMoney(event)"
+                                                                    style="background-color: rgb(252, 112, 112);">Add</button>
+                                                            </form>
+                                                        </div>
+                                                        <% } %>
                                             </div>
                                         </div>
-                                        <% } %>
                                     </div>
-                                    
-                                    
+
+
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel"
                                         aria-labelledby="track-orders-tab">
                                         <div class="card">
@@ -293,7 +410,8 @@
                                         aria-labelledby="account-detail-tab">
                                         <div class="card" style="border-style: solid; border-color: black;">
                                             <div class="card-header" style="background-color: aquamarine; ">
-                                                <h5 style="text-align: center; color: brown; font-size: medium;">Change Password</h5>
+                                                <h5 style="text-align: center; color: brown; font-size: medium;">Change
+                                                    Password</h5>
                                             </div>
                                             <div class="card-body">
                                                 <form id="passwordForm">
@@ -345,6 +463,32 @@
     </main>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        function copyCoupon(refferalId) {
+            var tempInput = document.createElement('input');
+            tempInput.value = refferalId;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Coupon code copied to clipboard!');
+        }
+    </script>
+
+
+    <script>
+        var popupLink = document.getElementById("popupLink");
+        var popupWindow = document.getElementById("popupWindow");
+        var closeButton = document.getElementById("closeButton");
+        popupLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            popupWindow.style.display = "block";
+        });
+        closeButton.addEventListener("click", function () {
+            popupWindow.style.display = "none";
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -452,91 +596,91 @@
         });
     </script>
 
-<script>
+    <script>
 
-    async function walletMoney(event) {
-        try {
-            // Find the selected payment option ID
-            event.preventDefault();
-            const amount = document.getElementById('addAmount').value;
+        async function walletMoney(event) {
+            try {
+                // Find the selected payment option ID
+                event.preventDefault();
+                const amount = document.getElementById('addAmount').value;
 
-            // Make the fetch request to place the order
-            const response = await fetch('/walletMoney', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ amount:amount })
-            });
+                // Make the fetch request to place the order
+                const response = await fetch('/walletMoney', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ amount: amount })
+                });
 
-            const data = await response.json();
-            if (data.success) {
-                console.log(data.razorpay);
-                razorpayPayment(data.razorpay,data.id);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    function razorpayPayment(order, key_id) {
-        if (order) {
-            var options = {
-                "key": key_id,
-                "amount": order.amount,
-                "currency": "INR",
-                "name": "LuxXWatch",
-                "description": "Test Transaction",
-                "image": "https://example.com/your_logo",
-                "order_id": order.id,
-                "handler": function (response) {
-                    // alert(response.razorpay_payment_id);
-                    // alert(response.razorpay_order_id);
-                    // alert(response.razorpay_signature);
-                    window.location.href = "/profile";
-                    verifyPayment(response, order);
-                },
-                "prefill": {
-                    "name": "Gaurav Kumar",
-                    "email": "gaurav.kumar@example.com",
-                    "contact": "9000090000"
-                },
-                "notes": {
-                    "address": "Razorpay Corporate Office"
-                },
-                "theme": {
-                    "color": "#3399cc"
+                const data = await response.json();
+                if (data.success) {
+                    console.log(data.razorpay);
+                    razorpayPayment(data.razorpay, data.id);
                 }
-            };
-            // Call the Razorpay payment method
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
-        } else {
-            console.error('Invalid order object or amount property is missing');
-            return;
-        }
-    }
-
-    async function verifyPayment(payment, order) {
-        try {
-            const response = await fetch('/verifywalletPayment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ payment, order })
-            });
-            if (response.razorpay_success) {
-                // Order placed successfully, redirect to order page
-                window.location.href = "/profile";
-            } else {
-                console.error('Failed to verify payment');
+            } catch (error) {
+                console.error('Error:', error);
             }
-        } catch (error) {
-            console.error('Error verifying payment:', error);
         }
-    }
-</script>
+
+        function razorpayPayment(order, key_id) {
+            if (order) {
+                var options = {
+                    "key": key_id,
+                    "amount": order.amount,
+                    "currency": "INR",
+                    "name": "LuxXWatch",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": order.id,
+                    "handler": function (response) {
+                        // alert(response.razorpay_payment_id);
+                        // alert(response.razorpay_order_id);
+                        // alert(response.razorpay_signature);
+                        window.location.href = "/profile";
+                        verifyPayment(response, order);
+                    },
+                    "prefill": {
+                        "name": "Gaurav Kumar",
+                        "email": "gaurav.kumar@example.com",
+                        "contact": "9000090000"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                // Call the Razorpay payment method
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+            } else {
+                console.error('Invalid order object or amount property is missing');
+                return;
+            }
+        }
+
+        async function verifyPayment(payment, order) {
+            try {
+                const response = await fetch('/verifywalletPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ payment, order })
+                });
+                if (response.razorpay_success) {
+                    // Order placed successfully, redirect to order page
+                    window.location.href = "/profile";
+                } else {
+                    console.error('Failed to verify payment');
+                }
+            } catch (error) {
+                console.error('Error verifying payment:', error);
+            }
+        }
+    </script>
 
 
 

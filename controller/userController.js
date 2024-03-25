@@ -69,7 +69,9 @@ const loginload = async (req, res) => {
 
 const loadRegister = async (req, res) => {
     try {
-        res.render('register')
+        const userData = await User.find();
+        const referralArray = userData.map(user => user.referralCode);
+        res.render('register', { referralArray })
     } catch (error) {
         console.log(error)
     }
@@ -100,6 +102,9 @@ const insertUser = async (req, res) => {
             otp,
             otpCreatedAt: Date.now()
         };
+        if (req.body.referralID) {
+            req.session.referralID = req.body.referralID;
+        }
         req.session.Data = data;
         req.session.save();
         console.log(otp, 'this is otp');
@@ -140,9 +145,9 @@ const resendOTP = async (req, res) => {
     try {
         const newOTP = generateOTP();
 
-        // Check if req.session.Data exists before accessing its properties
         if (req.session.Data) {
             req.session.Data.otp = newOTP;
+            req.session.Data.otpCreatedAt = Date.now();
             req.session.save();
 
             const mailOptions = {
@@ -163,10 +168,7 @@ const resendOTP = async (req, res) => {
             });
         } else {
             console.log("req.session.Data is undefined");
-            // Handle the case where req.session.Data is undefined
-            // Redirect or send an error response
-            // For example:
-            // res.status(400).send("Session data is not available");
+            res.status(400).send("Session data is not available");
         }
     } catch (error) {
         console.log(error.message);
@@ -193,15 +195,75 @@ const getOtp = async (req, res) => {
         }
         else if (genOtp === userOtp) {
             const hashedPassword = await securePassword(req.session.Data.password)
+            let couponId;
+            function UniqueId() {
+                const generateCustomCode = length => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]).join('');
+                const generateCustomCodes = (length, count) => Array.from({ length: count }, () => generateCustomCode(length));
+
+                const length = 8;
+                const count = 1;
+
+                const customCodes = generateCustomCodes(length, count);
+                const customCode = customCodes[0];
+                couponId = customCode;
+                console.log(couponId)
+
+            };
+            UniqueId();
             const user = new User({
                 name: req.session.Data.name,
                 mobile: req.session.Data.mobile,
                 email: req.session.Data.email,
                 password: hashedPassword,
                 is_admin: 0,
-                is_verified: 1
+                is_verified: 1,
+                referralCode: couponId
             })
             const userData = await user.save()
+
+            if (req.session.referralID) {
+                const referror = await User.findOne({referralCode:req.session.referralID});
+                const referrorWallet = await Wallet.findOne({user:referror._id});
+                const newWallet = new Wallet({
+                    user: userData._id,
+                    walletbalance: 100,
+                    transationHistory: [{
+                        createdAt: Date.now(),
+                        paymentType: "Referral",
+                        transationMode: "Credit",
+                        transationamount: 100
+                    }],
+                    totalRefund: 0
+                });
+                await newWallet.save();
+
+        let balance = referrorWallet ? referrorWallet.walletbalance : 0;
+        balance = balance + 100;
+
+            if (referrorWallet) {
+                referrorWallet.walletbalance = balance;
+                referrorWallet.transationHistory.push({
+                    createdAt: Date.now(),
+                    paymentType: "Referral",
+                    transationMode: "Credit",
+                    transationamount: 100
+                });
+                await referrorWallet.save();
+            } else {
+                const walletNew = new Wallet({
+                    user: referror._id,
+                    walletbalance: balance,
+                    transationHistory: [{
+                        createdAt: Date.now(),
+                        paymentType: "Referral",
+                        transationMode: "Credit",
+                        transationamount: 100
+                    }],
+                    totalRefund: 0
+                });
+                await walletNew.save();
+            }
+        }
 
             if (userData) {
                 res.status(200).json({ success: true, message: 'User registered successfully.' });
@@ -292,13 +354,26 @@ const profile = async (req, res) => {
         const userData = await User.findOne({ email: email });
         const categories = await Category.find();
         const useraddress = await Address.find({ user: userData._id });
-        const order = await Order.find({ user: userData._id });
-        const wallet = await Wallet.findOne({user:userData._id});
-        console.log(wallet);
+        const wallet = await Wallet.findOne({ user: userData._id });
+
+        var page = 1;
+        if (req.query.page) {
+            page = req.query.page;
+        }
+
+        const limit = 5;
+
+        const order = await Order.find({ user: userData._id })
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec()
+
+        const count = await Order.countDocuments({ user: userData._id });
+
         res.locals.categories = categories;
         res.locals.userData = userData;
         // res.locals.useraddress = useraddress;
-        res.render('profile', { userData:userData, useraddress:useraddress, categories:categories, order:order, wallet:wallet });
+        res.render('profile', { userData: userData, useraddress: useraddress, categories: categories, order: order, wallet: wallet,totalPages: Math.ceil(count / limit),currentPage: page});
     } catch (error) {
         console.log(error.message)
     }
@@ -626,58 +701,41 @@ const shop = async (req, res) => {
             page = req.query.page;
         }
 
-        const brand = req.query.brand;
+        let searchValue = "";
 
-        const category = req.query.category;
-
-        const sort = req.query.sort;
-
-        let filterCriteria = { is_active: 1 };
-
-        if (brand) {
-            filterCriteria.brandname = brand;
-        } else if (category) {
-            filterCriteria.catname = category;
+        if(req.query.searchItem){
+            searchValue = req.query.searchItem;
         }
-
 
         const limit = 9;
 
-        let sortCriteria = {};
-        if (sort === 'asc') {
-            sortCriteria.offprice = 1;
-        } else if (sort === 'desc') {
-            sortCriteria.offprice = -1;
-        } else if (sort === 'AZ') {
-            sortCriteria.productname = 1;
-        } else if (sort === 'ZA') {
-            sortCriteria.productname = -1;
-        } else if (sort === 'NA') {
-            sortCriteria.arrivalData = -1;
-        }
+        const regex = new RegExp(searchValue);
 
-        const products = await Product.find(filterCriteria)
-            .sort(sortCriteria)
+        const products = await Product.find({ $and: [{ is_active: 1 }, { catname: { $regex: regex } }] })
             .limit(limit * 1)
             .skip((page - 1) * limit)
-            .exec();
+            .exec()
 
-        const count = await Product.find(filterCriteria).countDocuments();
+        const count = await Product.countDocuments({ $and: [{ is_active: 1 }, { catname: { $regex: regex } }] });
+
+        console.log(count)
+
         res.render('shop', {
             products,
             userData,
             categories,
             totalPages: Math.ceil(count / limit),
             currentPage: page,
-            currentSort: sort || 'asc'
+            searchValue
         });
+        console.log(searchValue);
     } catch (error) {
         console.log(error.message);
     }
 }
 
 
-const search = async (req, res) => {
+const shopFilter = async (req, res) => {
     try {
         const email = req.session.email;
         const categories = await Category.find();
@@ -688,31 +746,42 @@ const search = async (req, res) => {
             page = req.query.page;
         }
 
-        const searchValue = req.query.searchItem;
+        let searchValue = '';
+        let brand = [];
+        let category = [];
+        let sort = '';
 
-        const brand = req.query.brand;
-
-        const category = req.query.category;
-
-        const sort = req.query.sort;
+        if (req.body.conditions) {
+            searchValue = req.body.conditions.search || '';
+            brand = req.body.conditions.brand || [];
+            category = req.body.conditions.category || [];
+            sort = req.body.conditions.sort || '';
+        }
 
         let filterCriteria = { is_active: 1 };
 
-        if (brand) {
-            filterCriteria.brandname = brand;
-        } else if (category) {
-            filterCriteria.catname = category;
+        if (brand.length > 0) {
+            filterCriteria.brandname = { $in: brand };
+        } else if (category.length > 0) {
+            filterCriteria.catname = { $in: category };
         }
-
 
         const limit = 9;
 
         let sortCriteria = {};
         if (sort === 'asc') {
-            sortCriteria.offprice = 1;
+            if (!('offprice' in sortCriteria)) {
+                sortCriteria.price = 1;
+            }else{
+                sortCriteria.offprice = 1;
+            }
         } else if (sort === 'desc') {
-            sortCriteria.offprice = -1;
-        } else if (sort === 'AZ') {
+            if (!('offprice' in sortCriteria)) {
+                sortCriteria.price = -1;
+            }else{
+                sortCriteria.offprice = -1;
+            }
+        }else if (sort === 'AZ') {
             sortCriteria.productname = 1;
         } else if (sort === 'ZA') {
             sortCriteria.productname = -1;
@@ -720,53 +789,42 @@ const search = async (req, res) => {
             sortCriteria.arrivalData = -1;
         }
 
-        console.log(searchValue);
-
-        const regex = new RegExp(searchValue);
-
+        const regex = new RegExp(searchValue, 'i'); 
         const products = await Product.find({
-            $or: [
-                { productname: { $regex: regex }},
-                { brandname: {$regex: regex}},
-                { catname: {$regex: regex}}
+            $and: [
+                { $or: [{ catname: { $regex: regex } }, { brandname: { $in: brand } }] },
+                filterCriteria
             ]
-        }).sort(sortCriteria)
-            .limit(limit * 1)
+        })
+            .sort(sortCriteria)
+            .limit(limit)
             .skip((page - 1) * limit)
-            .exec()
-
+            .exec();
 
         const count = await Product.countDocuments({
             $and: [
-                filterCriteria,
-                {
-                    $or: [
-                        { productname: { $regex: searchValue, $options: 'i' } },
-                        { brandname: { $in: await Product.find({ brandname: { $regex: searchValue, $options: 'i' } }).distinct('_id') } },
-                        { catname: { $in: await Category.find({ catname: { $regex: searchValue, $options: 'i' } }).distinct('_id') } }
-                    ]
-                }
+                { $or: [{ catname: { $regex: regex } }, { brandname: { $in: brand } }] },
+                filterCriteria
             ]
         });
 
-        console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjj");
+        console.log(products)
 
-
-        res.render('shop', {
+        res.json({
             products,
             userData,
             categories,
             totalPages: Math.ceil(count / limit),
             currentPage: page,
-            currentSort: sort || 'asc'
+            currentSort: sort || 'asc',
+            searchValue
         });
-
-        console.log("dfdfdfdfdfdf");
-
     } catch (error) {
         console.log(error.message);
+        res.status(500).json({ error: error.message });
     }
-}
+};
+
 
 
 
@@ -821,6 +879,6 @@ module.exports = {
     newPassword,
     loadproductdetail,
     shop,
-    search,
+    shopFilter,
     contact
 }

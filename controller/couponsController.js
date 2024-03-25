@@ -42,7 +42,7 @@ const applyCoupon = async (req,res)=>{
             console.log("Element exists in the array.");
         const coupon = await Coupon.findOne({couponId:couponId});
         const discountAmount = coupon.discountAmount;
-        const newTotal = cart.total + discountAmount;
+        const newTotal = cart.total - discountAmount;
         res.status(200).json({success:discountAmount, newTotal:newTotal});
     } else {
         res.status(400).json({error:"Enter valid coupon code"});

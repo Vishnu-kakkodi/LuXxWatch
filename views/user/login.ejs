@@ -262,22 +262,18 @@
                 <% } %>
                 <form id="loginForm" action="/home" method="POST">
                     <div class="mb-3">
-                        <input class="form-control" required="" name="email" placeholder="Enter email" type="email">
+                        <input class="form-control" required="" name="email" placeholder="Enter email" type="email" value="pvishnukakkodi@gmail.com">
                         <span id="emailError" class="error"></span>
                     </div>
                     <div class="mb-3">
-                        <input class="form-control" required="" name="password" placeholder="Enter Password" type="password">
+                        <input class="form-control" required="" name="password" placeholder="Enter Password" type="password" value="Vishnu@123">
                         <span id="passwordError" class="error"></span>
                     </div>
                     <div class="mb-3">
-                        <a href="/forgot" class="float-end font-sm text-muted">Forgot password?</a>
-                        <label class="form-check">
-                            <input id="rememberCheckbox" type="checkbox" class="form-check-input" checked="">
-                            <span class="form-check-label">Remember</span>
-                        </label>
+                        <a href="/forgot" class="float-end font-sm">Forgot password?</a>
                     </div>
                     <div class="mb-4">
-                        <button id="loginBtn" type="submit" class="btn btn-primary w-100" disabled> Sign In </button>
+                        <button id="loginBtn" type="submit" class="btn btn-primary w-100" style="margin-top: 10px;"> Sign In </button>
                     </div>
                 </form>
                 <p class="text-center small text-muted mb-15">or sign up with</p>
@@ -428,12 +424,6 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('rememberCheckbox').addEventListener('change', function() {
-            var loginBtn = document.getElementById('loginBtn');
-            loginBtn.disabled = !this.checked;
-        });
-    </script>
     <!-- Vendor JS-->
     <script src="/user-assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/user-assets/js/vendor/jquery-3.6.0.min.js"></script>

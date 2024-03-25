@@ -3,8 +3,8 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
-                    <span></span> Shop
+                    <a href="/home" rel="nofollow">Home</a>
+                    <span></span> <a href="/shop" rel="nofollow">Shop</a>
                     <span></span> Wishlist
                 </div>
             </div>
@@ -33,7 +33,11 @@
                                             <h5 class="product-name"><a href="shop-product-right.html"><%= product.product.productname %></a></h5>
                                             </p>
                                         </td>
+                                        <% if(product.product.offprice){ %>
                                         <td class="price" data-title="Price"><span>₹<%= product.product.offprice %> </span></td>
+                                        <% } else{ %>
+                                            <td class="price" data-title="Price"><span>₹<%= product.product.price %> </span></td>
+                                            <% } %>
                                         <td class="text-center" data-title="Stock">
                                             <span class="stock-status color3 font-weight-bold" data-value="<%= product.product.stock %>"></span>
                                         </td>

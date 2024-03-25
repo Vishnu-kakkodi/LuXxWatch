@@ -40,7 +40,11 @@ const userSchema = new mongoose.Schema({
     appliedCoupon : [{
         type: String,
         required: false
-    }]
+    }],
+    referralCode: {
+        type: String,
+        required:true
+    }
 
 });
 

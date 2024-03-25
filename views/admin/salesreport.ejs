@@ -1,85 +1,221 @@
-
 <%- include('../layouts/adminHeader.ejs') %>
 
   <div class="container">
     <h2 class="mt-4 mb-4 text-center">Sales Report</h2>
     <div class="flex mb-30" style="display: flex; justify-content: space-evenly; align-items: center;">
-      <p>Stating-Date <input type="date">
+      <p>Stating-Date <input id="startDate" type="date">
       </p>
-      <p>Ending-Date <input type="date">
+      <p>Ending-Date <input id="endDate" type="date">
       </p>
 
-      <p class="btn btn-light">
-        Today Sales
-      </p>
-      <p class="btn btn-light">
-        Weekly
-      </p>
-      <p class="btn btn-light">
-        year
-      </p>
+      <a type="button" class="btn btn-light" onclick="filterCustom()">
+        Custom Range
+      </a>
+
+      <select id="filterOption" class="btn btn-light">
+        <option>Filter By</option>
+        <option value="today">Today</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        <option value="yearly">Yearly</option>
+      </select>
+
     </div>
     <div class="table-responsive container">
       <table class="table table-striped">
         <thead>
-          <tr>
+          <tr style="text-align: center;">
+            <th>Slno.</th>
             <th>Date</th>
-            <th>Order Number</th>
-            <th>Customer</th>
-            <th>Product</th>
-            <th>Quantity Sold</th>
-            <th>Unit Price (Rs)</th>
-            <th>Coupon (Amount)</th>
-            <th>Total Sales (Rs)</th>
+            <th scope="col">Order ID</th>
+            <th scope="col">Customer</th>
+            <th scope="col">Status</th>
+            <th scope="col">Total Products</th>
+            <th scope="col">Total Actual Price</th>
+            <th scope="col">Coupon Amount Applied</th>
+            <th scope="col">Payment Method</th>
+            <th scope="col">Bill Amount</th>
           </tr>
         </thead>
-        <tbody>
-          <% if (salereport && salereport.length> 0) { %>
-            <% salereport.forEach(order=> { %>
-              <% order.items.forEach(item=> { %>
-                <tr>
-                  <td>
-                    <%= new Date(order.orderDate).toLocaleDateString(); %>
-                  </td>
-                  <td>
-                    <%= order.orderNumber %>
-                  </td>
-                  <td>
-                    <%= order.userId.username %>
-                  </td>
-                  <td>
-                    <%= item.product.productName %>
-                  </td>
-                  <td>
-                    <%= item.quantity %>
-                  </td>
-                  <td>
-                    <%= item.price %>
-                  </td>
-                  <td>
-                    <%= order.couponDiscount %>
-                  </td>
-                  <td>
-                    <%= item.quantity * item.price %>
-                  </td>
-                </tr>
-                <% }); %>
-                  <% }); %>
-                    <% } else { %>
-                      <tr>
-                        <td colspan="8">No sales data</td>
-                      </tr>
-                      <% } %>
+        <tbody id="reportSale" style="text-align: center;">
+          <% if (order && order.length> 0) { %>
+            <% var orderamount=0 %>
+              <% var discount=0 %>
+                <% order.forEach((currentOrder, index)=> { %>
+                  <% if (currentOrder.status==='Delivered' ) { %>
+                    <% let productCount=0; %>
+                      <% currentOrder.products.forEach((item)=> { %>
+                        <% productCount +=item.quantity; %>
+                          <% }) %>
+                            <tr>
+                              <td>
+                                <%= index + 1 %>
+                              </td>
+                              <td>
+                                <%= currentOrder.createdAt.toLocaleDateString('en-US', { day: '2-digit' ,
+                                  month: '2-digit' , year: 'numeric' }) %>
+                              </td>
+                              <td>
+                                <%= currentOrder.orderId %>
+                              </td>
+                              <td>
+                                <%= currentOrder.user.name %>
+                              </td>
+                              <td>
+                                <%= currentOrder.status %>
+                              </td>
+                              <td>
+                                <%= productCount %>
+                              </td>
+                              <td>Rs.<%= currentOrder.total %>
+                              </td>
+                              <td>
+                                <%= currentOrder.discountAmount %>
+                              </td>
+                              <td>
+                                <%= currentOrder.paymentOption %>
+                              </td>
+                              <td>Rs.<%= currentOrder.grandTotal %>
+                              </td>
+                              <% orderamount +=currentOrder.grandTotal %>
+                                <% discount +=currentOrder.discountAmount %>
+                            </tr>
+                            <% } %>
+                              <% }) %>
+                                <% let salescount=order.length %>
+                                  <p>Overall sales count : <%= salescount %>
+                                  </p>
+                                  <p> Overall order amount: <%= orderamount %>
+                                  </p>
+                                  <p> Overall discount amount: <%= discount %>
+                                  </p>
+                                  <% } else { %>
+                                    <tr>
+                                      <td colspan="11">No sales data available</td>
+                                    </tr>
+                                    <% } %>
         </tbody>
       </table>
-      <div class="container mb-30"  style="display: flex; justify-content:end; ">
-      <div >
-        <button class="btn btn-success" style="margin-right: 80px;"> Download PDF </button>
-        <button class="btn btn-success"> Download to Excel </button>
+      <div class="container mb-30" style="display: flex; justify-content:end; ">
+        <div>
+          <button class="btn btn-success" style="margin-right: 80px;"> Download PDF </button>
+          <button class="btn btn-success"> Download to Excel </button>
+        </div>
       </div>
     </div>
-    </div>
   </div>
+
+
+  <script>
+    document.getElementById('filterOption').addEventListener('change', async function () {
+      const selectedOption = this.value;
+      switch (selectedOption) {
+        case 'today':
+          await filter('today');
+          break;
+        case 'weekly':
+          await filter('weekly');
+          break;
+        case 'monthly':
+          await filter('monthly');
+          break;
+        case 'yearly':
+          await filter('yearly');
+          break;
+        default:
+          console.error('Invalid option selected');
+      }
+    });
+
+    async function filter(option) {
+      try {
+        console.log("haaaaaah");
+        const response = await fetch('/admin/filterReport', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ option })
+        })
+        const data = await response.json();
+
+        if (data.success) {
+          console.log(data.success)
+          let order = data.success;
+          const html = generateHTML(order);
+          document.getElementById('reportSale').innerHTML = html;
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+
+    async function filterCustom() {
+      try {
+        console.log("haaaaaah");
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const response = await fetch('/admin/customReport', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ startDate, endDate })
+        })
+        const data = await response.json();
+
+        if (data.success) {
+          console.log(data.success)
+          let order = data.success;
+          const html = generateHTML(order);
+          document.getElementById('reportSale').innerHTML = html;
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+
+
+    function generateHTML(order) {
+      let html = '';
+      if (order && order.length > 0) {
+        let orderamount = 0;
+        let discount = 0;
+
+        order.forEach((currentOrder, index) => {
+          if (currentOrder.status === 'Delivered') {
+            let productCount = currentOrder.products.reduce((total, item) => total + item.quantity, 0);
+            html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${new Date(currentOrder.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                        <td>${currentOrder.orderId}</td>
+                        <td>${currentOrder.user.name}</td>
+                        <td>${currentOrder.status}</td>
+                        <td>${productCount}</td>
+                        <td>Rs.${currentOrder.total}</td>
+                        <td>${currentOrder.discountAmount}</td>
+                        <td>${currentOrder.paymentOption}</td>
+                        <td>Rs.${currentOrder.grandTotal}</td>
+                    </tr>`;
+            orderamount += currentOrder.grandTotal;
+            discount += currentOrder.discountAmount;
+          }
+        });
+
+        const salescount = order.length;
+        html += `<p>Total sales : ${salescount}</p>`;
+        html += `<p>Order total: ${orderamount}</p>`;
+        html += `<p>Discount total: ${discount}</p>`;
+      } else {
+        html = '<tr><td colspan="11">No sales data available</td></tr>';
+      }
+      return html;
+    }
+
+
+
+  </script>
 
   <script src="/asset/js/vendors/jquery-3.6.0.min.js"></script>
   <script src="/asset/js/vendors/bootstrap.bundle.min.js"></script>

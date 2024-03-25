@@ -14,10 +14,11 @@
             <div>
                 <h3 style="margin-top: 10px; color: red;">Order placed successfully</h3>
                 <h5 style="margin-top: 10px; color: red;">Order placed for ₹ <%= orderDetails.total %>!</h5>
-                <h5 style="margin-top: 10px; color: rgb(255, 153, 0);">Status:   <%= orderDetails.status %></h5>
-            </div>      
+                <h5 style="margin-top: 10px; color: rgb(255, 153, 0);">Status: <%= orderDetails.status %>
+                </h5>
+            </div>
         </div>
-        
+
         <section class="mt-50 mb-50">
             <div class="container">
                 <div class="row">
@@ -32,15 +33,17 @@
                                         <th scope="col">Price</th>
                                         <th scope="col">Quantity</th>
                                         <th scope="col">Subtotal</th>
-                                        <th scope="col">Remove</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (orderDetails && orderDetails.products && orderDetails.products.length> 0) { %>
+                                    <% if (orderDetails && orderDetails.products && orderDetails.products.length> 0) {
+                                        %>
                                         <% orderDetails.products.forEach(product=> { %>
                                             <tr>
                                                 <td class="text-right" data-title="Cart">
-                                                    <span id="orderId-<%= orderDetails.orderId %>"><%= orderDetails.orderId %></span>
+                                                    <span id="orderId-<%= orderDetails.orderId %>">
+                                                        <%= orderDetails.orderId %>
+                                                    </span>
                                                 </td>
                                                 <td class="image product-thumbnail"><img
                                                         src="/productImages/<%= product.product.image[0] %>" alt="Item"
@@ -50,22 +53,25 @@
                                                             <%= product.product.productname %>
                                                         </a></h5>
                                                 </td>
-                                                <td class="price" data-title="Price"><span>₹<%= product.product.offprice
-                                                            %> </span></td>
-                                                <td class="text-center" data-title="Stock">
-                                                    <div class="detail-qty border radius  m-auto" >
-                                                        <span id="quantity-<%= product.product._id %>" class="qty-val">
-                                                            <%= product.quantity %>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td class="text-right" data-title="Cart">
-                                                    <span id="subtotal-<%= product.product._id %>">₹<%= product.subtotal
-                                                            %></span>
-                                                </td>
-                                                <td class="action" data-title="Remove"><a href="#" class="text-muted"
-                                                        onclick="deleteCartitem('<%= product.product._id %>' , '<%= orderDetails._id %>')"><i
-                                                            class="fi-rs-trash"></i></a></td>
+                                                <% if(product.product.offprice){ %>
+                                                    <td class="price" data-title="Price"><span>₹<%=
+                                                                product.product.offprice %> </span></td>
+                                                    <% } else{ %>
+                                                        <td class="price" data-title="Price"><span>₹<%=
+                                                            product.product.price %> </span></td>
+                                                        <% } %>
+                                                            <td class="text-center" data-title="Stock">
+                                                                <div class="detail-qty border radius  m-auto">
+                                                                    <span id="quantity-<%= product.product._id %>"
+                                                                        class="qty-val">
+                                                                        <%= product.quantity %>
+                                                                    </span>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-right" data-title="Cart">
+                                                                <span id="subtotal-<%= product.product._id %>">₹<%=
+                                                                        product.subtotal %></span>
+                                                            </td>
                                             </tr>
                                             <% }) %>
                                                 <% } else { %>
@@ -75,7 +81,7 @@
                                                     <% } %>
                                 </tbody>
                             </table>
-                        </div>                        
+                        </div>
                         <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
                         <div class="row mb-50">
                             <div class="col-md-6">
@@ -83,145 +89,83 @@
                                     <h4>DELIVERY ADDRESS</h4>
                                 </div>
                                 <% if(orderDetails) { %>
-                                <div class="address-selection">
-                                    <!-- Address 1 -->
-                                    <div class="address" style="display: flex; align-items: center; margin-bottom: 10px;">
-                                        <div class="col-lg-12" style="margin-right: 50px;">
-                                            <div class="card mb-3 mb-lg-0">
-                                                <div class="card-header" style="display: flex; justify-content: space-between;">
-                                                    <h5 class="mb-0">Address</h5>
-                                                    <!-- <a href="/editpage/<%= orderDetails.shippingAddress._id %>" class="btn-small" style="font-weight: bold; color: blue;">Edit</a> -->
-                                                </div>
-                                                <div class="card-body">
-                                                    <address>
-                                                        <%= orderDetails.shippingAddress.name %>,<%= orderDetails.shippingAddress.addressType %> Address,<%= orderDetails.shippingAddress.mobile %><br>
-                                                        <%= orderDetails.shippingAddress.address %>,<%= orderDetails.shippingAddress.locality %>,<%= orderDetails.shippingAddress.district %>,<%= orderDetails.shippingAddress.state %>,<%= orderDetails.shippingAddress.pincode %>
-                                                    </address>                                               
+                                    <div class="address-selection">
+                                        <!-- Address 1 -->
+                                        <div class="address"
+                                            style="display: flex; align-items: center; margin-bottom: 10px;">
+                                            <div class="col-lg-12" style="margin-right: 50px;">
+                                                <div class="card mb-3 mb-lg-0">
+                                                    <div class="card-header"
+                                                        style="display: flex; justify-content: space-between;">
+                                                        <h5 class="mb-0">Address</h5>
+                                                        <!-- <a href="/editpage/<%= orderDetails.shippingAddress._id %>" class="btn-small" style="font-weight: bold; color: blue;">Edit</a> -->
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <address>
+                                                            <%= orderDetails.shippingAddress.name %>,<%=
+                                                                    orderDetails.shippingAddress.addressType %> Address,
+                                                                    <%= orderDetails.shippingAddress.mobile %><br>
+                                                                        <%= orderDetails.shippingAddress.address %>,<%=
+                                                                                orderDetails.shippingAddress.locality %>
+                                                                                ,<%= orderDetails.shippingAddress.district
+                                                                                    %>,<%=
+                                                                                        orderDetails.shippingAddress.state
+                                                                                        %>,<%=
+                                                                                            orderDetails.shippingAddress.pincode
+                                                                                            %>
+                                                        </address>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <% } else { %>
-                                <p>Address Not Found</p>
-                                <% } %>
+                                    <% } else { %>
+                                        <p>Address Not Found</p>
+                                        <% } %>
                             </div>
                             <div class="col-lg-6">
                                 <% if (orderDetails && orderDetails.products && orderDetails.products.length> 0) { %>
-                                <div class="border p-md-4 p-30 border-radius cart-totals">
-                                    <div class="heading_s1 mb-3">
-                                        <h4>Order Summary</h4>
+                                    <div class="border p-md-4 p-30 border-radius cart-totals">
+                                        <div class="heading_s1 mb-3">
+                                            <h4>Order Summary</h4>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="cart_total_label">Subtotal</td>
+                                                        <td class="cart_total_amount"><span id="cart-subtotal"
+                                                                class="font-lg fw-900 text-brand">₹<%=
+                                                                    orderDetails.total %></span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="cart_total_label">Shipping</td>
+                                                        <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free
+                                                            Shipping</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="cart_total_label">Total</td>
+                                                        <td class="cart_total_amount"><strong><span id="cart-total"
+                                                                    class="font-xl fw-900 text-brand">₹<%=
+                                                                        orderDetails.grandTotal %></span></strong></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="cart_total_label">Subtotal</td>
-                                                    <td class="cart_total_amount"><span id="cart-subtotal" class="font-lg fw-900 text-brand">₹<%= orderDetails.total %></span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="cart_total_label">Shipping</td>
-                                                    <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="cart_total_label">Total</td>
-                                                    <td class="cart_total_amount"><strong><span id="cart-total" class="font-xl fw-900 text-brand">₹<%= orderDetails.total %></span></strong></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="cart-action text-end" style="margin-top: 10px;">
+                                        <!-- <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a> -->
+                                        <a href="/shop" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue
+                                            Shopping</a>
                                     </div>
-                                </div>
-                                <div class="cart-action text-end" style="margin-top: 10px;">
-                                    <!-- <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a> -->
-                                    <a href="/shop" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
-                                </div>
-                                <% } %>
+                                    <% } %>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </section>
     </main>
-
-    <script>
-        async function updateQuantity(productId, action) {
-            try {
-                const response = await fetch(`/update-quantity/${productId}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ action: action })
-                });
-
-                if (response.ok) {
-                    // Quantity updated successfully
-                    const data = await response.json();
-                    console.log(data);
-                    // Update the quantity display
-                    document.getElementById(`quantity-${productId}`).innerText = data.currentCartitem.quantity;
-                    // Update the subtotal display
-                    document.getElementById(`subtotal-${productId}`).innerText = "₹" + data.currentCartitem.subtotal;
-                    // Update the total display
-                    document.getElementById('cart-subtotal').innerText = "₹" + data.Total;
-                    // Update the total display
-                    document.getElementById('cart-total').innerText = "₹" + data.Total;
-                } else {
-                    // Handle error
-                    console.error('Failed to update quantity');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        async function deleteCartitem(productId, cartId) {
-            try {
-                const response = await fetch(`/remove-cartItem/?productId=${productId}&cartId=${cartId}`, {
-                    method: 'DELETE'
-                });
-
-
-                if (response.ok) {
-                    // Item remove successfully
-                    const data = await response.json();
-                    window.location.href = "/cart";
-                    console.error('Item remove successfully');
-
-                } else {
-                    // Handle error
-                    console.error('Failed to update quantity');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-
-        async function deleteall(cartId) {
-            try {
-                const response = await fetch(`/removeall/?cartId=${cartId}`, {
-                    method: 'DELETE'
-                });
-
-
-                if (response.ok) {
-                    // Item remove successfully
-                    const data = await response.json();
-                    window.location.href = "/cart";
-                    console.error('Item remove successfully');
-
-                } else {
-                    // Handle error
-                    console.error('Failed to update quantity');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-    </script>
-
 
     <%- include('../layouts/userFooter.ejs') %>

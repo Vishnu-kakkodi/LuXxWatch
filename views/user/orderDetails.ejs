@@ -77,48 +77,51 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% orderDetails.products.forEach(product=> { %>
+                                        <% orderDetails.products.forEach(product => { %>
                                             <tr>
                                                 <td>
                                                     <a class="itemside" href="#">
                                                         <div class="left">
-                                                            <img src="/productImages/<%= product.product.image[0] %>"
-                                                                width="40" height="40" class="img-xs" alt="Item">
+                                                            <img src="/productImages/<%= product.product.image[0] %>" width="40" height="40" class="img-xs" alt="Item">
                                                         </div>
                                                         <div class="info">
                                                             <%= product.product.productname %>
                                                         </div>
                                                     </a>
                                                 </td>
-                                                <td> ₹ <%= product.product.offprice %>
-                                                </td>
-                                                <td>
-                                                    <%= product.quantity %>
-                                                </td>
-                                                <td class="text-end">₹ <%= product.subtotal %>
-                                                </td>
+                                                <% if(product.offprice){ %>
+                                                <td> ₹ <%= product.product.offprice %></td>
+                                                <% } else{ %>
+                                                    <td> ₹ <%= product.product.price %></td>
+                                                    <% } %>
+                                                <td><%= product.quantity %></td>
+                                                <td class="text-end">₹ <%= product.subtotal %></td>
                                             </tr>
-                                            <% }); %>
-                                                <tr>
-                                                    <td colspan="4">
-                                                        <article class="float-end">
-                                                            <dl class="dlist">
-                                                                <dt>Subtotal:</dt>
-                                                                <dd>₹ <%= orderDetails.total %>
-                                                                </dd>
-                                                            </dl>
-                                                            <dl class="dlist">
-                                                                <dt>Shipping cost:</dt>
-                                                                <dd>₹ 0.00</dd>
-                                                            </dl>
-                                                            <dl class="dlist">
-                                                                <dt>Grand total:</dt>
-                                                                <dd> <b class="h5">₹ <%= orderDetails.total %></b> </dd>
-                                                            </dl>
-                                                        </article>
-                                                    </td>
-                                                </tr>
+                                        <% }); %>
+                                        <tr>
+                                            <td colspan="4">
+                                                <article class="float-end">
+                                                    <dl class="dlist" style="display: flex; justify-content: space-between;">
+                                                        <dt>Subtotal:</dt>
+                                                        <dd>₹ <%= orderDetails.total %></dd>
+                                                    </dl>
+                                                    <dl class="dlist" style="display: flex; justify-content: space-between;">
+                                                        <dt>Shipping cost:</dt>
+                                                        <dd>₹ 0.00</dd>
+                                                    </dl>
+                                                    <dl class="dlist" style="display: flex; justify-content: space-between;">
+                                                        <dt>Discount:</dt>
+                                                        <dd>₹ <%= orderDetails.discountAmount %></dd>
+                                                    </dl>
+                                                    <dl class="dlist" style="display: flex; justify-content: space-between;">
+                                                        <dt>Grand total:</dt>
+                                                        <dd>₹ <%= orderDetails.grandTotal %></dd>
+                                                    </dl>
+                                                </article>
+                                            </td>
+                                        </tr>
                                     </tbody>
+                                    
 
                                 </table>
                             </div> <!-- table-responsive// -->
@@ -169,6 +172,7 @@
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
         </section> <!-- content-main end// -->
+        </main>
 
 
         <script>

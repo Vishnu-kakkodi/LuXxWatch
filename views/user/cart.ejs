@@ -3,8 +3,8 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
-                    <span></span> Shop
+                    <a href="/home" rel="nofollow">Home</a>
+                    <span></span> <a href="/shop" rel="nofollow">Shop</a>
                     <span></span> Your Cart
                 </div>
             </div>
@@ -37,29 +37,36 @@
                                                             <%= product.product.productname %>
                                                         </a></h5>
                                                 </td>
-                                                <td class="price" data-title="Price"><span>₹<%= product.product.offprice
-                                                            %> </span></td>
-                                                <td class="text-center" data-title="Stock">
-                                                    <div class="detail-qty border radius  m-auto">
-                                                        <a href="#" class="qty-down"
-                                                            onclick="updateQuantity('<%= product.product._id %>', 'decrement')"><i
-                                                                class="fi-rs-angle-small-down"></i></a>
-                                                        <span id="quantity-<%= product.product._id %>" class="qty-val">
-                                                            <%= product.quantity %>
-                                                        </span>
-                                                        <a href="#" class="qty-up"
-                                                            onclick="updateQuantity('<%= product.product._id %>', 'increment')"><i
-                                                                class="fi-rs-angle-small-up"></i></a>
+                                                <% if(product.product.offprice){ %>
+                                                    <td class="price" data-title="Price"><span>₹<%=
+                                                                product.product.offprice %> </span></td>
+                                                    <% } else{ %>
+                                                        <td class="price" data-title="Price"><span>₹<%=
+                                                                    product.product.price %> </span></td>
+                                                        <% } %>
+                                                            <td class="text-center" data-title="Stock">
+                                                                <div class="detail-qty border radius  m-auto">
+                                                                    <a href="#" class="qty-down"
+                                                                        onclick="updateQuantity('<%= product.product._id %>', 'decrement')"><i
+                                                                            class="fi-rs-angle-small-down"></i></a>
+                                                                    <span id="quantity-<%= product.product._id %>"
+                                                                        class="qty-val">
+                                                                        <%= product.quantity %>
+                                                                    </span>
+                                                                    <a href="#" class="qty-up"
+                                                                        onclick="updateQuantity('<%= product.product._id %>', 'increment')"><i
+                                                                            class="fi-rs-angle-small-up"></i></a>
 
-                                                    </div>
-                                                </td>
-                                                <td class="text-right" data-title="Cart">
-                                                    <span id="subtotal-<%= product.product._id %>">₹<%= product.subtotal
-                                                            %></span>
-                                                </td>
-                                                <td class="action" data-title="Remove"><a href="#" class="text-muted"
-                                                        onclick="deleteCartitem('<%= product.product._id %>' , '<%= cartItems._id %>')"><i
-                                                            class="fi-rs-trash"></i></a></td>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-right" data-title="Cart">
+                                                                <span id="subtotal-<%= product.product._id %>">₹<%=
+                                                                        product.subtotal %></span>
+                                                            </td>
+                                                            <td class="action" data-title="Remove"><a href="#"
+                                                                    class="text-muted"
+                                                                    onclick="deleteCartitem('<%= product.product._id %>' , '<%= cartItems._id %>')"><i
+                                                                        class="fi-rs-trash"></i></a></td>
                                             </tr>
                                             <% }) %>
                                                 <tr>
@@ -89,12 +96,14 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="cart_total_label">Shipping</td>
-                                                    <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
+                                                    <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free
+                                                        Shipping</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="cart_total_label">Total</td>
                                                     <td class="cart_total_amount"><strong><span id="cart-total"
-                                                                class="font-xl fw-900 text-brand">₹<%= cartItems.total %></span></strong></td>
+                                                                class="font-xl fw-900 text-brand">₹<%= cartItems.total
+                                                                    %></span></strong></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -411,9 +420,11 @@
                         </div>
                         <% } else { %>
                             <div id="error-message"
-                                style="display: flex; align-items: center; justify-content: center; background-color: #f8d7da; color: #ff0019; padding: 20px; border-radius: 5px; text-align: center;">
-                                <p style="color: red; font-weight: bold;">Oops, Your cart is empty!. Please add to
-                                    cart...</p>
+                                style="display: flex; align-items: center; justify-content: center;  color: #ff0019; padding: 20px; border-radius: 5px; text-align: center;">
+                                <p style="color: red; font-weight: bold;">Oops, Your cart is empty!.
+                                    <br><span><a type="button" style="margin-top: 10px; color: green;" href="/shop">Add
+                                            to cart</a></span>
+                                </p>
                             </div>
                             <% } %>
 
@@ -440,7 +451,7 @@
 
                 if (response.ok) {
                     // Quantity updated successfully
-                    
+
                     // Update the quantity display
                     document.getElementById(`quantity-${productId}`).innerText = data.currentCartitem.quantity;
                     // Update the subtotal display
@@ -449,10 +460,10 @@
                     document.getElementById('cart-subtotal').innerText = "₹" + data.Total;
                     // Update the total display
                     document.getElementById('cart-total').innerText = "₹" + data.Total;
-                    
+
                 } else {
                     swal("Error", data.error, "error");
-                    
+
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -461,37 +472,36 @@
 
         async function deleteCartitem(productId, cartId) {
             try {
-                const response = await fetch(`/remove-cartItem/?productId=${productId}&cartId=${cartId}`, {
-                    method: 'DELETE'
+                const alert = swal({
+                    title: "Are you sure?",
+                    text: "You want to delete this item!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
                 });
 
+                const willDelete = await alert; // Wait for user interaction
 
-                if (response.ok) {
-                    // Item remove successfully
+                if (willDelete) {
+                    const response = await fetch(`/remove-cartItem/?productId=${productId}&cartId=${cartId}`, {
+                        method: 'DELETE'
+                    });
                     const data = await response.json();
-                    swal({
-                        title: "Are you sure?",
-                        text: "You want to delete this item!",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true,
-                    })
-                        .then((willDelete) => {
-                            if (willDelete) {
-                                swal("Poof! Your seleted item deleted!", {
-                                    icon: "success",
-                                }).then(() => { window.location.href = "/cart"; });
-                            } else {
-                                swal("Your item is in cart!");
-                            }
-                        });
-                    console.error('Item remove successfully');
 
+                    if (response.ok) {
+                        swal("Poof! Your seleted item deleted!", {
+                            icon: "success",
+                        }).then(() => {
+                            window.location.href = "/cart";
+                        });
+                    } else {
+                        swal("Item remove successfully");
+                    }
                 } else {
-                    console.error('Failed to remove');
+                    console.error('Deletion canceled');
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.log(error.message);
             }
         }
 

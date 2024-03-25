@@ -37,19 +37,24 @@ const addTocart = async (req, res) => {
     try {
         const product = await Product.findById(productId);
 
+        let subtotal;
+        if(product.offprice){
+            subtotal = product.offprice;
+        }else{
+            subtotal = product.price;
+        }
+
         if(product.stock>0){
             const cartProduct = {
                 product: productId,
                 quantity: 1, 
-                subtotal: product.offprice 
+                subtotal
             };
     
             let cart = await Cart.findOne({ user: req.session.userId });
-            console.log("hoooo");
             if (!cart) {
                 cart = new Cart({ user: req.session.userId, products: [], total: 0, coupon_applied: 'false' });
             }
-            console.log("hoooo");
             await cart.save();
     
             const existingProductIndex = cart.products.findIndex(p => p.product.toString() === productId);
@@ -106,8 +111,13 @@ const changeQuantity =  async (req, res) => {
             }
         }
 
+        let newSubtotal;
         
-        const newSubtotal = cartItem.products[productIndex].quantity * product.offprice;
+        if(product.offprice){
+            newSubtotal = cartItem.products[productIndex].quantity * product.offprice;
+        }else{
+            newSubtotal = cartItem.products[productIndex].quantity * product.price;
+        }
 
         cartItem.products[productIndex].subtotal = newSubtotal;
 

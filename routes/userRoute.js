@@ -143,30 +143,16 @@ user_route.post('/cancelOrder/:orderId',nocache.user,auth.isLogin,orderControlle
 user_route.post('/returnOrder/:orderId',nocache.user,auth.isLogin,orderController.returnOrder);
 
 
-// -------------SortPrice-----------------//
-
-user_route.get("/sortPriceLH",nocache.user, auth.isLogin, userController.shop);
-
-user_route.get("/sortPriceHL",nocache.user, auth.isLogin, userController.shop);
-
-user_route.get("/sortAZ",nocache.user, auth.isLogin, userController.shop);
-
-user_route.get("/sortZA",nocache.user, auth.isLogin, userController.shop);
-
-user_route.get("/sortNA",nocache.user, auth.isLogin, userController.shop);
-
-
 // -------------filter-----------------//
 
 
-user_route.get("/brandFilter",nocache.user, auth.isLogin, userController.shop);
+user_route.post("/filter",nocache.user, auth.isLogin, userController.shopFilter);
 
-user_route.get("/categoryFilter",nocache.user, auth.isLogin, userController.shop);
 
 
 // -------------search-----------------//
 
-user_route.get("/searchItem",nocache.user, auth.isLogin, userController.search);
+user_route.get("/searchItem",nocache.user, auth.isLogin, userController.shop);
 
 
 // -------------wallet-----------------//

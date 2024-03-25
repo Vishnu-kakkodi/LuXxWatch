@@ -27,6 +27,10 @@ const orderSchema = new mongoose.Schema({
         type:Number,
         required: true
     },
+    grandTotal:{
+        type:Number,
+        required: true
+    },
     shippingAddress: {
         name:{
             type:String,
@@ -90,7 +94,7 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     discountAmount: {
-        type: String,
+        type: Number,
         required: false
     }
 });

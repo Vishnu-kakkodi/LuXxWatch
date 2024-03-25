@@ -12,6 +12,7 @@ admin_route.set('views','./views/admin');
 const path = require("path");
 admin_route.use(express.static('public'));
 const storage = multer.diskStorage({
+
     destination:function(req,file,cb){
         cb(null,path.join(__dirname,'../public/productImages'));
         },
@@ -21,17 +22,6 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({storage:storage});
-
-// const storage1 = multer.diskStorage({
-//     destination:function(req,file,cb){
-//         cb(null,path.join(__dirname,'../public/categoryImages'));
-//         },
-//     filename:function(req,file,cb){
-//         const name = Date.now()+'-'+file.originalname;
-//         cb(null,name);
-//     }
-// });
-// const uploadCategory = multer({storage:storage1});
 
 
 const adminController = require("../controller/adminController");
@@ -76,6 +66,8 @@ admin_route.get("/user-unblock/:userId",auth.isLogin,adminController.userunBlock
 // -------------loadCategory-----------------//
 
 admin_route.get("/category",auth.isLogin,categoryController.loadcategory);
+
+admin_route.get("/categoryInsert",auth.isLogin,categoryController.categoryInsert);
 
 
 // -------------addCategory-----------------//
@@ -137,7 +129,11 @@ admin_route.get("/edit-product/:productId",auth.isLogin, productController.loade
 // -------------UpdateProduct-----------------//
 
 
-admin_route.post("/update-product/:productId",upload.array('image', 5), productController.updateproduct);
+admin_route.post("/editProduct/:productId", productController.updateproduct);
+
+admin_route.patch("/replaceImage", productController.replaceImage);
+
+admin_route.post("/addImage",upload.single('file'),productController.addImage);
 
 
 // -------------enableProduct-----------------//
@@ -175,6 +171,10 @@ admin_route.get("/cancelRefund/:orderId",auth.isLogin, paymentController.cancelR
 
 admin_route.get("/salereport",auth.isLogin, adminController.saleReport);
 
+admin_route.post("/filterReport",auth.isLogin, adminController.filterReport);
+
+admin_route.post("/customReport",auth.isLogin, adminController.customReport);
+
 
 // -------------CouponManagement-----------------//
 
@@ -185,6 +185,19 @@ admin_route.post("/addcoupon",auth.isLogin, adminController.addCoupon);
 admin_route.get("/blockCoupon/:couponId",auth.isLogin, adminController.blockCoupon);
 
 admin_route.get("/UnblockCoupon/:couponId",auth.isLogin, adminController.unblockCoupon);
+
+admin_route.delete("/deleteCoupon/:couponId",auth.isLogin, adminController.deleteCoupon);
+
+
+// -------------OfferManagement-----------------//
+
+admin_route.get("/productoffer",auth.isLogin, adminController.offerPage);
+
+admin_route.post("/offerModule/:productId",auth.isLogin, adminController.offerModule);
+
+admin_route.get("/categoryOffer",auth.isLogin, adminController.categoryOffer);
+
+admin_route.post("/categoryOffer/:categoryId",auth.isLogin, adminController.applyCategory);
 
 
 admin_route.get('*',(req,res)=>{

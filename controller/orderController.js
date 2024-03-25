@@ -50,12 +50,13 @@ const placeorder = async (req, res) => {
         cart.products.forEach(product => {
             total += product.subtotal;
         });
+        let grandTotal = total;
 
         if(couponId){
             couponStatus = true;
             couponDetail = await Coupon.findOne({couponId:couponId});
             discount = couponDetail.discountAmount;
-            total = total + couponDetail.discountAmount
+            grandTotal = total - couponDetail.discountAmount
         }else{
             couponStatus = false;
             discount = 0
@@ -78,6 +79,7 @@ const placeorder = async (req, res) => {
             products: cart.products,
             discountAmount: discount,
             total: total,
+            grandTotal:grandTotal,
             shippingAddress: address,
             paymentOption: paymentOption,
             status: 'Pending',
@@ -133,7 +135,7 @@ const placeorder = async (req, res) => {
 
         // Create a Razorpay order
         var options = {
-            amount: total,
+            amount: grandTotal*100,
             currency: 'INR',
             receipt: orderId
         };
@@ -178,7 +180,8 @@ const createRazorpayOrder = async (req,res) => {
             user: cart.user,
             products: cart.products,
             discountAmount: discount,
-            total: req.body.order.amount,
+            total:cart.total,
+            grandTotal: (req.body.order.amount)/100,
             shippingAddress: address,
             paymentOption: selectedPaymentOption,
             status: "Placed",

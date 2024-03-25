@@ -91,6 +91,7 @@
                         <th>Expire date</th>
                         <th>Status</th>
                         <th>Action</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -130,19 +131,28 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <% if (coupon.is_active === 1) { %>
+                                    <% if (coupon.is_active===1) { %>
                                         <a href="#" type="button" onclick="Block('<%= coupon._id %>')"
                                             class="btn btn-sm font-sm rounded btn-brand btn-block"
                                             id="blockBtn<%= index %>" disabled>
                                             Active
                                         </a>
-                                    <% } else { %>
-                                        <a href="#" type="button" onclick="Unblock('<%= coupon._id %>')"
-                                            class="btn btn-sm font-sm btn-light rounded btn-unblock"
-                                            id="unblockBtn<%= index %>" disabled>
-                                            Deactive
-                                        </a>
-                                    <% } %>
+                                        <% } else { %>
+                                            <a href="#" type="button" onclick="Unblock('<%= coupon._id %>')"
+                                                class="btn btn-sm font-sm btn-light rounded btn-unblock"
+                                                id="unblockBtn<%= index %>" disabled>
+                                                Deactive
+                                            </a>
+                                            <% } %>
+                                </td>
+                                <td>
+                                    <a href="#" onclick="deleteCoupon('<%= coupon._id %>')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                                            style=" width: 20px; height: 20px;">
+                                            <path
+                                                d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                                        </svg>
+                                    </a>
                                 </td>
                 </tbody>
                 <% }) %>
@@ -154,6 +164,24 @@
             </table>
         </div>
     </div>
+
+    <!--pagination-->
+    <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <% for(let i=1; i<=totalPages; i++){ %>
+                <li class="page-item active">
+                    <a class="page-link" href="?page=<%= i %>">
+                        <%= i %>
+                    </a>
+                </li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
         const closebutton = document.getElementById("close-button");
@@ -227,10 +255,10 @@
                     method: 'GET'
                 });
                 const data = await response.json();
-                if(data){
+                if (data) {
                     console.log(data.error);
                     document.getElementById('couponblock').innerText = 'Active'
-                    window.location.href="/admin/coupon"
+                    window.location.href = "/admin/coupon"
                 }
             } catch (error) {
                 console.log(error.message);
@@ -243,14 +271,50 @@
                     method: 'GET'
                 });
                 const data = await response.json();
-                if(data){
+                if (data) {
                     document.getElementById('couponunblock').innerText = 'Deactive'
-                    window.location.href="/admin/coupon"
+                    window.location.href = "/admin/coupon"
                 }
             } catch (error) {
                 console.log(error.message);
             }
         }
+
+        async function deleteCoupon(couponId) {
+            try {
+                const alert = swal({
+                    title: "Are you sure?",
+                    text: "You want to delete this coupon!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                });
+
+                const willDelete = await alert;
+
+                if (willDelete) {
+                    const response = await fetch(`/admin/deleteCoupon/${couponId}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        swal("Poof! Your selected item deleted!", {
+                            icon: "success",
+                        }).then(() => {
+                            window.location.href = "/admin/coupon";
+                        });
+                    } else {
+                        swal("Coupon is in your list!");
+                    }
+                } else {
+                    console.error('Deletion canceled');
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+
     </script>
 
     <script src="/asset/js/vendors/jquery-3.6.0.min.js"></script>

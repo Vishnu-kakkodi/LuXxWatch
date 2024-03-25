@@ -18,12 +18,20 @@ const productSchema = new mongoose.Schema({
         required:true
     },
     price:{
-        type:String,
+        type:Number,
         required:true,
     },
     offprice:{
+        type:Number,
+        required:false,
+    },
+    productOffer:{
         type:String,
-        required:true,
+        required:false,
+    },
+    categoryOffer:{
+        type:String,
+        required:false,
     },
     image:{
         type:Array,

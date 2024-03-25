@@ -2,8 +2,28 @@ const Category = require("../model/categoryModel.js");
 
 const loadcategory = async (req, res) => {
     try {
-        const categories = await Category.find();
-        res.render('category', { categories: categories });
+        var page = 1;
+        if (req.query.page) {
+            page = req.query.page;
+        }
+        const limit = 4;
+
+        const categories = await Category.find()
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec()
+
+        const count = await Category.countDocuments();
+        res.render('categoryList', { categories: categories,totalPages: Math.ceil(count / limit),currentPage: page });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const categoryInsert = async (req, res) => {
+    try {
+        res.render('category');
     } catch (error) {
         console.log(error.message);
     }
@@ -13,43 +33,35 @@ const addcategory = async (req, res) => {
     try {
         const { catname, description } = req.body;
 
-        const category = new Category({
-            catname,
-            description,
-            status: 0,
-            image:req.file.filename
-        });
+        const regex = new RegExp(catname);
 
-        const savedCategory = await category.save();
-        if (savedCategory) {
-            const categories = await Category.find();
-            res.render('category', { categories: categories });
+        const categories = await Category.find();
+
+        const existCategory = await Category.find({ catname: { $regex: regex } });
+        if(existCategory.length > 0){
+            res.render('category', { errorMessage: 'Category name already exist', categories:categories });
+        }else{
+            const category = new Category({
+                catname,
+                description,
+                status: 0,
+                image:req.file.filename
+            });
+    
+            const savedCategory = await category.save();
+            if (savedCategory) {
+                const categories = await Category.find();
+                res.render('category', { categories: categories });
+            }
         }
+
+        
         
         
     } catch (error) {
         console.log(error.message);
     }
 }
-
-
-// const categoryName =async(req,res)=>{
-//     try {
-//         console.log();
-//         const categoryName = req.body.categoryName;
-
-//         const existingCategory = await Category.findOne({ catname: categoryName });
-
-//         if (existingCategory) {
-//             res.json({ unique: true });
-//         } else {
-//             res.json({ unique: false });
-//         }
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).json({ error: 'Internal server error' });
-//     } 
-// }
 
 
 const loadeditcategory =async(req,res)=>{
@@ -153,6 +165,7 @@ module.exports = {
 
     loadcategory,
     addcategory,
+    categoryInsert,
     // categoryName,
     loadeditcategory,
     categoryimage,

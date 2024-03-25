@@ -4,9 +4,19 @@ const Category = require("../model/categoryModel.js");
 
 const productlist = async(req,res)=>{
     try{ 
-        const products = await Product.find();
+        var page = 1;
+        if (req.query.page) {
+            page = req.query.page;
+        }
+
+        const limit = 5;
+        const products = await Product.find()
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec()
+        const count = await Product.countDocuments();
         const categories = await Category.find();     
-        res.render('productlist', { products,categories });
+        res.render('productlist', { products,categories,totalPages: Math.ceil(count / limit),currentPage: page });
     }catch(error){
         console.log(error.message);
     }
@@ -36,10 +46,11 @@ const loadaddproduct = async(req,res)=>{
 const createProduct = async(req,res)=>{
     
     try{
-        const {brandname, productname, description, price, offprice,stock,caseDiameter,bandColour,bandMaterial,warranty,movement,weight,country } = req.body;
+        const {brandname, productname, description, price,stock,caseDiameter,bandColour,bandMaterial,warranty,movement,weight,country } = req.body;
         const categories = await Category.find();
         
         const imageFileNames = req.files.map(file => file.filename);
+        console.log(imageFileNames);
 
         const product = new Product({
             brandname,
@@ -47,7 +58,6 @@ const createProduct = async(req,res)=>{
             catname:req.body.catname,
             description,
             price,
-            offprice,
             stock,
             caseDiameter,
             bandColour,
@@ -78,7 +88,6 @@ const loadeditProduct = async (req, res) => {
     const categories = await Category.find();
     try {
         const products = await Product.findById(productId);
-        console.log(products);
         res.render('edit-product', {products,categories});
     } catch (error) {
         console.log(error.message);
@@ -87,16 +96,14 @@ const loadeditProduct = async (req, res) => {
 
 const updateproduct = async(req,res)=>{
     const productId = req.params.productId;
-    const {brandname, productname, description, price, offprice,stock,caseDiameter,bandColour,bandMaterial,warranty,movement,weight,country } = req.body;
-    
+    const {brandname, productname, description, price,stock,caseDiameter,bandColour,bandMaterial,warranty,movement,weight,country } = req.body;
+    console.log(brandname, productname, description, price,stock,caseDiameter,bandColour,bandMaterial,warranty,movement,weight,country)
     try{
-        const imageFileNames = req.files.map(file => file.filename);
         const product = await Product.findById(productId);
         product.brandname = brandname;
         product.productname = productname;
         product.description = description;
         product.price = price;
-        product.offprice = offprice;
         product.stock = stock;
         product.caseDiameter = caseDiameter;
         product.bandColour = bandColour;
@@ -105,19 +112,58 @@ const updateproduct = async(req,res)=>{
         product.movement = movement;
         product.weight = weight;
         product.country = country;
-        product.image = imageFileNames;
-        
+
         await product.save();
-        await Category.findByIdAndUpdate(productId, { $set: {
-            brandname:product.brandname,productname:product.productname,description:product.description,price:product.price,offprice:product.offprice,stock:product.stock,image:product.image,
-            caseDiameter:product.caseDiameter,bandColour:product.bandColour,bandMaterial:product.bandMaterial,warranty:product.warranty,movement:product.movement,weight:product.weight,country:product.country
-         } });
-        res.redirect('/admin/product');
+        res.redirect('/admin/productlist')
 
     }catch(error){
         console.log(error.message);
     }
 }
+
+
+const replaceImage = async(req,res)=>{
+    try{
+        const productId = req.body.productId;
+        const index = parseInt(req.body.index);
+       
+        const product = await Product.findById({_id:productId});
+        product.image.splice(index,1,"nill");
+        await product.save();
+        res.json({success:'Image remove successfully'});
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+
+const addImage = async (req, res) => {
+    try {
+        
+        const { productId, index } = req.body;
+         // Assuming req.file contains the binary data
+        
+        if (!productId || !index ) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        product.image.splice(index, 1, req.file.filename);
+        await product.save();
+
+        res.json({ success: 'Image added successfully' });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
 
 
 
@@ -175,6 +221,8 @@ module.exports = {
     createProduct,
     loadeditProduct,
     updateproduct,
+    replaceImage,
     enableProduct,
-    disableProduct
+    disableProduct,
+    addImage
 }

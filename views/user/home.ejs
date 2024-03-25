@@ -1,55 +1,58 @@
 <%- include('../layouts/userHeader.ejs') %>
     <!-- Quick view -->
     <main class="main">
-        <section class="home-slider position-relative mb-30" style="background-color: rgb(17, 16, 16);">
-            <div class="container" style="background-color: rgb(17, 16, 16);">
-                <div class="home-slide-cover bg-grey-10" style="background-color: rgb(17, 16, 16);">
-                    <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1">
-                        <div class="single-hero-slider single-animation-wrap">
-                            <div class="container">
-                                <div class="row align-items-center slider-animated-1">
-                                    <div class="col-lg-5 col-md-6">
-                                        <div class="hero-slider-content-2">
-                                            <h4 class="animated" style="color: white;">Trade-In Offer</h4>
-                                            <h3 class="animated fw-900" style="color: white;">Supper Value Deals</h3>
-                                            <h2 class="animated fw-900 text-brand" style="color: white;">On All Products</h2>
-                                            <p class="animated" style="color: white;">Save more with coupons & up to 70% off</p>
-                                            <a class="animated btn btn-brush btn-brush-3" href="shop-product-right.html" tabindex="0"> Shop Now </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-7 col-md-6">
-                                        <div class="single-slider-img single-slider-img-1">
-                                            <img class="animated" src="" alt="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single-hero-slider single-animation-wrap">
-                            <div class="container">
-                                <div class="row align-items-center slider-animated-1">
-                                    <div class="col-lg-5 col-md-6">
-                                        <div class="hero-slider-content-2">
-                                            <h4 class="animated" style="color: white;">Hot promotions</h4>
-                                            <h3 class="animated fw-900" style="color: white;">Fashion Trending</h3>
-                                            <h2 class="animated fw-900 text-brand" style="color: white;">Great Collection</h2>
-                                            <p class="animated" style="color: white;">Save more with coupons & up to 20% off</p>
-                                            <a class="animated btn btn-brush btn-brush-1" href="shop-product-right.html" tabindex="0"> Get It Now </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-7 col-md-6">
-                                        <div class="single-slider-img single-slider-img-1">
-                                            <img class="animated" src="assets/imgs/slider/slider-7.png" alt="">
-                                        </div>
-                                    </div>
+
+        <div class="hero-slider hero-slider-one">
+
+            <!-- Single Slide Start -->
+            <div class="single-slide" style="background-image: url(assets/images/slider/slide-bg-2.jpg)">
+                <!-- Hero Content One Start -->
+                <div class="hero-content-one container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="slider-content-text text-left">
+                                <h5>Exclusive Offer -20% Off This Week</h5>
+                                <h1>H-Vault Classico</h1>
+                                <p>H-Vault Watches Are A Lot Like Classic American Muscle Cars - Expect For The American Part That Is. </p>
+                                <p>Starting At <strong>$1.499.00</strong></p>
+                                <div class="slide-btn-group">
+                                    <a href="shop.html" class="btn btn-bordered btn-style-1">Shop Now</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="slider-arrow hero-slider-1-arrow"></div>
                 </div>
+                <!-- Hero Content One End -->
             </div>
-        </section>
+            <!-- Single Slide End -->
+            
+            <!-- Single Slide Start -->
+            <div class="single-slide" style="background-image: url(assets/images/slider/slide-bg-1.jpg)">
+                <!-- Hero Content One Start -->
+                <div class="hero-content-one container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="slider-content-text text-left">
+                                <h5>Exclusive Offer -20% Off This Week</h5>
+                                <h1>H-Vault Classico</h1>
+                                <p>H-Vault Watches Are A Lot Like Classic American Muscle Cars - Expect For The American Part That Is. </p>
+                                <p>Starting At <strong>$1.499.00</strong></p>
+                                <div class="slide-btn-group">
+                                    <a href="shop.html" class="btn btn-bordered btn-style-1">Shop Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Hero Content One End -->
+            </div>
+            <!-- Single Slide End -->
+
+        </div>
+        
+
+
+
         <div class="banner-area section-pt" style="margin-top: 45px;">
             <div class="container">
                 <div class="row">
@@ -72,7 +75,7 @@
             <div class="container">
                 <!--End nav-tabs-->
                 <div class="tab-content wow fadeIn animated" id="myTabContent">
-                    <div class="tab-pane fade show active"  id="tab-one" role="tabpanel" aria-labelledby="tab-one">
+                    <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
                         <div class="row product-grid-4">
                             <div class="tab-content wow fadeIn animated" id="myTabContent">
                                 <div class="tab-pane fade show active" id="tab-one" role="tabpanel"
@@ -81,11 +84,12 @@
                                         <div class="row product-grid-4">
                                             <% for(let i=0; i<products.length; i++) { %>
                                                 <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-                                                    <div class="product-cart-wrap mb-30" style="border-style: solid; border-color: lightgray">
+                                                    <div class="product-cart-wrap mb-30"
+                                                        style="border-style: solid; border-color: lightgray">
                                                         <% if(products[i].stock <=0) { %>
                                                             <!-- Check if product is out of stock -->
                                                             <div class="out-of-stock-label"
-                                                            style="display: inline;  color: red; font-size: small; margin-left: 10px;">
+                                                                style="display: inline;  color: red; font-size: small; margin-left: 10px;">
                                                                 Out of Stock</div> <!-- Out of stock label -->
                                                             <% } %>
                                                                 <div class="product-img-action-wrap">
@@ -102,8 +106,7 @@
                                                                         <!-- <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a> -->
                                                                         <button aria-label="Add To Wishlist"
                                                                             id="add-to-wishlist"
-                                                                            class="action-btn hover-up"
-                                                                            type="button"
+                                                                            class="action-btn hover-up" type="button"
                                                                             data-product-id="<%= products[i]._id %>">
                                                                             <i class="fi-rs-heart"></i>
                                                                         </button>
@@ -114,7 +117,8 @@
                                                         <span class="hot">Hot</span>
                                                     </div> -->
                                                                 </div>
-                                                                <div class="product-content-wrap" style="background-color: rgb(243, 243, 243);">
+                                                                <div class="product-content-wrap"
+                                                                    style="background-color: rgb(243, 243, 243);">
                                                                     <div class="product-category">
                                                                         <a href="shop-grid-right.html">
                                                                             <%= products[i].brandname %>
@@ -129,9 +133,12 @@
                                                                         </span>
                                                                     </div>
                                                                     <div class="product-price">
-                                                                        <span>₹<%= products[i].offprice %></span>
-                                                                        <span class="old-price">₹<%= products[i].price
-                                                                                %></span>
+                                                                        <% if(products[i].offprice){ %>
+                                                                        <span>₹<%= products[i].offprice %> </span>
+                                                                        <span class="old-price">₹<%= products[i].price %></span>
+                                                                        <% } else{ %>
+                                                                        <span>₹<%= products[i].price %></span>
+                                                                        <% } %>
                                                                     </div>
                                                                     <div class="product-action-1 show">
                                                                         <button aria-label="Add To Cart"
@@ -1050,5 +1057,55 @@
             });
         });
     </script>
+
+
+    <script>
+        const video = document.getElementById('myVideo');
+
+        // Pause the video when clicked
+        video.addEventListener('click', function () {
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+
+        function playVideo() {
+            var video = document.getElementById('myVideo');
+            video.play();
+        }
+    </script>
+
+
+
+    <!-- Modernizer JS -->
+    <script src="assets/js/vendor/modernizr-3.6.0.min.js"></script>
+
+    <!-- jquery -->		
+    <script src="assets/js/vendor/jquery-3.6.1.min.js"></script>
+    <script src="assets/js/vendor/jquery-migrate-3.4.0.min.js"></script>		
+
+    <!-- Bootstrap JS -->
+    <script src="assets/js/vendor/bootstrap.min.js"></script>
+
+    <!-- Plugins JS -->
+    <script src="assets/js/plugins/slick.min.js"></script>
+    <script src="assets/js/plugins/jquery.nice-select.min.js"></script>
+    <script src="assets/js/plugins/countdown.min.js"></script>
+    <script src="assets/js/plugins/image-zoom.min.js"></script>
+    <script src="assets/js/plugins/fancybox.js"></script>
+    <script src="assets/js/plugins/scrollup.min.js"></script>
+    <script src="assets/js/plugins/jqueryui.min.js"></script> 
+    <script src="assets/js/plugins/ajax-contact.js"></script>
+
+    <!-- Vendor & Plugins JS (Please remove the comment from below vendor.min.js & plugins.min.js for better website load performance and remove js files from avobe) -->
+    <!--
+<script src="assets/js/vendor/vendor.min.js"></script>
+<script src="assets/js/plugins/plugins.min.js"></script>
+-->
+
+    <!-- Main JS -->
+    <script src="assets/js/main.js"></script>
 
     <%- include('../layouts/userFooter.ejs') %>
