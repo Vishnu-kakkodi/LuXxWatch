@@ -43,6 +43,8 @@ const applyCoupon = async (req,res)=>{
         const coupon = await Coupon.findOne({couponId:couponId});
         const discountAmount = coupon.discountAmount;
         const newTotal = cart.total - discountAmount;
+        cart.total = newTotal;
+        await cart.save();
         res.status(200).json({success:discountAmount, newTotal:newTotal});
     } else {
         res.status(400).json({error:"Enter valid coupon code"});

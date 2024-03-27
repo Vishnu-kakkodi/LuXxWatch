@@ -128,7 +128,12 @@ const replaceImage = async(req,res)=>{
         const index = parseInt(req.body.index);
        
         const product = await Product.findById({_id:productId});
-        product.image.splice(index,1,"nill");
+        let deleteIndex = index;
+        console.log(deleteIndex)
+        if (deleteIndex !== -1) {
+            product.image.splice(deleteIndex, 1);
+            product.image.splice((product.image.length),0,"nill")
+        }
         await product.save();
         res.json({success:'Image remove successfully'});
     }catch(error){

@@ -96,6 +96,10 @@ const orderSchema = new mongoose.Schema({
     discountAmount: {
         type: Number,
         required: false
+    },
+    shippingCharge: {
+        type:Number,
+        required:false
     }
 });
 

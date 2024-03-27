@@ -14,7 +14,10 @@ const Address = require("../model/addressModel.js");
 const Cart = require("../model/cartModel.js");
 const Order = require("../model/orderModel.js");
 const Wallet = require("../model/walletModel.js");
+const Review = require("../model/reviewModel.js");
 const { Long } = require('mongodb')
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 
 // const generateOTP=require("../controller/otpGenerate")
@@ -222,8 +225,8 @@ const getOtp = async (req, res) => {
             const userData = await user.save()
 
             if (req.session.referralID) {
-                const referror = await User.findOne({referralCode:req.session.referralID});
-                const referrorWallet = await Wallet.findOne({user:referror._id});
+                const referror = await User.findOne({ referralCode: req.session.referralID });
+                const referrorWallet = await Wallet.findOne({ user: referror._id });
                 const newWallet = new Wallet({
                     user: userData._id,
                     walletbalance: 100,
@@ -237,33 +240,33 @@ const getOtp = async (req, res) => {
                 });
                 await newWallet.save();
 
-        let balance = referrorWallet ? referrorWallet.walletbalance : 0;
-        balance = balance + 100;
+                let balance = referrorWallet ? referrorWallet.walletbalance : 0;
+                balance = balance + 100;
 
-            if (referrorWallet) {
-                referrorWallet.walletbalance = balance;
-                referrorWallet.transationHistory.push({
-                    createdAt: Date.now(),
-                    paymentType: "Referral",
-                    transationMode: "Credit",
-                    transationamount: 100
-                });
-                await referrorWallet.save();
-            } else {
-                const walletNew = new Wallet({
-                    user: referror._id,
-                    walletbalance: balance,
-                    transationHistory: [{
+                if (referrorWallet) {
+                    referrorWallet.walletbalance = balance;
+                    referrorWallet.transationHistory.push({
                         createdAt: Date.now(),
                         paymentType: "Referral",
                         transationMode: "Credit",
                         transationamount: 100
-                    }],
-                    totalRefund: 0
-                });
-                await walletNew.save();
+                    });
+                    await referrorWallet.save();
+                } else {
+                    const walletNew = new Wallet({
+                        user: referror._id,
+                        walletbalance: balance,
+                        transationHistory: [{
+                            createdAt: Date.now(),
+                            paymentType: "Referral",
+                            transationMode: "Credit",
+                            transationamount: 100
+                        }],
+                        totalRefund: 0
+                    });
+                    await walletNew.save();
+                }
             }
-        }
 
             if (userData) {
                 res.status(200).json({ success: true, message: 'User registered successfully.' });
@@ -364,16 +367,16 @@ const profile = async (req, res) => {
         const limit = 5;
 
         const order = await Order.find({ user: userData._id })
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .exec()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec()
 
         const count = await Order.countDocuments({ user: userData._id });
 
         res.locals.categories = categories;
         res.locals.userData = userData;
         // res.locals.useraddress = useraddress;
-        res.render('profile', { userData: userData, useraddress: useraddress, categories: categories, order: order, wallet: wallet,totalPages: Math.ceil(count / limit),currentPage: page});
+        res.render('profile', { userData: userData, useraddress: useraddress, categories: categories, order: order, wallet: wallet, totalPages: Math.ceil(count / limit), currentPage: page });
     } catch (error) {
         console.log(error.message)
     }
@@ -662,11 +665,13 @@ const newPassword = async (req, res) => {
 
 
 const loadproductdetail = async (req, res) => {
-    const productId = req.query.productId;
+    
     try {
+        const productId = req.query.productId;
         const email = req.session.email;
         const categories = await Category.find();
         const userdata = await User.findOne({ email: email });
+        const review = await Review.findOne({product:productId}).populate('product').populate('userReviews.user');
         let userData
         if (userdata) {
             userData = userdata;
@@ -682,7 +687,7 @@ const loadproductdetail = async (req, res) => {
             } else {
                 stock_message = "Outstock";
             }
-            res.render('productdetails', { message: stock_message, products, userData, categories });
+            res.render('productdetails', { message: stock_message, products, userData, categories, review });
         }
     } catch (error) {
         console.log(error.message);
@@ -703,7 +708,7 @@ const shop = async (req, res) => {
 
         let searchValue = "";
 
-        if(req.query.searchItem){
+        if (req.query.searchItem) {
             searchValue = req.query.searchItem;
         }
 
@@ -741,10 +746,7 @@ const shopFilter = async (req, res) => {
         const categories = await Category.find();
         const userData = await User.findOne({ email: email });
 
-        var page = 1;
-        if (req.query.page) {
-            page = req.query.page;
-        }
+        let page = parseInt(req.query.page) || 1;
 
         let searchValue = '';
         let brand = [];
@@ -772,24 +774,26 @@ const shopFilter = async (req, res) => {
         if (sort === 'asc') {
             if (!('offprice' in sortCriteria)) {
                 sortCriteria.price = 1;
-            }else{
+            } else {
                 sortCriteria.offprice = 1;
             }
         } else if (sort === 'desc') {
             if (!('offprice' in sortCriteria)) {
                 sortCriteria.price = -1;
-            }else{
+            } else {
                 sortCriteria.offprice = -1;
             }
-        }else if (sort === 'AZ') {
+        } else if (sort === 'az') {
             sortCriteria.productname = 1;
-        } else if (sort === 'ZA') {
+        } else if (sort === 'za') {
             sortCriteria.productname = -1;
         } else if (sort === 'NA') {
-            sortCriteria.arrivalData = -1;
+            sortCriteria._id = -1;
+        } else if (sort === 'pop') {
+            sortCriteria.popularity = -1;
         }
 
-        const regex = new RegExp(searchValue, 'i'); 
+        const regex = new RegExp(searchValue, 'i');
         const products = await Product.find({
             $and: [
                 { $or: [{ catname: { $regex: regex } }, { brandname: { $in: brand } }] },
@@ -847,6 +851,82 @@ const contact = async (req, res) => {
 }
 
 
+const addReview = async (req, res) => {
+    try {
+        const { productId, userId } = req.query;
+        console.log(userId);
+        const comment = req.body.commentValue;
+        const rating = req.body.rating;
+
+        if (typeof comment !== 'string') {
+            console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkk");
+            return res.status(400).json({ error: 'Comment must be a string' });
+        }
+
+        const userData = await User.findOne({ _id: userId });
+        if (!userData) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const product = await Product.findOne({ _id: productId });
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        const userReview = { user: userId, comment, rating };
+
+        let review = await Review.findOne({ product: productId });
+        if (!review) {
+            review = new Review({ product: productId, userReviews: [], averageReview: null });
+        }
+
+        if (review.userReviews.length === 0) {
+            review.userReviews.push(userReview);
+        } else {
+            if (review.userReviews.length === 0) {
+                review.userReviews.push(userReview);
+            } else {
+                let userReviewed = false;
+                console.log(review.userReviews)
+                
+                console.log(userId)
+                for (const users of review.userReviews) {
+                    console.log(users.user)
+                    if (users.user.equals(new ObjectId(userId))) {
+                        userReviewed = true;
+                        break;
+                    }
+                }
+
+                if (userReviewed) {
+                    console.log("haaaaaaaaaaai");
+                    return res.status(400).json({ error: 'Already added' });
+                } else {
+                    review.userReviews.push(userReview);
+                }
+
+            }
+
+        }
+        review.averageRating = review.userReviews.reduce((acc, curr) => {
+            return acc + curr.rating;
+        }, 0) / review.userReviews.length;
+        
+        
+        await review.save();
+
+        res.status(200).json({ success: "Review added successfully" });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+
+
+
+
+
 
 
 
@@ -880,5 +960,6 @@ module.exports = {
     loadproductdetail,
     shop,
     shopFilter,
-    contact
+    contact,
+    addReview
 }

@@ -77,12 +77,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% orderDetails.products.forEach(product => { %>
+                                        <% orderDetails.products.forEach(product=> { %>
                                             <tr>
                                                 <td>
                                                     <a class="itemside" href="#">
                                                         <div class="left">
-                                                            <img src="/productImages/<%= product.product.image[0] %>" width="40" height="40" class="img-xs" alt="Item">
+                                                            <img src="/productImages/<%= product.product.image[0] %>"
+                                                                width="40" height="40" class="img-xs" alt="Item">
                                                         </div>
                                                         <div class="info">
                                                             <%= product.product.productname %>
@@ -90,38 +91,50 @@
                                                     </a>
                                                 </td>
                                                 <% if(product.offprice){ %>
-                                                <td> ₹ <%= product.product.offprice %></td>
-                                                <% } else{ %>
-                                                    <td> ₹ <%= product.product.price %></td>
-                                                    <% } %>
-                                                <td><%= product.quantity %></td>
-                                                <td class="text-end">₹ <%= product.subtotal %></td>
+                                                    <td> ₹ <%= product.product.offprice %>
+                                                    </td>
+                                                    <% } else{ %>
+                                                        <td> ₹ <%= product.product.price %>
+                                                        </td>
+                                                        <% } %>
+                                                            <td>
+                                                                <%= product.quantity %>
+                                                            </td>
+                                                            <td class="text-end">₹ <%= product.subtotal %>
+                                                            </td>
                                             </tr>
-                                        <% }); %>
-                                        <tr>
-                                            <td colspan="4">
-                                                <article class="float-end">
-                                                    <dl class="dlist" style="display: flex; justify-content: space-between;">
-                                                        <dt>Subtotal:</dt>
-                                                        <dd>₹ <%= orderDetails.total %></dd>
-                                                    </dl>
-                                                    <dl class="dlist" style="display: flex; justify-content: space-between;">
-                                                        <dt>Shipping cost:</dt>
-                                                        <dd>₹ 0.00</dd>
-                                                    </dl>
-                                                    <dl class="dlist" style="display: flex; justify-content: space-between;">
-                                                        <dt>Discount:</dt>
-                                                        <dd>₹ <%= orderDetails.discountAmount %></dd>
-                                                    </dl>
-                                                    <dl class="dlist" style="display: flex; justify-content: space-between;">
-                                                        <dt>Grand total:</dt>
-                                                        <dd>₹ <%= orderDetails.grandTotal %></dd>
-                                                    </dl>
-                                                </article>
-                                            </td>
-                                        </tr>
+                                            <% }); %>
+                                                <tr>
+                                                    <td colspan="4">
+                                                        <article class="float-end">
+                                                            <dl class="dlist"
+                                                                style="display: flex; justify-content: space-between;">
+                                                                <dt>Subtotal:</dt>
+                                                                <dd>₹ <%= orderDetails.total %>
+                                                                </dd>
+                                                            </dl>
+                                                            <dl class="dlist"
+                                                                style="display: flex; justify-content: space-between;">
+                                                                <dt>Shipping cost:</dt>
+                                                                <dd>₹ 0.00</dd>
+                                                            </dl>
+                                                            <dl class="dlist"
+                                                                style="display: flex; justify-content: space-between;">
+                                                                <dt>Discount:</dt>
+                                                                <dd>₹ <%= orderDetails.discountAmount %>
+                                                                </dd>
+                                                            </dl>
+                                                            <dl class="dlist"
+                                                                style="display: flex; justify-content: space-between;">
+                                                                <dt>Grand total:</dt>
+                                                                <dd>₹ <%= orderDetails.grandTotal %>
+                                                                </dd>
+                                                            </dl>
+                                                        </article>
+                                                    </td>
+                                                </tr>
                                     </tbody>
-                                    
+
 
                                 </table>
                             </div> <!-- table-responsive// -->
@@ -137,123 +150,156 @@
                                     Phone: +1 (800) 555-154-52
                                 </p> -->
                                 <p>
-                                <p style="color: black;">Payment Mode: <%= orderDetails.paymentOption %></p>
-                                <% if((orderDetails.paymentOption === 'Cash On Delivery' && (orderDetails.status === 'Returned'))|| (orderDetails.paymentOption === 'Razorpay' && (orderDetails.status === 'Cancelled' || orderDetails.status === 'Returned'))) { %>
-                                <p id="statusRefund" style="color: black;"></p>
+                                <p style="color: black;">Payment Mode: <%= orderDetails.paymentOption %>
                                 </p>
-                                <% } %>
+                                <% if((orderDetails.paymentOption==='Cash On Delivery' &&
+                                    (orderDetails.status==='Returned' ))|| (orderDetails.paymentOption==='Razorpay' &&
+                                    (orderDetails.status==='Cancelled' || orderDetails.status==='Returned' ))) { %>
+                                    <p id="statusRefund" style="color: black;"></p>
+                                    </p>
+                                    <% } %>
                             </div>
-                            <% if(orderDetails.status !== 'Cancelled' && orderDetails.status !== 'Returned' && orderDetails.status !== 'Delivered') { %>
-                            <form id="Formcancel">
-                                <div id="cancel" class="h-25 pt-4">
-                                    <div class="mb-3">
-                                        <label style="color: red; font-weight: bold;">Cancel</label>
-                                        <textarea class="form-control" name="notes" id="notes"
-                                            placeholder="Type reson"></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Cancel</button>
-                                </div>
-                            </form>
-                            <% } %>
-                            <% if(orderDetails.status === 'Delivered') { %>
-                                <form id="Formreturn">
-                                    <div id="return" class="h-25 pt-4">
+                            <% if(orderDetails.status !=='Cancelled' && orderDetails.status !=='Returned' &&
+                                orderDetails.status !=='Delivered' ) { %>
+                                <form id="Formcancel">
+                                    <div id="cancel" class="h-25 pt-4">
                                         <div class="mb-3">
-                                            <label style="color: red; font-weight: bold;">Return</label>
+                                            <label style="color: red; font-weight: bold;">Cancel</label>
                                             <textarea class="form-control" name="notes" id="notes"
                                                 placeholder="Type reson"></textarea>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Return</button>
+                                        <button type="submit" class="btn btn-primary">Cancel</button>
                                     </div>
                                 </form>
                                 <% } %>
+                                    <% if(orderDetails.status==='Delivered' ) { %>
+                                        <form id="Formreturn">
+                                            <div id="return" class="h-25 pt-4">
+                                                <div class="mb-3">
+                                                    <label style="color: red; font-weight: bold;">Return</label>
+                                                    <textarea class="form-control" name="notes" id="notes"
+                                                        placeholder="Type reson"></textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Return</button>
+                                            </div>
+                                        </form>
+                                        <% } %>
+                                            
                         </div> <!-- col// -->
                     </div>
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
         </section> <!-- content-main end// -->
-        </main>
+    </main>
 
 
-        <script>
-            if ('<%= orderDetails.status %>' === "Cancelled") {
-                document.getElementById('stausOforder').innerText = data.success;
-                const cancel = document.getElementById('cancel');
-                cancel.style.display = 'none'
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        // Get references to the link and the form
+        const Comment = document.getElementById('comment');
+        const review = document.getElementById('reviewAndrating');
+
+        // Add event listener to the link
+        Comment.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+            if (review.style.display === 'none') {
+                review.style.display = 'block';
+            } else {
+                review.style.display = 'none';
             }
-        </script>
+        });
+    </script>
 
 
-        <script>
-            if (('<%= orderDetails.status %>' === "Cancelled" || '<%= orderDetails.status %>' === "Returned") && '<%= orderDetails.refund %>' === "1") {
-                document.getElementById('statusRefund').innerText = 'Successfully refunded your bill amount'
-            }else if(('<%= orderDetails.status %>' === "Cancelled" || '<%= orderDetails.status %>' === "Returned") && '<%= orderDetails.refund %>' === "0"){
-                document.getElementById('statusRefund').innerText = 'Refund is underprocess'
-            }
-        </script>
+    <script>
+        if ('<%= orderDetails.status %>' === "Cancelled") {
+            document.getElementById('stausOforder').innerText = data.success;
+            const cancel = document.getElementById('cancel');
+            cancel.style.display = 'none'
+        }
+    </script>
 
 
-        <script>
-            const form = document.getElementById('Formcancel');
-            form.addEventListener('submit', function submitForm(event) {
-                event.preventDefault();
+    <script>
+        if (('<%= orderDetails.status %>' === "Cancelled" || '<%= orderDetails.status %>' === "Returned") && '<%= orderDetails.refund %>' === "1") {
+            document.getElementById('statusRefund').innerText = 'Successfully refunded your bill amount'
+        } else if (('<%= orderDetails.status %>' === "Cancelled" || '<%= orderDetails.status %>' === "Returned") && '<%= orderDetails.refund %>' === "0") {
+            document.getElementById('statusRefund').innerText = 'Refund is underprocess'
+        }
+    </script>
 
-                const preformData = new FormData(form);
-                const formData = new URLSearchParams(preformData);
 
-                fetch('/cancelOrder/<%= orderDetails._id %>', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success || data.cancelRefund) {
-                            document.getElementById('stausOforder').innerText = data.success;
-                            const cancel = document.getElementById('cancel');
-                            cancel.style.display = 'none'
-                            document.getElementById('statusRefund').innerText = data.cancelRefund;
+    <script>
+        const form = document.getElementById('Formcancel');
+        form.addEventListener('submit', function submitForm(event) {
+            event.preventDefault();
 
-                        } else {
-                            alert('Order Cancellation failed');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+            const preformData = new FormData(form);
+            const formData = new URLSearchParams(preformData);
 
-            });
-        </script>
-
-<script>
-    const formreturn = document.getElementById('Formreturn');
-    formreturn.addEventListener('submit', function submitForm(event) {
-        event.preventDefault();
-
-        const preformData = new FormData(formreturn);
-        const formData = new URLSearchParams(preformData);
-
-        fetch('/returnOrder/<%= orderDetails._id %>', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success || data.returnRefund) {
-                    document.getElementById('stausOforder').innerText = data.success;
-                    const returnOrder = document.getElementById('return');
-                    returnOrder.style.display = 'none'
-                    document.getElementById('statusRefund').innerText = data.returnRefund;
-
-                } else {
-                    alert('Order Return failed');
-                }
+            fetch('/cancelOrder/<%= orderDetails._id %>', {
+                method: 'POST',
+                body: formData
             })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success || data.cancelRefund) {
+                        document.getElementById('stausOforder').innerText = data.success;
+                        const cancel = document.getElementById('cancel');
+                        cancel.style.display = 'none'
+                        document.getElementById('statusRefund').innerText = data.cancelRefund;
 
-    });
-</script>
+                    } else {
+                        alert('Order Cancellation failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+        });
+    </script>
+
+    <script>
+        const formreturn = document.getElementById('Formreturn');
+        formreturn.addEventListener('submit', function submitForm(event) {
+            event.preventDefault();
+
+            const preformData = new FormData(formreturn);
+            const formData = new URLSearchParams(preformData);
+
+            fetch('/returnOrder/<%= orderDetails._id %>', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success || data.returnRefund) {
+                        document.getElementById('stausOforder').innerText = data.success;
+                        const returnOrder = document.getElementById('return');
+                        returnOrder.style.display = 'none'
+                        document.getElementById('statusRefund').innerText = data.returnRefund;
+
+                    } else {
+                        alert('Order Return failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+        });
+    </script>
 
 
-        <%- include('../layouts/userFooter.ejs') %>
+    <%- include('../layouts/userFooter.ejs') %>

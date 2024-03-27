@@ -131,6 +131,7 @@ user_route.get('/orderView',nocache.user,auth.isLogin,orderController.viewOrder)
 
 user_route.post('/verifyPayment', nocache.user, auth.isLogin, orderController.createRazorpayOrder);
 
+user_route.get('/deliveryCharge', nocache.user, auth.isLogin, orderController.deliveryCharge);
 
 
 //------------- cancel Order -----------------//
@@ -175,6 +176,10 @@ user_route.get("/couponApply/:couponId",nocache.user, auth.isLogin, couponsContr
 // -------------UserCouponRemove-----------------//
 
 user_route.get("/couponRemove/:couponId",nocache.user, auth.isLogin, couponsController.removeCoupon);
+
+// -------------Review and rating-----------------//
+
+user_route.post("/addReview",nocache.user, auth.isLogin, userController.addReview);
 
 
 

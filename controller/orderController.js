@@ -18,18 +18,46 @@ const { Long } = require('mongodb')
 require("dotenv").config();
 const Razorpay = require('razorpay');
 
-var {RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY} = process.env;
+var { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
 var razorpayInstance = new Razorpay({
     key_id: RAZORPAY_ID_KEY,
     key_secret: RAZORPAY_SECRET_KEY
 })
 
+
+const deliveryCharge = async (req, res) => {
+    try {
+        const addressId = req.query.selectedAddressId;
+        const cartId = req.query.cartId;
+        const cartItems = await Cart.findOne({ _id: cartId });
+        const selectedAddress = await Address.findOne({ _id: addressId });
+        let deliveryCharge;
+        if (selectedAddress.state === "Kerala") {
+            deliveryCharge = "No Shipping charge";
+        } else {
+            deliveryCharge = 100;
+            if (cartItems.deliveryFee === false) {
+                cartItems.total += deliveryCharge;
+                cartItems.deliveryFee = true;
+                await cartItems.save();
+            }
+        }
+        res.json({ success: deliveryCharge });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: 'Internal servor error' });
+    }
+}
+
 const placeorder = async (req, res) => {
     try {
         const email = req.session.email;
-        const userData = await User.findOne({email:email});
-        const { addressId, cartId, paymentOption, couponId} = req.body;
+        const userData = await User.findOne({ email: email });
+        const { addressId, cartId, paymentOption, couponId } = req.body;
+        let deliveryCharge = req.body.deliveryCharge;
+        deliveryCharge = parseInt(deliveryCharge);
         console.log(paymentOption);
 
         const address = await Address.findById(addressId);
@@ -50,104 +78,105 @@ const placeorder = async (req, res) => {
         cart.products.forEach(product => {
             total += product.subtotal;
         });
-        let grandTotal = total;
+        let grandTotal = total + deliveryCharge;
 
-        if(couponId){
+        if (couponId) {
             couponStatus = true;
-            couponDetail = await Coupon.findOne({couponId:couponId});
+            couponDetail = await Coupon.findOne({ couponId: couponId });
             discount = couponDetail.discountAmount;
             grandTotal = total - couponDetail.discountAmount
-        }else{
+        } else {
             couponStatus = false;
             discount = 0
         }
 
-        if(paymentOption==="Cash On Delivery"){
+        if (paymentOption === "Cash On Delivery") {
 
-        const generateOrderId = () => {
-            const p = randomstring.generate({
-                length: 4,
-                charset: 'numeric'
-            })
-            return p;
-        };
+            const generateOrderId = () => {
+                const p = randomstring.generate({
+                    length: 4,
+                    charset: 'numeric'
+                })
+                return p;
+            };
 
-        let orderId = generateOrderId();
+            let orderId = generateOrderId();
 
-        const order = new Order({
-            user: cart.user,
-            products: cart.products,
-            discountAmount: discount,
-            total: total,
-            grandTotal:grandTotal,
-            shippingAddress: address,
-            paymentOption: paymentOption,
-            status: 'Pending',
-            orderId: orderId,
-            coupon_applied: couponStatus
-        });
-        req.session.OrderId = orderId;
-        req.session.save();
+            const order = new Order({
+                user: cart.user,
+                products: cart.products,
+                discountAmount: discount,
+                total: total,
+                grandTotal: grandTotal,
+                shippingAddress: address,
+                paymentOption: paymentOption,
+                status: 'Pending',
+                orderId: orderId,
+                coupon_applied: couponStatus
+            });
+            req.session.OrderId = orderId;
+            req.session.save();
 
-        console.log(orderId);
+            console.log(orderId);
 
-        const savedOrder = await order.save();
+            const savedOrder = await order.save();
 
-        for (const product of cart.products) {
-            const orderProduct = await Product.findById(product.product._id);
-            orderProduct.stock -= product.quantity;
-            await orderProduct.save();
-        }
-
-
-        await Cart.updateOne(
-            { _id: cartId },
-            { $set: { products: [] } }
-        );
-
-        if(couponDetail){
-            userData.appliedCoupon.push(couponDetail.couponId)
-            await userData.save()
-
-            await Coupon.updateOne(
-                {couponId:couponId},
-                {$inc:{maximumUser: -1}}
-            )
-        }
-
-        res.json({ cod_success: true, order: savedOrder });
-
-        }else if(paymentOption==='Razorpay'){
-
-        // generate orderId
-        const generateOrderId = () => {
-            const p = randomstring.generate({
-                length: 4,
-                charset: 'numeric'
-            })
-            return p;
-        };
-
-        let orderId = generateOrderId();
-
-        req.session.OrderId = orderId;
-        req.session.save();
-
-        // Create a Razorpay order
-        var options = {
-            amount: grandTotal*100,
-            currency: 'INR',
-            receipt: orderId
-        };
-        razorpayInstance.orders.create(options, function (err, order) {
-            if (err) {
-                console.error('Error creating Razorpay order:', err);
-                res.status(500).json({ error: 'Error creating Razorpay order' });
-            } else {
-                console.log("New Order", order);
-                res.json({ success: true, razorpay: order, id: RAZORPAY_ID_KEY });
+            for (const product of cart.products) {
+                const orderProduct = await Product.findById(product.product._id);
+                orderProduct.stock -= product.quantity;
+                orderProduct.popularity++
+                await orderProduct.save();
             }
-        });
+
+
+            await Cart.updateOne(
+                { _id: cartId },
+                { $set: { products: [] } }
+            );
+
+            if (couponDetail) {
+                userData.appliedCoupon.push(couponDetail.couponId)
+                await userData.save()
+
+                await Coupon.updateOne(
+                    { couponId: couponId },
+                    { $inc: { maximumUser: -1 } }
+                )
+            }
+
+            res.json({ cod_success: true, order: savedOrder });
+
+        } else if (paymentOption === 'Razorpay') {
+
+            // generate orderId
+            const generateOrderId = () => {
+                const p = randomstring.generate({
+                    length: 4,
+                    charset: 'numeric'
+                })
+                return p;
+            };
+
+            let orderId = generateOrderId();
+
+            req.session.OrderId = orderId;
+            req.session.save();
+
+            // Create a Razorpay order
+            var options = {
+                amount: grandTotal * 100,
+                currency: 'INR',
+                receipt: orderId
+            };
+            razorpayInstance.orders.create(options, function (err, order) {
+                if (err) {
+                    console.error('Error creating Razorpay order:', err);
+                    res.status(500).json({ error: 'Error creating Razorpay order' });
+                } else {
+                    console.log("New Order", order);
+                    res.json({ success: true, razorpay: order, id: RAZORPAY_ID_KEY });
+                }
+            });
 
 
         }
@@ -158,8 +187,8 @@ const placeorder = async (req, res) => {
 };
 
 
-const createRazorpayOrder = async (req,res) => {
-    try{
+const createRazorpayOrder = async (req, res) => {
+    try {
         console.log("jjjjjjjjjjjjj");
         const { selectedAddressId, cartId, selectedPaymentOption, couponId } = req.body;
         const address = await Address.findById(selectedAddressId);
@@ -168,11 +197,11 @@ const createRazorpayOrder = async (req,res) => {
         let couponDetail;
         let discount;
 
-        if(couponId){
+        if (couponId) {
             couponStatus = true;
-            couponDetail = await Coupon.findOne({couponId:couponId});
+            couponDetail = await Coupon.findOne({ couponId: couponId });
             discount = couponDetail.discountAmount;
-        }else{
+        } else {
             couponStatus = false;
             discount = 0
         }
@@ -180,8 +209,8 @@ const createRazorpayOrder = async (req,res) => {
             user: cart.user,
             products: cart.products,
             discountAmount: discount,
-            total:cart.total,
-            grandTotal: (req.body.order.amount)/100,
+            total: cart.total,
+            grandTotal: (req.body.order.amount) / 100,
             shippingAddress: address,
             paymentOption: selectedPaymentOption,
             status: "Placed",
@@ -194,6 +223,7 @@ const createRazorpayOrder = async (req,res) => {
         for (const product of cart.products) {
             const orderProduct = await Product.findById(product.product._id);
             orderProduct.stock -= product.quantity;
+            orderProduct.popularity++
             await orderProduct.save();
         }
 
@@ -206,7 +236,7 @@ const createRazorpayOrder = async (req,res) => {
         res.json({ razorpay_success: true });
         console.log("555555555555");
 
-    }catch(error){
+    } catch (error) {
         console.log(error.message);
     }
 }
@@ -269,7 +299,7 @@ const cancelOrder = async (req, res) => {
 
 
         await orderDetails.save();
-        res.status(200).json({ success: 'Cancelled', cancelRefund: 'Refund is underprocess'});
+        res.status(200).json({ success: 'Cancelled', cancelRefund: 'Refund is underprocess' });
 
     } catch (error) {
         console.error('Error fetching order page data:', error);
@@ -299,7 +329,7 @@ const returnOrder = async (req, res) => {
 
 
         await orderDetails.save();
-        res.status(200).json({ success: 'Returned', returnRefund: 'Refund is underprocess'});
+        res.status(200).json({ success: 'Returned', returnRefund: 'Refund is underprocess' });
 
     } catch (error) {
         console.error('Error fetching order page data:', error);
@@ -319,6 +349,7 @@ const returnOrder = async (req, res) => {
 
 module.exports = {
 
+    deliveryCharge,
     placeorder,
     createRazorpayOrder,
     Orderpage,

@@ -72,7 +72,12 @@ const productSchema = new mongoose.Schema({
     },
     country:{
         type:String,
+        required:false
+    },
+    popularity:{
+        type:String,
         required:false,
+        default:0
     }
 
 });

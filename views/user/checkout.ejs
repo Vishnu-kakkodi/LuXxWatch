@@ -113,7 +113,7 @@
                                         <div style="margin-right: 5px;">
                                             <input type="radio" id="address<%= i %>" name="deliveryAddress"
                                                 value="<%= useraddress[i]._id %>" style="transform: scale(0.9);"
-                                                onclick="addressHandle()">
+                                                onclick="addressHandle('<%= cartItems._id %>')">
                                         </div>
 
                                         <div class="col-lg-12" style="margin-right: 50px;">
@@ -301,7 +301,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th>Shipping</th>
-                                                        <td colspan="2"><em>Free Shipping</em></td>
+                                                        <td id="shippingAmount" colspan="2">Free Shipping</td>
                                                     </tr>
                                                     <tr>
                                                         <th>Discount</th>
@@ -319,17 +319,24 @@
                                     </table>
                                 </div>
                                 <div>
-                                    <a href="#" id="popup-link" onmouseover="this.style.color='red';" onmouseout="this.style.color='black';">Click for Applicable Coupons</a>
+                                    <a href="#" id="popup-link" onmouseover="this.style.color='red';"
+                                        onmouseout="this.style.color='black';">Click for Applicable Coupons</a>
                                     <p id="is_Applied" style="display: none;">Coupon Applied</p>
                                     <p style="color: red;" id="error-message"></p>
                                     <div id="couponCode" class="input-group" style="margin-top: 5px;">
-                                        <input type="text" class="form-control" id="enteredCoupon" name="couponId" placeholder="Enter coupon ID" required>
-                                        <input type="text" class="form-control" style="display: none; color: rgb(255, 115, 0);" id="appliedCoupon" name="couponId" required>
-                                        <button type="button" id="couponApplied" onclick="couponApply()" class="btn btn-secondary" style="margin-left: 10px;">Apply</button>
-                                        <button type="button" id="couponRemoved" onclick="removeCoupon()" class="btn btn-secondary" style="margin-left: 10px; display: none;">Remove</button>
+                                        <input type="text" class="form-control" id="enteredCoupon" name="couponId"
+                                            placeholder="Enter coupon ID" required>
+                                        <input type="text" class="form-control"
+                                            style="display: none; color: rgb(255, 115, 0);" id="appliedCoupon"
+                                            name="couponId" required>
+                                        <button type="button" id="couponApplied" onclick="couponApply()"
+                                            class="btn btn-secondary" style="margin-left: 10px;">Apply</button>
+                                        <button type="button" id="couponRemoved" onclick="removeCoupon()"
+                                            class="btn btn-secondary"
+                                            style="margin-left: 10px; display: none;">Remove</button>
                                     </div>
                                 </div>
-                                
+
 
                                 <div id="popup-window">
                                     <div style="padding-left: 10px;">
@@ -405,43 +412,65 @@
                                     <div class="mb-25">
                                         <h5>Payment</h5>
                                     </div>
-                                    <div class="payment_option">
-                                        <div class="custome-radio">
-                                            <input class="form-check-input" required="" type="radio"
-                                                name="payment_option" id="Cash On Delivery" checked="">
-                                            <label class="form-check-label" for="Cash On Delivery"
-                                                data-bs-toggle="collapse" data-target="#bankTranfer"
-                                                aria-controls="bankTranfer">Cash on
-                                                Delivery</label>
+                                    <% if (cartItems.total <=1000) { %>
+                                        <div class="payment_option">
+                                            <div id="COD" class="custome-radio">
+                                                <input class="form-check-input" required="" type="radio"
+                                                    name="payment_option" id="Cash On Delivery" checked="">
+                                                <label class="form-check-label" for="Cash On Delivery"
+                                                    data-bs-toggle="collapse" data-target="#bankTranfer"
+                                                    aria-controls="bankTranfer">Cash on Delivery</label>
+                                            </div>
                                         </div>
-                                        <div class="custome-radio">
-                                            <input class="form-check-input" required="" type="radio"
-                                                name="payment_option" id="Razorpay" checked="">
-                                            <label class="form-check-label" for="Razorpay" data-bs-toggle="collapse"
-                                                data-target="#Razorpay" aria-controls="Razorpay">Razorpay</label>
-                                        </div>
-                                    </div>
+                                        <% } else { %>
+                                            <div class="payment_option">
+                                                <div id="COD" class="custome-radio">
+                                                    <input class="form-check-input" required="" type="radio"
+                                                        name="payment_option" id="Cash On Delivery" checked="" disabled>
+                                                    <label class="form-check-label" for="Cash On Delivery"
+                                                        data-bs-toggle="collapse" data-target="#bankTranfer"
+                                                        aria-controls="bankTranfer">Cash on Delivery (Not available for
+                                                        orders over 1000)</label>
+                                                </div>
+                                            </div>
+                                            <% } %>
 
+                                                <div class="custome-radio">
+                                                    <input class="form-check-input" required="" type="radio"
+                                                        name="payment_option" id="Razorpay" checked="">
+                                                    <label class="form-check-label" for="Razorpay"
+                                                        data-bs-toggle="collapse" data-target="#Razorpay"
+                                                        aria-controls="Razorpay">Razorpay</label>
+                                                </div>
                                 </div>
+
                             </div>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="6">No products in cart</td>
-                                </tr>
-                                <% } %>
                     </div>
-                </div>
-                <% if (cartItems.products.length> 0 ) { %>
-                    <button class="btn btn-fill-out btn-block mt-30" style="margin-left: 950px;"
-                        onclick="placeOrder('<%= cartItems._id %>')">Place Order</button>
                     <% } else { %>
-                        <button class="btn btn-fill-out btn-block mt-30" style="margin-left: 950px;"
-                            onclick="placeOrder('<%= cartItems._id %>')" disabled>Place Order</button>
+                        <tr>
+                            <td colspan="6">No products in cart</td>
+                        </tr>
                         <% } %>
+                </div>
+            </div>
+            <% if (cartItems.products.length> 0 ) { %>
+                <button class="btn btn-fill-out btn-block mt-30" style="margin-left: 950px;"
+                    onclick="placeOrder('<%= cartItems._id %>')">Place Order</button>
+                <% } else { %>
+                    <button class="btn btn-fill-out btn-block mt-30" style="margin-left: 950px;"
+                        onclick="placeOrder('<%= cartItems._id %>')" disabled>Place Order</button>
+                    <% } %>
         </section>
     </main>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        if (document.getElementById('checkout-total').value > 1000) {
+            document.getElementById("COD").readOnly = true;
+        }
+    </script>
+
 
 
     <script>
@@ -496,18 +525,18 @@
                 appliedCoupon.value = couponId;
                 document.getElementById('couponAmount').innerText = data.success;
                 document.getElementById('checkout-total').innerText = "₹" + data.newTotal
-                document.getElementById("appliedCoupon").readOnly = true;               
-            }else{
+                document.getElementById("appliedCoupon").readOnly = true;
+            } else {
                 document.getElementById('error-message').innerText = data.error;
             }
             removeInnerText();
-                function removeInnerText() {
-                    const message = document.getElementById('error-message');
-                    setTimeout(() => {
-                        message.innerText = '';
-                    }, 2000);
-                    document.getElementById('enteredCoupon').value = '';
-                }
+            function removeInnerText() {
+                const message = document.getElementById('error-message');
+                setTimeout(() => {
+                    message.innerText = '';
+                }, 2000);
+                document.getElementById('enteredCoupon').value = '';
+            }
         }
 
         async function removeCoupon() {
@@ -692,14 +721,29 @@
     <script>
         let selectedAddressId;
 
-        function addressHandle() {
+        async function addressHandle(cartId) {
             // Find the selected address ID
             selectedAddressId = document.querySelector('input[name="deliveryAddress"]:checked').value;
+            const response = await fetch(`/deliveryCharge?selectedAddressId=${selectedAddressId}&cartId=${cartId}`, {
+                method: 'GET'
+            });
+
+
+            const data = await response.json();
+            if (data) {
+                let deliveryCharge = data.success;
+                console.log(deliveryCharge)
+                document.getElementById('shippingAmount').innerText = deliveryCharge;
+            }
         }
 
         async function placeOrder(cartId) {
             try {
                 // Find the selected payment option ID
+                let deliveryCharge = document.getElementById('shippingAmount').value
+                if (deliveryCharge === "No shipping charge") {
+                    deliveryCharge = 0;
+                }
                 let couponId = document.getElementById('appliedCoupon').value
                 let selectedPaymentOption = document.querySelector('input[name="payment_option"]:checked').id;
 
@@ -709,7 +753,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ cartId: cartId, couponId: couponId, addressId: selectedAddressId, paymentOption: selectedPaymentOption })
+                    body: JSON.stringify({ cartId: cartId, couponId: couponId, addressId: selectedAddressId, paymentOption: selectedPaymentOption, deliveryCharge: deliveryCharge })
                 });
 
                 const data = await response.json();
