@@ -71,7 +71,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Placed', 'Shipped', 'Delivered', 'Cancelled', 'Returned'],
+        enum: ['Pending', 'Placed', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Failed', 'Return under processing', 'Payment pending'],
         default: 'Pending'
     },
     resonOfcancel: {
@@ -98,6 +98,14 @@ const orderSchema = new mongoose.Schema({
         required: false
     },
     shippingCharge: {
+        type:Number,
+        required:false
+    },
+    deliveryDate: {
+        type: Date,
+        required:false
+    },
+    invoiceNumber: {
         type:Number,
         required:false
     }

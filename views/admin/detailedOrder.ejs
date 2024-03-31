@@ -127,8 +127,12 @@
                                                                 <dd>₹ 0.00</dd>
                                                             </dl>
                                                             <dl class="dlist">
+                                                                <dt>Discount:</dt>
+                                                                <dd>₹ <%= orders.discountAmount %></dd>
+                                                            </dl>
+                                                            <dl class="dlist">
                                                                 <dt>Grand total:</dt>
-                                                                <dd> <b class="h5">₹ <%= orders.total %></b> </dd>
+                                                                <dd> <b class="h5">₹ <%= orders.grandTotal %></b> </dd>
                                                             </dl>
                                                             <dl class="dlist">
                                                                 <dt id="status" class="text-muted">Status:<%= orders.status %>

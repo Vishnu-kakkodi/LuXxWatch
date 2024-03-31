@@ -134,6 +134,12 @@ user_route.post('/verifyPayment', nocache.user, auth.isLogin, orderController.cr
 user_route.get('/deliveryCharge', nocache.user, auth.isLogin, orderController.deliveryCharge);
 
 
+//------------- failed payment -----------------//
+
+user_route.post('/continuePayment',nocache.user,auth.isLogin,orderController.continuePayment);
+
+user_route.post('/paymentVerify', nocache.user, auth.isLogin, orderController.RazorpayOrder);
+
 //------------- cancel Order -----------------//
 
 user_route.post('/cancelOrder/:orderId',nocache.user,auth.isLogin,orderController.cancelOrder);
@@ -142,6 +148,11 @@ user_route.post('/cancelOrder/:orderId',nocache.user,auth.isLogin,orderControlle
 //------------- return Order -----------------//
 
 user_route.post('/returnOrder/:orderId',nocache.user,auth.isLogin,orderController.returnOrder);
+
+
+//------------- track Order -----------------//
+
+user_route.get('/orderTracking',nocache.user,auth.isLogin,orderController.trackOrder);
 
 
 // -------------filter-----------------//

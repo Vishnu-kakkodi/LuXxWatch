@@ -245,7 +245,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% cartItems.products.forEach(product=> { %>
+                                            <% cartItems.products.forEach((product,index)=> { %>
                                                 <tr>
                                                     <td class="image product-thumbnail"><img
                                                             src="/productImages/<%= product.product.image[0] %>"
@@ -259,7 +259,7 @@
                                                             <!-- Decrease quantity -->
                                                             <div>
                                                                 <a type="submit"
-                                                                    onclick="updateQuantity('<%= product.product._id %>', 'decrement')"
+                                                                    onclick="updateQuantity('<%= product.product._id %>', 'decrement' , '<%= index %>')"
                                                                     style="cursor: pointer; font-size: 20px;"><i
                                                                         class="fi-rs-angle-small-down"></i></a>
                                                             </div>
@@ -276,7 +276,7 @@
                                                             <!-- Increase quantity -->
                                                             <div>
                                                                 <a type="submit"
-                                                                    onclick="updateQuantity('<%= product.product._id %>', 'increment')"
+                                                                    onclick="updateQuantity('<%= product.product._id %>', 'increment', '<%= index %>')"
                                                                     style="cursor: pointer; font-size: 20px;"><i
                                                                         class="fi-rs-angle-small-up"></i></a>
                                                             </div>
@@ -301,7 +301,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th>Shipping</th>
-                                                        <td id="shippingAmount" colspan="2">Free Shipping</td>
+                                                        <td id="shippingAmount" colspan="2">No shipping charge</td>
                                                     </tr>
                                                     <tr>
                                                         <th>Discount</th>
@@ -340,7 +340,15 @@
 
                                 <div id="popup-window">
                                     <div style="padding-left: 10px;">
-                                        <h5 class="mb-0" style=" color: black;">Available Coupons</h5>
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <div>
+                                                <h5 class="mb-0" style=" color: black;">Available Coupons</h5>
+                                            </div>
+                                            <div>
+                                                <span type="button" onclick="closePopup()"
+                                                style='font-size:10px;'>&#10060;</span>
+                                            </div>
+                                        </div>
                                         <div>
                                             <div
                                                 style="display: flexbox; width: 700px; border-style: solid; border-width: 0.5px; border-color: black;">
@@ -464,6 +472,8 @@
     </main>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
         if (document.getElementById('checkout-total').value > 1000) {
@@ -494,7 +504,14 @@
             tempInput.select();
             document.execCommand('copy');
             document.body.removeChild(tempInput);
-            alert('Coupon code copied to clipboard!');
+            swal({
+                title: "Yah",
+                text: "Coupon Copied",
+                icon: "success",
+                timer: 1500,
+                buttons: false
+            })
+
         }
     </script>
 
@@ -515,6 +532,14 @@
             })
             const data = await response.json();
             if (response.ok) {
+                swal({
+                    title: "Wow 😊",
+                    text: "Coupon Applied",
+                    icon: "success",
+                    timer: 1500,
+                    buttons: false
+                });
+
                 couponApplied.style.display = 'none';
                 popupLink.style.display = 'none';
                 enteredCoupon.style.display = 'none';
@@ -554,6 +579,14 @@
             })
             const data = await response.json();
             if (response.ok) {
+                swal({
+                    title: "Coupon Removed 😢",
+                    text: "The coupon has been successfully removed.",
+                    icon: "success",
+                    timer: 2000,
+                    buttons: false
+                });
+
                 couponRemoved.style.display = 'none';
                 is_Applied.style.display = 'none';
                 enteredCoupon.style.display = 'block';
@@ -686,20 +719,20 @@
     </script>
 
     <script>
-        async function updateQuantity(productId, action) {
+        async function updateQuantity(productId, action, index) {
             try {
                 const response = await fetch(`/update-quantity/${productId}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ action: action })
+                    body: JSON.stringify({ action: action, index: index })
                 });
 
-                if (response.ok) {
-                    // Quantity updated successfully
-                    const data = await response.json();
-                    console.log(data);
+                const data = await response.json();
+
+
+                if (response.status === 200) {
                     // Update the quantity display
                     document.getElementById(`quantity-${productId}`).innerText = data.currentCartitem.quantity;
                     // Update the subtotal display
@@ -708,9 +741,24 @@
                     document.getElementById('checkout-subtotal').innerText = "₹" + data.Total;
                     // // Update the total display
                     document.getElementById('checkout-total').innerText = "₹" + data.Total;
+                } else if (response.status === 400) {
+
+                    swal({
+                        title: "Warning",
+                        text: data.error,
+                        icon: "warning",
+                        timer: 1500,
+                        buttons: false
+                    });
+
+
+
+                } else if (response.status === 404) {
+                    swal("Error", "Resource not found", "error");
+                } else if (response.status === 500) {
+                    swal("Error", "Internal server error occurred", "error");
                 } else {
-                    // Handle error
-                    console.error('Failed to update quantity');
+                    swal("Error", "An error occurred", "error");
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -739,15 +787,15 @@
 
         async function placeOrder(cartId) {
             try {
-                // Find the selected payment option ID
-                let deliveryCharge = document.getElementById('shippingAmount').value
-                if (deliveryCharge === "No shipping charge") {
+                let deliveryCharge = document.getElementById('shippingAmount').innerText
+                if (deliveryCharge === "No Shipping charge") {
                     deliveryCharge = 0;
+                    console.log(deliveryCharge);
                 }
+                console.log(deliveryCharge);
                 let couponId = document.getElementById('appliedCoupon').value
                 let selectedPaymentOption = document.querySelector('input[name="payment_option"]:checked').id;
 
-                // Make the fetch request to place the order
                 const response = await fetch('/placeorder', {
                     method: 'POST',
                     headers: {
@@ -757,8 +805,15 @@
                 });
 
                 const data = await response.json();
-                if (data.cod_success) {
-                    // Order placed successfully, redirect to order page
+                if (data.error) {
+                    swal({
+                        title: "Alert",
+                        text: "Choose any address.",
+                        icon: "warning",
+                        button: "OK"
+                    })
+                }
+                else if (data.cod_success) {
                     window.location.href = "/orderpage";
                 } else {
                     console.log(data.razorpay);
@@ -798,14 +853,35 @@
                         "color": "#3399cc"
                     }
                 };
-                // Call the Razorpay payment method
+
+                let paymentAttempted = false;
+
                 var rzp1 = new Razorpay(options);
+
+                rzp1.on('payment.failed', function (response) {
+                    if (!paymentAttempted) {
+                        paymentAttempted = true;
+                        // Payment failed
+                        swal({
+                            title: "Payment Failed",
+                            text: "Your payment was unsuccessful.",
+                            icon: "error",
+                            button: "OK"
+                        }).then(() => {
+                            window.location.href = "/profile"
+                            console.error('Payment failed:', response.error);
+                        });
+                    }
+                });
+
                 rzp1.open();
             } else {
                 console.error('Invalid order object or amount property is missing');
                 return;
             }
         }
+
+
 
         async function verifyPayment(payment, order, cartId, couponId, selectedAddressId, selectedPaymentOption) {
             try {
@@ -818,9 +894,7 @@
                 });
                 if (response.razorpay_success) {
                     // Order placed successfully, redirect to order page
-                    window.location.href = "/orderpage";
-                } else {
-                    console.error('Failed to verify payment');
+
                 }
             } catch (error) {
                 console.error('Error verifying payment:', error);

@@ -59,7 +59,7 @@ const addTocart = async (req, res) => {
     
             const existingProductIndex = cart.products.findIndex(p => p.product.toString() === productId);
             if (existingProductIndex !== -1) {
-                return res.status(400).json({error: 'Already added to cart'})
+                return res.status(409).json({error: 'Already added to cart'})
             } else {
                 cart.products.push(cartProduct);
             }
@@ -72,7 +72,7 @@ const addTocart = async (req, res) => {
             res.status(200).json({success: 'Successfully added to cart' });
     
         }else{
-            return res.status(400).json({error: 'Item out of stock' });
+            return res.status(409).json({error: 'Item out of stock' });
         }
         
     } catch (error) {
@@ -94,21 +94,35 @@ const changeQuantity =  async (req, res) => {
             return res.status(404).json({ error: 'Cart item not found' });
         }
 
-        const productIndex = cartItem.products.findIndex(p => p.product.toString() === productId);
+        const productIndex = req.body.index;
         if (productIndex === -1) {
             return res.status(404).json({ error: 'Product not found in cart' });
         }
+        console.log(productIndex);
+        console.log(cartItem.products[productIndex].quantity);
+        console.log(typeof(cartItem.products[productIndex].quantity));
 
         if (action === 'increment') {
-            if(cartItem.products[productIndex].quantity < 5 && product.stock > cartItem.products[productIndex].quantity ){
-                cartItem.products[productIndex].quantity++;
-             }
+            if(product.stock > cartItem.products[productIndex].quantity){
+                if(cartItem.products[productIndex].quantity<=4 ){
+                    cartItem.products[productIndex].quantity++;
+                 }else {
+                    console.log("hoi");
+                    return res.status(400).json({ error: 'Maximum quantity limit reached' });
+                }
+            }else {
+                return res.status(400).json({ error: 'Out of stock' });
+            }
             }
             
          else if (action === 'decrement') {
             if (cartItem.products[productIndex].quantity > 1) {
                 cartItem.products[productIndex].quantity--;
+            }else {
+                return res.status(400).json({ error: 'Minimum quantity limit reached' });
             }
+        }else {
+            return res.status(400).json({ error: 'Invalid action' });
         }
 
         let newSubtotal;

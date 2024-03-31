@@ -1,109 +1,212 @@
 <%- include('../layouts/adminHeader.ejs') %>
 
-  <div class="container">
-    <h2 class="mt-4 mb-4 text-center">Sales Report</h2>
-    <div class="flex mb-30" style="display: flex; justify-content: space-evenly; align-items: center;">
-      <p>Stating-Date <input id="startDate" type="date">
-      </p>
-      <p>Ending-Date <input id="endDate" type="date">
-      </p>
+  <div class="flex mb-30" style="display: flex; justify-content: space-evenly; align-items: center;">
+    <p>Stating-Date <input id="startDate" type="date">
+    </p>
+    <p>Ending-Date <input id="endDate" type="date">
+    </p>
 
-      <a type="button" class="btn btn-light" onclick="filterCustom()">
-        Custom Range
-      </a>
+    <a type="button" class="btn btn-light" onclick="filterCustom()">
+      Custom Range filter
+    </a>
 
-      <select id="filterOption" class="btn btn-light">
-        <option>Filter By</option>
-        <option value="today">Today</option>
-        <option value="weekly">Weekly</option>
-        <option value="monthly">Monthly</option>
-        <option value="yearly">Yearly</option>
-      </select>
+    <select id="filterOption" class="btn btn-light">
+      <option>Filter By</option>
+      <option value="today">Today</option>
+      <option value="weekly">Weekly</option>
+      <option value="monthly">Monthly</option>
+      <option value="yearly">Yearly</option>
+    </select>
 
-    </div>
-    <div class="table-responsive container">
-      <table class="table table-striped">
-        <thead>
-          <tr style="text-align: center;">
-            <th>Slno.</th>
-            <th>Date</th>
-            <th scope="col">Order ID</th>
-            <th scope="col">Customer</th>
-            <th scope="col">Status</th>
-            <th scope="col">Total Products</th>
-            <th scope="col">Total Actual Price</th>
-            <th scope="col">Coupon Amount Applied</th>
-            <th scope="col">Payment Method</th>
-            <th scope="col">Bill Amount</th>
-          </tr>
-        </thead>
-        <tbody id="reportSale" style="text-align: center;">
-          <% if (order && order.length> 0) { %>
-            <% var orderamount=0 %>
-              <% var discount=0 %>
-                <% order.forEach((currentOrder, index)=> { %>
-                  <% if (currentOrder.status==='Delivered' ) { %>
-                    <% let productCount=0; %>
-                      <% currentOrder.products.forEach((item)=> { %>
-                        <% productCount +=item.quantity; %>
-                          <% }) %>
-                            <tr>
-                              <td>
-                                <%= index + 1 %>
-                              </td>
-                              <td>
-                                <%= currentOrder.createdAt.toLocaleDateString('en-US', { day: '2-digit' ,
-                                  month: '2-digit' , year: 'numeric' }) %>
-                              </td>
-                              <td>
-                                <%= currentOrder.orderId %>
-                              </td>
-                              <td>
-                                <%= currentOrder.user.name %>
-                              </td>
-                              <td>
-                                <%= currentOrder.status %>
-                              </td>
-                              <td>
-                                <%= productCount %>
-                              </td>
-                              <td>Rs.<%= currentOrder.total %>
-                              </td>
-                              <td>
-                                <%= currentOrder.discountAmount %>
-                              </td>
-                              <td>
-                                <%= currentOrder.paymentOption %>
-                              </td>
-                              <td>Rs.<%= currentOrder.grandTotal %>
-                              </td>
-                              <% orderamount +=currentOrder.grandTotal %>
-                                <% discount +=currentOrder.discountAmount %>
-                            </tr>
-                            <% } %>
-                              <% }) %>
-                                <% let salescount=order.length %>
-                                  <p>Overall sales count : <%= salescount %>
-                                  </p>
-                                  <p> Overall order amount: <%= orderamount %>
-                                  </p>
-                                  <p> Overall discount amount: <%= discount %>
-                                  </p>
-                                  <% } else { %>
-                                    <tr>
-                                      <td colspan="11">No sales data available</td>
-                                    </tr>
-                                    <% } %>
-        </tbody>
-      </table>
-      <div class="container mb-30" style="display: flex; justify-content:end; ">
-        <div>
-          <button class="btn btn-success" style="margin-right: 80px;"> Download PDF </button>
-          <button class="btn btn-success"> Download to Excel </button>
-        </div>
-      </div>
+  </div>
+  <div class="container mb-30" style="display: flex; justify-content:end; ">
+    <div>
+      <button class="btn btn-success" onclick="openPdfPreview()">Preview PDF</button>
+      <button class="btn btn-success" id="exelReport" onclick="excelConvert()"> Download to Excel </button>
     </div>
   </div>
+
+
+  <div class="sales-report">
+    <div class="report-header"></div>
+    <div class="table-responsive">
+      <div class="container">
+        <h2 class="mt-4 mb-4 text-center">Sales Report</h2>
+
+        <div class="table-responsive container">
+          <table class="table table-striped">
+            <thead>
+              <tr style="text-align: center;">
+                <th>Slno.</th>
+                <th>Date</th>
+                <th scope="col">Order ID</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Status</th>
+                <th scope="col">Total Products</th>
+                <th scope="col">Total Actual Price</th>
+                <th scope="col">Coupon Amount Applied</th>
+                <th scope="col">Payment Method</th>
+                <th scope="col">Bill Amount</th>
+              </tr>
+            </thead>
+            <tbody id="reportSale" style="text-align: center;">
+              <% if (order && order.length> 0) { %>
+                <% var orderamount=0 %>
+                  <% var discount=0 %>
+                    <% var totalProduct=0 %>
+                      <% order.forEach((currentOrder, index)=> { %>
+                        <% if (currentOrder.status==='Delivered' ) { %>
+                          <% let productCount=0; %>
+                            <% currentOrder.products.forEach((item)=> { %>
+                              <% productCount +=item.quantity; %>
+                                <% }) %>
+                                  <tr>
+                                    <td>
+                                      <%= index + 1 %>
+                                    </td>
+                                    <td>
+                                      <%= currentOrder.createdAt.toLocaleDateString('en-US', { day: '2-digit' ,
+                                        month: '2-digit' , year: 'numeric' }) %>
+                                    </td>
+                                    <td>
+                                      <%= currentOrder.orderId %>
+                                    </td>
+                                    <td>
+                                      <%= currentOrder.user.name %>
+                                    </td>
+                                    <td>
+                                      <%= currentOrder.status %>
+                                    </td>
+                                    <td>
+                                      <%= productCount %>
+                                    </td>
+                                    <td>Rs.<%= currentOrder.total %>
+                                    </td>
+                                    <td>
+                                      <%= currentOrder.discountAmount %>
+                                    </td>
+                                    <td>
+                                      <%= currentOrder.paymentOption %>
+                                    </td>
+                                    <td>Rs.<%= currentOrder.grandTotal %>
+                                    </td>
+                                    <% totalProduct +=productCount %>
+                                      <% orderamount +=currentOrder.grandTotal %>
+                                        <% discount +=currentOrder.discountAmount %>
+                                  </tr>
+                                  <% } %>
+                                    <% }) %>
+                                      <% let salescount=order.length %>
+                                        <!-- Total row -->
+                                        <p style="margin-left: 700px;">Date: <%= new Date().toLocaleDateString('en-US', { day: '2-digit' ,
+                                          month: '2-digit' , year: 'numeric' }) %>
+                                        </p>
+                                        <p colspan="4"></p>
+                                        <p>Total sales: <%= salescount %>
+                                        </p>
+                                        <p>Total products: <%= totalProduct %>
+                                        </p>
+                                        <p>Total Actual price: Rs.<%= orderamount %>
+                                        </p>
+                                        <p>Total discount: <%= discount %>
+                                        </p>
+                                        <p>Total order Amount: Rs.<%= orderamount - discount %>
+                                        </p>
+                                        <% } else { %>
+                                          <tr>
+                                            <td colspan="11">No sales data available</td>
+                                          </tr>
+                                          <% } %>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="pdfModal" class="modal">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between;">
+        <span class="close" style="font-size: 15px;" onclick="closePdfPreview()">&#10060;</span>
+        <button class="btn-success text-center" style="width: fit-content; border-radius: 50%;" onclick="downloadPdf()">Download PDF</button>
+        </div>
+        <iframe id="pdfPreview" style="width: 80%; height: 80vh;"></iframe>
+    </div>
+</div>
+
+
+  <style>
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    margin-right: 0px;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin-top: 5% ; 
+    margin-left: 30%;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%; /* Set width of modal content */
+    max-width: 800px; /* Maximum width */
+}
+
+/* Close button style */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    /* Add custom CSS styles for the sales report template */
+    .sales-report {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+
+    .report-header {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .table-responsive {
+      /* Add any additional styling for the table */
+      width: 100%;
+    }
+
+    /* Add more custom styles as needed */
+  </style>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
 
 
   <script>
@@ -178,13 +281,16 @@
 
     function generateHTML(order) {
       let html = '';
+
       if (order && order.length > 0) {
         let orderamount = 0;
         let discount = 0;
+        let totalProduct = 0;
 
         order.forEach((currentOrder, index) => {
           if (currentOrder.status === 'Delivered') {
             let productCount = currentOrder.products.reduce((total, item) => total + item.quantity, 0);
+
             html += `
                     <tr>
                         <td>${index + 1}</td>
@@ -198,22 +304,116 @@
                         <td>${currentOrder.paymentOption}</td>
                         <td>Rs.${currentOrder.grandTotal}</td>
                     </tr>`;
+
             orderamount += currentOrder.grandTotal;
             discount += currentOrder.discountAmount;
+            totalProduct += productCount;
           }
         });
 
         const salescount = order.length;
-        html += `<p>Total sales : ${salescount}</p>`;
-        html += `<p>Order total: ${orderamount}</p>`;
-        html += `<p>Discount total: ${discount}</p>`;
+
+        // Add the total row and overall statistics
+        html += `
+            <tr style="background-color: grey; color: black;">
+                <td colspan="3"></td>
+                <td>Total</td>
+                <td>Sales: ${salescount}</td>
+                <td>Products: ${totalProduct}</td>
+                <td>Rs.${orderamount}</td>
+                <td>${discount}</td>
+                <td></td>
+                <td>Rs.${orderamount - discount}</td>
+            </tr>`;
       } else {
+        // If no sales data available, display a message
         html = '<tr><td colspan="11">No sales data available</td></tr>';
       }
+
       return html;
     }
 
+  </script>
 
+
+  <script>
+    function openPdfPreview() {
+        if (typeof jsPDF !== 'undefined') {
+            const content = document.querySelector('.table-responsive');
+            html2canvas(content).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();
+                const imgWidth = 200;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+                // Convert PDF to blob
+                const blob = pdf.output('blob');
+                const url = URL.createObjectURL(blob);
+
+                // Display PDF in iframe within modal dialog
+                const iframe = document.getElementById('pdfPreview');
+                iframe.src = url;
+
+                // Show modal dialog
+                document.getElementById('pdfModal').style.display = 'block';
+            });
+        } else {
+            console.error('jsPDF library is not available');
+        }
+    }
+
+    function closePdfPreview() {
+        // Hide modal dialog
+        document.getElementById('pdfModal').style.display = 'none';
+    }
+
+    function downloadPdf() {
+      if (typeof jsPDF !== 'undefined') {
+        const content = document.querySelector('.table-responsive');;
+        html2canvas(content).then(canvas => {
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF();
+          const imgWidth = 200;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+          pdf.save('sales_report.pdf');
+        })
+      } else {
+        console.error('jsPDF library is not available');
+      }
+    }
+
+
+
+    function excelConvert() {
+    const table = document.querySelector('.table-responsive table');
+    const rows = Array.from(table.querySelectorAll('tr'));
+    const headers = Array.from(table.querySelectorAll('th')).map(cell => cell.textContent.trim());
+    const data = rows.map(row => Array.from(row.querySelectorAll('td')).map(cell => cell.textContent.trim()));
+
+    // Add headers as the first row of the data array
+    data.unshift(headers);
+
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales_Report');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'sales_report.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+}
+
+
+
+
+    document.getElementById('pdfReport').addEventListener('click', pdfConvert);
 
   </script>
 

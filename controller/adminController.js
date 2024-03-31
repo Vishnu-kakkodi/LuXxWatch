@@ -159,13 +159,36 @@ const detailedOrder = async (req, res) => {
 }
 
 
+async function generateInvoice(){
+    const order = await Order.findOne({ status: 'Delivered' })
+        .sort({ deliveryDate: -1 })
+        .limit(1); 
+    let invoiceNumber = 1; 
+
+    if (order) {
+        invoiceNumber = order.invoiceNumber + 1;
+    }
+
+    return invoiceNumber;
+
+}
+
+
 const ChangeStatus = async (req, res) => {
     const orderId = req.params.orderId;
     const { action } = req.body;
     try {
         const order = await Order.findOne({ _id: orderId });
+        if(action==='Delivered'){
+            order.deliveryDate = Date.now();
+            await order.save();
+           let invoiceNumber = await generateInvoice();
+        }
         order.status = action;
         const newStatus = order.status;
+        if(invoiceNumber){
+            
+        }
         await order.save();
         return res.status(200).json({ newStatus });
 
@@ -224,24 +247,42 @@ const filterReport = async (req, res) => {
         }
         else if (option === 'monthly') {
             const currentDate = new Date();
-
-            const firstDayOfMonth = new Date(currentDate.getFullYear(), 0, 1);
-
+        
+            // Set the date to the first day of the current month
+            const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             firstDayOfMonth.setUTCHours(0, 0, 0, 0);
-
-            const lastDayOfMonth = new Date(currentDate.getFullYear(), 0 + 1, 0);
-
+        
+            // Set the date to the last day of the current month
+            const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
             lastDayOfMonth.setUTCHours(23, 59, 59, 999);
-
+        
             console.log(firstDayOfMonth);
-
             console.log(lastDayOfMonth);
-
+        
             order = await Order.find({
                 status: 'Delivered',
                 createdAt: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
             }).populate('products.product').populate('user');
+        }else if (option === 'yearly') {
+            const currentDate = new Date();
+            
+            // Set the date to the first day of the current year
+            const firstDayOfYear = new Date(currentDate.getFullYear(), 0, 1);
+            firstDayOfYear.setUTCHours(0, 0, 0, 0);
+            
+            // Set the date to the last day of the current year
+            const lastDayOfYear = new Date(currentDate.getFullYear(), 11, 31, 23, 59, 59, 999);
+            
+            console.log(firstDayOfYear);
+            console.log(lastDayOfYear);
+            
+            order = await Order.find({
+                status: 'Delivered',
+                createdAt: { $gte: firstDayOfYear, $lte: lastDayOfYear }
+            }).populate('products.product').populate('user');
         }
+        
+        
 
 
         console.log(order);
@@ -483,6 +524,8 @@ const applyCategory = async (req, res) => {
         res.status(500).json({ error: 'Internal servar error' });
     }
 }
+
+
 
 
 module.exports = {

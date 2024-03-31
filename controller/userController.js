@@ -367,6 +367,7 @@ const profile = async (req, res) => {
         const limit = 5;
 
         const order = await Order.find({ user: userData._id })
+            .sort({createdAt:-1})
             .limit(limit * 1)
             .skip((page - 1) * limit)
             .exec()

@@ -147,6 +147,7 @@ const placeorder = async (req, res) => {
             res.json({ cod_success: true, order: savedOrder });
 
         } else if (paymentOption === 'Razorpay') {
+            console.log("kjkjkj");
 
             // generate orderId
             const generateOrderId = () => {
@@ -161,6 +162,24 @@ const placeorder = async (req, res) => {
 
             req.session.OrderId = orderId;
             req.session.save();
+            console.log("kjkjkj");
+
+            const order = new Order({
+                user: cart.user,
+                products: cart.products,
+                discountAmount: discount,
+                total: cart.total,
+                grandTotal: grandTotal,
+                shippingAddress: address,
+                paymentOption: "Razorpay",
+                status: "Payment pending",
+                orderId: orderId,
+                coupon_applied: couponStatus
+            });
+            console.log("kjkjkj");
+    
+            await order.save();
+            console.log("kjkjkj");
 
             // Create a Razorpay order
             var options = {
@@ -171,13 +190,17 @@ const placeorder = async (req, res) => {
             razorpayInstance.orders.create(options, function (err, order) {
                 if (err) {
                     console.error('Error creating Razorpay order:', err);
-                    res.status(500).json({ error: 'Error creating Razorpay order' });
+                    res.status(400).json({ error: 'Error creating Razorpay order' });
                 } else {
                     console.log("New Order", order);
-                    res.json({ success: true, razorpay: order, id: RAZORPAY_ID_KEY });
+                    res.status(200).json({ success: true, razorpay: order, id: RAZORPAY_ID_KEY });
                 }
             });
 
+            await Cart.updateOne(
+                { _id: cartId },
+                { $set: { products: [] } }
+            );
 
         }
     } catch (error) {
@@ -190,33 +213,11 @@ const placeorder = async (req, res) => {
 const createRazorpayOrder = async (req, res) => {
     try {
         console.log("jjjjjjjjjjjjj");
-        const { selectedAddressId, cartId, selectedPaymentOption, couponId } = req.body;
-        const address = await Address.findById(selectedAddressId);
+        const { cartId } = req.body;
+        const orderId = req.body.order.receipt;
+        const order = await Order.findOne({orderId:orderId});
         const cart = await Cart.findById(cartId).populate('products.product');
-        let couponStatus;
-        let couponDetail;
-        let discount;
-
-        if (couponId) {
-            couponStatus = true;
-            couponDetail = await Coupon.findOne({ couponId: couponId });
-            discount = couponDetail.discountAmount;
-        } else {
-            couponStatus = false;
-            discount = 0
-        }
-        const order = new Order({
-            user: cart.user,
-            products: cart.products,
-            discountAmount: discount,
-            total: cart.total,
-            grandTotal: (req.body.order.amount) / 100,
-            shippingAddress: address,
-            paymentOption: selectedPaymentOption,
-            status: "Placed",
-            orderId: req.body.order.receipt,
-            coupon_applied: couponStatus
-        });
+        order .status = "Placed"
 
         await order.save();
 
@@ -226,12 +227,6 @@ const createRazorpayOrder = async (req, res) => {
             orderProduct.popularity++
             await orderProduct.save();
         }
-
-
-        await Cart.updateOne(
-            { _id: cartId },
-            { $set: { products: [] } }
-        );
 
         res.json({ razorpay_success: true });
         console.log("555555555555");
@@ -318,7 +313,7 @@ const returnOrder = async (req, res) => {
         const categories = await Category.find();
         const orderDetails = await Order.findOne({ _id: orderId }).populate('products.product');
         orderDetails.resonOfcancel = notes;
-        orderDetails.status = 'Returned';
+        orderDetails.status = 'Return under processing';
         orderDetails.refund = '0'
 
         for (const product of orderDetails.products) {
@@ -329,11 +324,92 @@ const returnOrder = async (req, res) => {
 
 
         await orderDetails.save();
-        res.status(200).json({ success: 'Returned', returnRefund: 'Refund is underprocess' });
+        res.status(200).json({ success: 'Return under processing', returnRefund: 'Refund is underprocess' });
 
     } catch (error) {
         console.error('Error fetching order page data:', error);
         res.status(500).send('Internal Server Error');
+    }
+}
+
+const trackOrder = async (req, res) => {
+    try {
+        const Id = req.query.orderId.trim(); 
+        
+        const order = await Order.findOne({ _id: Id });
+        console.log(order);
+        res.render('orderTracking', { order: order });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const continuePayment = async (req, res) => {
+    try {
+        const orderId = req.body.orderId;
+
+        const order =  await Order.findOne({ orderId: orderId }).populate('products.product');
+
+        
+
+        order.products.forEach(item=>{
+            console.log("ppppppppppp");
+            if(item.product.stock < item.quantity){
+                console.log("lllllooooo");
+                res.status(400).json({error:'Out of stock'});
+            }
+        })
+
+        let grandTotal = order.grandTotal;
+
+        if (order.paymentOption === 'Razorpay') {
+
+            // Create a Razorpay order
+            var options = {
+                amount: grandTotal * 100,
+                currency: 'INR',
+                receipt: orderId
+            };
+            razorpayInstance.orders.create(options, function (err, order) {
+                if (err) {
+                    console.error('Error creating Razorpay order:', err);
+                    res.status(400).json({ error: 'Error creating Razorpay order' });
+                } else {
+                    console.log("New Order", order);
+                    res.json({ success: true, razorpay: order, id: RAZORPAY_ID_KEY });
+                }
+            });
+
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+const RazorpayOrder = async (req, res) => {
+    console.log("hhhhh")
+    try {
+        const orderId = req.body.order.receipt;
+        const order = await Order.findOne({orderId:orderId});
+        console.log(order);
+        order.status = "Placed"
+
+        await order.save();
+
+        for (const product of order.products) {
+            const orderProduct = await Product.findById(product.product._id);
+            orderProduct.stock -= product.quantity;
+            orderProduct.popularity++
+            await orderProduct.save();
+        }
+
+        res.json({ razorpay_success: true });
+
+    } catch (error) {
+        console.log(error.message);
     }
 }
 
@@ -347,6 +423,22 @@ const returnOrder = async (req, res) => {
 
 
 
+
+async function deletePendingOrders() {
+    try {
+        await Order.deleteMany({ status: 'Payment pending' });
+        console.log('Payment pending orders deleted successfully');
+    } catch (error) {
+        console.error('Error deleting payment pending orders:', error);
+    }
+}
+const delayInMilliseconds = 24 * 60 * 60 * 1000;
+setTimeout(deletePendingOrders, delayInMilliseconds);
+
+
+
+
+
 module.exports = {
 
     deliveryCharge,
@@ -355,6 +447,9 @@ module.exports = {
     Orderpage,
     viewOrder,
     cancelOrder,
-    returnOrder
+    returnOrder,
+    trackOrder,
+    continuePayment,
+    RazorpayOrder
 
 }

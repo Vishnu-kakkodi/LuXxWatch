@@ -1,5 +1,208 @@
 <%- include('../layouts/userHeader.ejs') %>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+        .card {
+            position: relative;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.10rem
+        }
+
+        .card-header:first-child {
+            border-radius: calc(0.37rem - 1px) calc(0.37rem - 1px) 0 0
+        }
+
+        .card-header {
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 0;
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1)
+        }
+
+        .track {
+            position: relative;
+            background-color: #ddd;
+            height: 7px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            margin-bottom: 60px;
+            margin-top: 50px
+        }
+
+        .track .step {
+            -webkit-box-flex: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+            width: 25%;
+            margin-top: -18px;
+            text-align: center;
+            position: relative
+        }
+
+        .track .step.active:before {
+            background: #004309
+        }
+
+        .track .step::before {
+            height: 7px;
+            position: absolute;
+            content: "";
+            width: calc(25% - 10px);
+            left: calc(50% - 12.5%);
+            background-color: #ddd;
+            z-index: -1;
+            top: 18px
+        }
+
+        .track .step.active::before {
+            background-color: #39FF14;
+        }
+
+        .track .step.active .icon {
+            background: #39FF14;
+            color: #fff
+        }
+
+        .track .icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            position: relative;
+            border-radius: 100%;
+            background: #ddd
+        }
+
+        .track .step.active .text {
+            font-weight: 400;
+            color: #000
+        }
+
+        .track .text {
+            display: block;
+            margin-top: 7px
+        }
+
+        .itemside {
+            position: relative;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            width: 100%
+        }
+
+        .itemside .aside {
+            position: relative;
+            -ms-flex-negative: 0;
+            flex-shrink: 0
+        }
+
+        .img-sm {
+            width: 80px;
+            height: 80px;
+            padding: 7px
+        }
+
+        ul.row,
+        ul.row-sm {
+            list-style: none;
+            padding: 0
+        }
+
+        .itemside .info {
+            padding-left: 15px;
+            padding-right: 7px
+        }
+
+        .itemside .title {
+            display: block;
+            margin-bottom: 5px;
+            color: #212529
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 1rem
+        }
+
+        .btn-warning {
+            color: #ffffff;
+            background-color: #004309;
+            border-color: #004309;
+            border-radius: 1px
+        }
+
+        .btn-warning:hover {
+            color: #ffffff;
+            background-color: #004309cf;
+            border-color: #004309;
+            border-radius: 1px
+        }
+    </style>
     <main class="main-wrap">
+        <div class="container" style="margin-top: 20px;">
+            <article class="card">
+                <header class="card-header"> My Orders / Tracking </header>
+                <div class="card-body">
+                    <h6>Order ID: <%= orderDetails.orderId %>
+                    </h6>
+                    <article class="card">
+                        <div class="card-body row">
+                            <div class="col"> <strong>Estimated Delivery time:</strong> <br>29 nov 2019 </div>
+                            <div class="col"> <strong>Shipping BY:</strong> <br> LuxXWatch | <i class="fa fa-phone"></i>
+                                +6282714883 </div>
+                            <div class="col"> <strong>Status:</strong> <br>
+                                <%= orderDetails.status %>
+                            </div>
+                            <div class="col"> <strong>Payment:</strong> <br>
+                                <%= orderDetails.paymentOption %>
+                            </div>
+                            <div class="col"> <strong>Tracking #:</strong> <br> BD045903594059 </div>
+                        </div>
+                    </article>
+                    <div class="track">
+                        <div class="step <%= orderDetails.status === 'Pending' ? 'active' : '' %>"> <span class="icon">
+                                <i class="fa fa-check"></i> </span> <span class="text">Pending</span> </div>
+                        <div class="step <%= orderDetails.status === 'Placed' ? 'active' : '' %>"> <span class="icon">
+                                <i class="fa fa-check"></i> </span> <span class="text">Placed</span> </div>
+                        <div class="step <%= orderDetails.status === 'Processing' ? 'active' : '' %>"> <span
+                                class="icon"> <i class="fa fa-user"></i> </span> <span class="text"> Processing </span>
+                        </div>
+                        <div class="step <%= orderDetails.status === 'Shipped' ? 'active' : '' %>"> <span class="icon">
+                                <i class="fa fa-truck"></i> </span> <span class="text"> Shipped</span> </div>
+                        <div class="step <%= orderDetails.status === 'Delivered' ? 'active' : '' %>"> <span
+                                class="icon"> <i class="fa fa-close"></i> </span> <span class="text">Delivered</span>
+                        </div>
+                        <div class="step <%= orderDetails.status === 'Cancelled' ? 'active' : '' %>"> <span
+                                class="icon"> <i class="fa fa-close"></i> </span> <span class="text">Cancelled</span>
+                        </div>
+                        <div class="step <%= orderDetails.status === 'Return under processing' ? 'active' : '' %>">
+                            <span class="icon"> <i class="fa fa-close"></i> </span> <span class="text">Return
+                                initiated</span>
+                        </div>
+                        <div class="step <%= orderDetails.status === 'Returned' ? 'active' : '' %>"> <span class="icon">
+                                <i class="fa fa-close"></i> </span> <span class="text">Returned</span> </div>
+                    </div>
+
+
+                    <hr>
+
+                    <hr>
+                </div>
+            </article>
+        </div>
         <section class="content-main">
             <div class="card">
                 <header class="card-header">
@@ -40,16 +243,21 @@
                                     <p id="stausOforder" class="mb-1">
                                         Shipping: Fargo express <br> Status: <%= orderDetails.status %>
                                     </p>
+                                    <% if(orderDetails.status==='Payment pending' ) {%>
+                                        <button type="submit" class="btn btn-primary" href="#"
+                                            onclick="continuePayment('<%= orderDetails.orderId %>')">Continue
+                                            payment</button>
+                                        <% } %>
                                 </div>
                             </article>
                         </div> <!-- col// -->
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="display: flex; justify-content: space-between;">
                             <article class="icontext align-items-start">
                                 <span class="icon icon-sm rounded-circle bg-primary-light">
                                     <i class="text-primary material-icons md-place"></i>
                                 </span>
                                 <div class="text">
-                                    <h6 class="mb-1">Deliver to</h6>
+                                    <h6 class="mb-1">Deliver address</h6>
                                     <p class="mb-1">
                                         <%= orderDetails.shippingAddress.name %>,<%=
                                                 orderDetails.shippingAddress.addressType %>
@@ -62,139 +270,492 @@
                                     </p>
                                 </div>
                             </article>
+                            <% if(orderDetails.status==='Delivered' ){ %>
+                                <div>
+                                    <button type="submit" id="invoicePopup" style="border-style: none;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="24"
+                                            height="24"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                            <path
+                                                d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-167l80 80c9.4 9.4 24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-39 39V184c0-13.3-10.7-24-24-24s-24 10.7-24 24V318.1l-39-39c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9z" />
+                                        </svg>
+                                    </button>
+                                    <p style="text-align: center;">Invoice</p>
+                                </div>
+                                <% } %>
                         </div> <!-- col// -->
-                    </div> <!-- row // -->
-                    <div class="row">
-                        <div class="col-lg-7">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th width="40%">Product</th>
-                                            <th width="20%">Unit Price</th>
-                                            <th width="20%">Quantity</th>
-                                            <th width="20%" class="text-end">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% orderDetails.products.forEach(product=> { %>
-                                            <tr>
+
+                        <div id="invoicePopup-window" class="py-3 py-md-5" style="display: none;">
+                            <div>
+                                <span type="button" onclick="closePopup()" style='font-size:10px;' title="Close">&#10060;</span>
+                            </div>
+                            <div style="margin-left: 950px;">
+                                <a type="submit" id="invoiceDownload" style="border-style: none;" title="Download">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="36"
+                                        height="36"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                        <path
+                                            d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-167l80 80c9.4 9.4 24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-39 39V184c0-13.3-10.7-24-24-24s-24 10.7-24 24V318.1l-39-39c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9z" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <div id="invoice_download" class="container">
+                                <div class="row justify-content-center">
+                                    <div id="setA4size" class="col-12 col-lg-9 col-xl-8 col-xxl-7" style=" margin-top: 120px; margin-left: 10px; margin-right: 10px;">
+                                        <div class="row gy-3 mb-3">
+                                            <div class="col-6">
+                                                <h2 class="text-uppercase text-endx m-0">Invoice</h2>
+                                            </div>
+                                            <div class="col-6">
+                                                <a class="d-block text-end" href="#!">
+                                                    <img src="/user-assets/imgs/theme/Logg.png" class="img-fluid"
+                                                        alt="BootstrapBrain Logo" width="135" height="44">
+                                                </a>
+                                            </div>
+                                            <div class="col-12">
+                                                <h4>From</h4>
+                                                <address>
+                                                    <strong>LuxXWatch</strong><br>
+                                                    308,GreenHeaven<br>
+                                                    Maradu, Kochi, 682304<br>
+                                                    Kerala<br>
+                                                    Phone: +91-6282714883<br>
+                                                    Email: LuxXWatch@gmail.com
+                                                </address>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12 col-sm-6 col-md-8">
+                                                <h4>Bill To</h4>
+                                                <address>
+                                                    <strong>
+                                                        <%= orderDetails.shippingAddress.name %>
+                                                    </strong><br>
+                                                    <%= orderDetails.shippingAddress.address %>, <%=
+                                                            orderDetails.shippingAddress.locality %><br>
+                                                            <%= orderDetails.shippingAddress.district %>, <%=
+                                                                    orderDetails.shippingAddress.state %>, <%=
+                                                                        orderDetails.shippingAddress.pincode %><br>
+                                                                        Phone: <%= orderDetails.shippingAddress.mobile
+                                                                            %><br>
+                                                                            Email: <%= userData.email %>
+                                                </address>
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                <h4 class="row">
+                                                    <span class="col-6">Invoice #</span>
+                                                    <span class="col-6 text-sm-end">
+                                                        1
+                                                    </span>
+                                                </h4>
+                                                <div class="row">
+                                                    <span class="col-6">Account</span>
+                                                    <span class="col-6 text-sm-end">
+                                                        123-456-789
+                                                    </span>
+                                                    <span class="col-6">Order ID</span>
+                                                    <span class="col-6 text-sm-end">
+                                                        <%= orderDetails.orderId %>
+                                                    </span>
+                                                    <span class="col-6">Invoice Date</span>
+                                                    <span class="col-6 text-sm-end" id="currentDate"></span>
+                                                    <span class="col-6">Payment</span>
+                                                    <span class="col-6 text-sm-end">
+                                                        <%= orderDetails.paymentOption %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" class="text-uppercase">Qty</th>
+                                                                <th scope="col" class="text-uppercase">Product</th>
+                                                                <th scope="col" class="text-uppercase text-end">Unit
+                                                                    Price</th>
+                                                                <th scope="col" class="text-uppercase text-end">Amount
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="table-group-divider">
+                                                            <% orderDetails.products.forEach(product=> { %>
+                                                                <tr>
+                                                                    <th scope="row">
+                                                                        <%= product.quantity %>
+                                                                    </th>
+                                                                    <td>
+                                                                        <%= product.product.productname %>
+                                                                    </td>
+                                                                    <% if(product.product.offprice){ %>
+                                                                        <td class="text-end">
+                                                                            <%= product.product.offprice %>
+                                                                        </td>
+                                                                        <% }else { %>
+                                                                            <td class="text-end">
+                                                                                <%= product.product.price %>
+                                                                            </td>
+                                                                            <% } %>
+                                                                                <td class="text-end">
+                                                                                    <%= product.subtotal %>
+                                                                                </td>
+                                                                </tr>
+                                                                <% }) %>
+                                                                    <tr>
+                                                                        <td colspan="3" class="text-end">Subtotal</td>
+                                                                        <td class="text-end">
+                                                                            <%= orderDetails.total %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="3" class="text-end">Discount</td>
+                                                                        <td class="text-end">
+                                                                            <%= orderDetails.discountAmount %>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th scope="row" colspan="3"
+                                                                            class="text-uppercase text-end">
+                                                                            Total</th>
+                                                                        <td class="text-end">
+                                                                            <%= orderDetails.grandTotal %>
+                                                                        </td>
+                                                                    </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- row // -->
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="40%">Product</th>
+                                <th width="20%">Unit Price</th>
+                                <th width="20%">Quantity</th>
+                                <th width="20%" class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% orderDetails.products.forEach(product=> { %>
+                                <tr>
+                                    <td>
+                                        <a class="itemside" href="#">
+                                            <div class="left">
+                                                <img src="/productImages/<%= product.product.image[0] %>" width="40"
+                                                    height="40" class="img-xs" alt="Item">
+                                            </div>
+                                            <div class="info">
+                                                <%= product.product.productname %>
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <% if(product.offprice){ %>
+                                        <td> ₹ <%= product.product.offprice %>
+                                        </td>
+                                        <% } else{ %>
+                                            <td> ₹ <%= product.product.price %>
+                                            </td>
+                                            <% } %>
                                                 <td>
-                                                    <a class="itemside" href="#">
-                                                        <div class="left">
-                                                            <img src="/productImages/<%= product.product.image[0] %>"
-                                                                width="40" height="40" class="img-xs" alt="Item">
-                                                        </div>
-                                                        <div class="info">
-                                                            <%= product.product.productname %>
-                                                        </div>
-                                                    </a>
+                                                    <%= product.quantity %>
                                                 </td>
-                                                <% if(product.offprice){ %>
-                                                    <td> ₹ <%= product.product.offprice %>
-                                                    </td>
-                                                    <% } else{ %>
-                                                        <td> ₹ <%= product.product.price %>
-                                                        </td>
-                                                        <% } %>
-                                                            <td>
-                                                                <%= product.quantity %>
-                                                            </td>
-                                                            <td class="text-end">₹ <%= product.subtotal %>
-                                                            </td>
-                                            </tr>
-                                            <% }); %>
-                                                <tr>
-                                                    <td colspan="4">
-                                                        <article class="float-end">
-                                                            <dl class="dlist"
-                                                                style="display: flex; justify-content: space-between;">
-                                                                <dt>Subtotal:</dt>
-                                                                <dd>₹ <%= orderDetails.total %>
-                                                                </dd>
-                                                            </dl>
-                                                            <dl class="dlist"
-                                                                style="display: flex; justify-content: space-between;">
-                                                                <dt>Shipping cost:</dt>
-                                                                <dd>₹ 0.00</dd>
-                                                            </dl>
-                                                            <dl class="dlist"
-                                                                style="display: flex; justify-content: space-between;">
-                                                                <dt>Discount:</dt>
-                                                                <dd>₹ <%= orderDetails.discountAmount %>
-                                                                </dd>
-                                                            </dl>
-                                                            <dl class="dlist"
-                                                                style="display: flex; justify-content: space-between;">
-                                                                <dt>Grand total:</dt>
-                                                                <dd>₹ <%= orderDetails.grandTotal %>
-                                                                </dd>
-                                                            </dl>
-                                                        </article>
-                                                    </td>
-                                                </tr>
-                                    </tbody>
+                                                <td class="text-end">₹ <%= product.subtotal %>
+                                                </td>
+                                </tr>
+                                <% }); %>
+                                    <tr>
+                                        <td colspan="4">
+                                            <article class="float-end">
+                                                <dl class="dlist"
+                                                    style="display: flex; justify-content: space-between;">
+                                                    <dt>Subtotal:</dt>
+                                                    <dd>₹ <%= orderDetails.total %>
+                                                    </dd>
+                                                </dl>
+                                                <dl class="dlist"
+                                                    style="display: flex; justify-content: space-between;">
+                                                    <dt>Shipping cost:</dt>
+                                                    <dd>₹ 0.00</dd>
+                                                </dl>
+                                                <dl class="dlist"
+                                                    style="display: flex; justify-content: space-between;">
+                                                    <dt>Discount:</dt>
+                                                    <dd>₹ <%= orderDetails.discountAmount %>
+                                                    </dd>
+                                                </dl>
+                                                <dl class="dlist"
+                                                    style="display: flex; justify-content: space-between;">
+                                                    <dt>Grand total:</dt>
+                                                    <dd>₹ <%= orderDetails.grandTotal %>
+                                                    </dd>
+                                                </dl>
+                                            </article>
+                                        </td>
+                                    </tr>
+                        </tbody>
 
 
-                                </table>
-                            </div> <!-- table-responsive// -->
-                            <a class="btn btn-primary" href="page-orderDetails-tracking.html">View Order Tracking</a>
-                        </div> <!-- col// -->
-                        <div class="col-lg-1"></div>
-                        <div class="col-lg-4">
-                            <div class="box shadow-sm bg-light">
-                                <h6 class="mb-15">Payment info</h6>
-                                <!-- <p>
+                    </table>
+                </div> <!-- table-responsive// -->
+                <!-- <a class="btn btn-primary" href="/orderTracking?orderId= <%= orderDetails._id %>">View Order
+                                Tracking</a> -->
+            </div> <!-- col// -->
+            <div class="col-lg-1"></div>
+            <div class="col-lg-4">
+                <div class="box shadow-sm bg-light">
+                    <h6 class="mb-15">Payment info</h6>
+                    <!-- <p>
                                     <img src="admin-asset/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br>
                                     Business name: Grand Market LLC <br>
                                     Phone: +1 (800) 555-154-52
                                 </p> -->
-                                <p>
-                                <p style="color: black;">Payment Mode: <%= orderDetails.paymentOption %>
-                                </p>
-                                <% if((orderDetails.paymentOption==='Cash On Delivery' &&
-                                    (orderDetails.status==='Returned' ))|| (orderDetails.paymentOption==='Razorpay' &&
-                                    (orderDetails.status==='Cancelled' || orderDetails.status==='Returned' ))) { %>
-                                    <p id="statusRefund" style="color: black;"></p>
-                                    </p>
-                                    <% } %>
+                    <p>
+                    <p style="color: black;">Payment Mode: <%= orderDetails.paymentOption %>
+                    </p>
+                    <% if((orderDetails.paymentOption==='Cash On Delivery' &&
+                        (orderDetails.status==='Return under processing' ))|| (orderDetails.paymentOption==='Razorpay'
+                        && (orderDetails.status==='Cancelled' || orderDetails.status==='Return under processing' ))) {
+                        %>
+                        <p id="statusRefund" style="color: black;"></p>
+                        </p>
+                        <% } %>
+                </div>
+                <% if(orderDetails.status !=='Cancelled' && orderDetails.status !=='Returned' && orderDetails.status
+                    !=='Return under processing' && orderDetails.status !=='Payment pending' && orderDetails.status
+                    !=='Delivered' ) { %>
+                    <form id="Formcancel">
+                        <div id="cancel" class="h-25 pt-4">
+                            <div class="mb-3">
+                                <label style="color: red; font-weight: bold;">Cancel</label>
+                                <textarea class="form-control" name="notes" id="notes"
+                                    placeholder="Type reson"></textarea>
                             </div>
-                            <% if(orderDetails.status !=='Cancelled' && orderDetails.status !=='Returned' &&
-                                orderDetails.status !=='Delivered' ) { %>
-                                <form id="Formcancel">
-                                    <div id="cancel" class="h-25 pt-4">
-                                        <div class="mb-3">
-                                            <label style="color: red; font-weight: bold;">Cancel</label>
-                                            <textarea class="form-control" name="notes" id="notes"
-                                                placeholder="Type reson"></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Cancel</button>
+                        </div>
+                    </form>
+                    <% } %>
+                        <% if(orderDetails.status==='Delivered' ) { %>
+                            <form id="Formreturn">
+                                <div id="return" class="h-25 pt-4">
+                                    <div class="mb-3">
+                                        <label style="color: red; font-weight: bold;">Return</label>
+                                        <textarea class="form-control" name="notes" id="notes"
+                                            placeholder="Type reson"></textarea>
                                     </div>
-                                </form>
-                                <% } %>
-                                    <% if(orderDetails.status==='Delivered' ) { %>
-                                        <form id="Formreturn">
-                                            <div id="return" class="h-25 pt-4">
-                                                <div class="mb-3">
-                                                    <label style="color: red; font-weight: bold;">Return</label>
-                                                    <textarea class="form-control" name="notes" id="notes"
-                                                        placeholder="Type reson"></textarea>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Return</button>
-                                            </div>
-                                        </form>
-                                        <% } %>
-                                            
-                        </div> <!-- col// -->
-                    </div>
-                </div> <!-- card-body end// -->
-            </div> <!-- card end// -->
+                                    <button type="submit" class="btn btn-primary">Return</button>
+                                </div>
+                            </form>
+                            <% } %>
+
+            </div> <!-- col// -->
+        </div>
+        </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
         </section> <!-- content-main end// -->
+
     </main>
 
+    <style>
+        /* CSS for adjusting the width and height of the invoice popup */
+        #invoicePopup-window {
+            position: fixed;
+            z-index: 100;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+        }
+    
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+            #invoicePopup-window {
+                width: 90%;
+                height: 90%;
+            }
+        }
+    </style>
+
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+
+    <script>
+        var popupLink = document.getElementById("invoicePopup");
+        var popupWindow = document.getElementById("invoicePopup-window");
+        var closeButton = document.getElementById("previewClose");
+        popupLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            popupWindow.style.display = "block";
+        });
+        function closePopup() {
+            popupWindow.style.display = "none";
+        };
+    </script>
+
+    <script>
+        const currentDate = new Date();
+
+        const formattedDate = currentDate.toLocaleDateString('en-US');
+
+        document.getElementById('currentDate').textContent = formattedDate;
+    </script>
+
+    <script>
+        function invoicePDF() {
+            if (typeof jsPDF !== 'undefined') {
+                const content = document.getElementById('invoice_download');;
+                html2canvas(content).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF();
+                    const imgWidth = 200;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                    pdf.save('invoice.pdf');
+                })
+            } else {
+                console.error('jsPDF library is not available');
+            }
+        }
+
+        document.getElementById('invoiceDownload').addEventListener('click', function () {
+            invoicePDF();
+        });
+
+    </script>
 
 
 
+
+
+    <script>
+        async function continuePayment(orderId) {
+            try {
+
+                const response = await fetch('/continuePayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId: orderId })
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    console.log(data.error);
+                    if (data.error === 'Out of stock') {
+                        swal({
+                            title: data.error,
+                            text: "You can't order.",
+                            icon: "error",
+                            button: "OK"
+                        })
+                    }
+                } else {
+                    console.log(data.razorpay);
+                    razorpayPayment(data.razorpay, data.id);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+
+        function razorpayPayment(order, key_id) {
+            if (order) {
+                var options = {
+                    "key": key_id,
+                    "amount": (order.amount),
+                    "currency": "INR",
+                    "name": "LuxXWatch",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": order.id,
+                    "handler": function (response) {
+                        // alert(response.razorpay_payment_id);
+                        // alert(response.razorpay_order_id);
+                        // alert(response.razorpay_signature);
+                        verifyPayment(response, order);
+                    },
+                    "prefill": {
+                        "name": "Gaurav Kumar",
+                        "email": "gaurav.kumar@example.com",
+                        "contact": "9000090000"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+
+                let paymentAttempted = false;
+
+                var rzp1 = new Razorpay(options);
+
+                rzp1.on('payment.failed', function (response) {
+                    console.log('paymentFailed', response);
+                    if (!paymentAttempted) {
+                        paymentAttempted = true;
+                        swal({
+                            title: "Payment Failed",
+                            text: "Your payment was unsuccessful.",
+                            icon: "error",
+                            button: "OK"
+                        }).then(() => {
+                            window.location.href = "/profile";
+                        });
+                    }
+                });
+
+                rzp1.open();
+
+            } else {
+                console.error('Invalid order object or amount property is missing');
+                return;
+            }
+        }
+
+
+        async function verifyPayment(payment, order) {
+            try {
+                console.log("kokkkk");
+                const response = await fetch('/paymentVerify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ payment, order })
+                });
+                if (response.razorpay_success) {
+                    // Order placed successfully, redirect to order page
+                    window.location.href = "/orderpage";
+                }
+            } catch (error) {
+                console.error('Error verifying payment:', error);
+            }
+        }
+    </script>
 
 
 
@@ -241,65 +802,93 @@
 
     <script>
         const form = document.getElementById('Formcancel');
-        form.addEventListener('submit', function submitForm(event) {
+        form.addEventListener('submit', async function submitForm(event) {
             event.preventDefault();
 
-            const preformData = new FormData(form);
-            const formData = new URLSearchParams(preformData);
+            try {
+                const alert = swal({
+                    title: "Are you sure?",
+                    text: "You want to cancel this order!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                });
 
-            fetch('/cancelOrder/<%= orderDetails._id %>', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
+                const willCancel = await alert;
+
+                const preformData = new FormData(form);
+                const formData = new URLSearchParams(preformData);
+
+                if (willCancel) {
+                    const response = await fetch('/cancelOrder/<%= orderDetails._id %>', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
                     if (data.success || data.cancelRefund) {
                         document.getElementById('stausOforder').innerText = data.success;
                         const cancel = document.getElementById('cancel');
-                        cancel.style.display = 'none'
+                        cancel.style.display = 'none';
                         document.getElementById('statusRefund').innerText = data.cancelRefund;
-
                     } else {
                         alert('Order Cancellation failed');
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-
+                } else {
+                    console.error('Cancellation canceled');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
         });
     </script>
+
 
     <script>
         const formreturn = document.getElementById('Formreturn');
-        formreturn.addEventListener('submit', function submitForm(event) {
+        formreturn.addEventListener('submit', async function submitForm(event) {
             event.preventDefault();
 
-            const preformData = new FormData(formreturn);
-            const formData = new URLSearchParams(preformData);
+            try {
+                const alert = swal({
+                    title: "Are you sure?",
+                    text: "You want to delete this item!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                });
 
-            fetch('/returnOrder/<%= orderDetails._id %>', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
+                const willDelete = await alert;
+
+                const preformData = new FormData(formreturn);
+                const formData = new URLSearchParams(preformData);
+
+                if (willDelete) {
+                    const response = await fetch('/returnOrder/<%= orderDetails._id %>', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
                     if (data.success || data.returnRefund) {
                         document.getElementById('stausOforder').innerText = data.success;
                         const returnOrder = document.getElementById('return');
-                        returnOrder.style.display = 'none'
+                        returnOrder.style.display = 'none';
                         document.getElementById('statusRefund').innerText = data.returnRefund;
-
                     } else {
                         alert('Order Return failed');
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-
+                } else {
+                    console.error('Deletion canceled');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
         });
     </script>
+
 
 
     <%- include('../layouts/userFooter.ejs') %>
