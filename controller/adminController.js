@@ -52,9 +52,209 @@ const verifyLogin = async (req, res) => {
 const loadDashboard = async (req, res) => {
     try {
         const userData = await User.findById({ _id: req.session.user_id });
-        res.render('home', { admin: userData });
+        const currentDate = new Date();
+        const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), + 2);
+        firstDayOfMonth.setUTCHours(0, 0, 0, 0);
+
+        const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
+        lastDayOfMonth.setUTCHours(23, 59, 59, 999);
+
+        console.log(firstDayOfMonth);
+        console.log(lastDayOfMonth);
+
+        const order = await Order.find({
+            status: { $in: ['Delivered', 'Cancelled', 'Returned', 'Return under processing'] },
+            createdAt: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
+        })
+
+        console.log(order);
+
+        const yValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        order.forEach(item => {
+            const date = new Date(item.createdAt);
+            const month = date.getDay();
+            yValues[month - 1] += item.grandTotal;
+        });
+
+        const monthlySale = yValues.reduce((total, currentValue) => total + currentValue, 0);
+
+
+        const orders = await Order.find();
+
+        const yValue = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        orders.forEach(item => {
+            if (item.status === 'Pending') {
+                yValue[0] += 1;
+            } else if (item.status === 'Placed') {
+                yValue[1] += 1;
+            } else if (item.status === 'Shipped') {
+                yValue[2] += 1;
+            } else if (item.status === 'Delivered') {
+                yValue[3] += 1;
+            } else if (item.status === 'Cancelled') {
+                yValue[4] += 1;
+            } else if (item.status === 'Returned') {
+                yValue[5] += 1;
+            } else if (item.status === 'Failed') {
+                yValue[6] += 1;
+            } else if (item.status === 'Return under processing') {
+                yValue[7] += 1;
+            } else if (item.status === 'Payment pending') {
+                yValue[8] += 1;
+            }
+        })
+
+        const totalOrderCount = await Order.countDocuments({
+            status: { $nin: ['Failed', 'Payment pending'] }
+        });
+        const totalProductCount = await Product.countDocuments();
+        const totalCategoryCount = await Category.countDocuments();
+
+        const topSellingProducts = await Product.find()
+            .sort({ popularity: -1 })
+            .limit(10);
+
+        const topSellingCategorys = await Product.aggregate([
+            { $sort: { popularity: -1 } },
+            { $limit: 10 },
+            { $group: { _id: "$catname", total: { $sum: 1 } } },
+            { $sort: { total: -1 } }
+        ]);
+        const categoryNames = topSellingCategorys.map(category => category._id);
+
+        const categoryMap = new Map();
+
+        const categories = await Category.find({ catname: { $in: categoryNames } });
+
+        categories.forEach(category => {
+            categoryMap.set(category.catname, category);
+          });
+
+          const sortedCategories = categoryNames.map(categoryName => categoryMap.get(categoryName));
+            
+
+        res.render('home', { admin: userData, yValues, yValue, monthlySale, totalProductCount, totalCategoryCount, totalOrderCount, topSellingProducts, sortedCategories });
     } catch (error) {
         console.log(error.message);
+    }
+}
+
+
+const chartRender = async (req, res) => {
+
+    try {
+        const choice = req.body.chooseValue;
+        console.log(choice);
+        if (choice === 'currentMonth') {
+            const currentDate = new Date();
+            const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), + 2);
+            firstDayOfMonth.setUTCHours(0, 0, 0, 0);
+
+            const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
+            lastDayOfMonth.setUTCHours(23, 59, 59, 999);
+
+            console.log(firstDayOfMonth);
+            console.log(lastDayOfMonth);
+
+            const order = await Order.find({
+                status: { $in: ['Delivered', 'Cancelled', 'Returned', 'Return under processing'] },
+                createdAt: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
+            }).populate('products.product').populate('user');
+
+            console.log(order);
+
+            const yValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+            order.forEach(item => {
+                const date = new Date(item.createdAt);
+                const month = date.getDay();
+                yValues[month - 1] += item.grandTotal;
+            });
+
+            console.log(yValues);
+
+            function generateBarColors(daysInMonth) {
+                const barColors = [];
+                const hueStep = 360 / daysInMonth;
+                for (let i = 0; i < daysInMonth; i++) {
+                    const hue = i * hueStep;
+                    const color = `hsl(${hue}, 70%, 50%)`;
+                    barColors.push(color);
+                }
+                return barColors;
+            }
+            const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+            console.log(daysInMonth);
+            const xValues = [];
+            for (let i = 1; i <= daysInMonth; i++) {
+                xValues.push(i.toString());
+            }
+            const barColors = generateBarColors(daysInMonth);
+
+            const Data = {
+                xValues: xValues,
+                yValues: yValues,
+                barColors: barColors
+            };
+
+            res.status(200).json({ success: Data });
+        } else if (choice === 'monthly') {
+            const currentDate = new Date();
+            const financialYearStart = new Date(currentDate.getFullYear(), 3, 1);
+            const financialYearEnd = new Date(currentDate.getFullYear() + 1, 2, 31);
+
+            const order = await Order.find({
+                status: { $in: ['Delivered', 'Cancelled', 'Returned', 'Return under processing'] },
+                createdAt: { $gte: financialYearStart, $lte: financialYearEnd }
+            }).populate('products.product').populate('user');
+
+            const monthlySales = Array(12).fill(0);
+
+            order.forEach(item => {
+                const date = new Date(item.createdAt);
+                let month = date.getMonth();
+
+                month = (month + 9) % 12;
+
+                monthlySales[month] += item.grandTotal;
+            });
+
+            function generateBarColors(numBars) {
+                const barColors = [];
+                const hueStep = 360 / numBars;
+                for (let i = 0; i < numBars; i++) {
+                    const hue = i * hueStep;
+                    const color = `hsl(${hue}, 70%, 50%)`;
+                    barColors.push(color);
+                }
+                return barColors;
+            }
+
+            const xValues = [];
+            const yValues = monthlySales;
+            const barColors = generateBarColors(monthlySales.length);
+
+
+            for (let i = 3; i < 15; i++) {
+                const monthName = new Date(currentDate.getFullYear(), i, 1).toLocaleString('default', { month: 'short' });
+                xValues.push(monthName);
+            }
+
+            const Data = {
+                xValues: xValues,
+                yValues: yValues,
+                barColors: barColors
+            };
+
+            res.status(200).json({ success: Data });
+
+        } else if (choice === 'yearly') {
+
+        }
+    } catch (error) {
+        console.log(error.message)
     }
 }
 
@@ -81,13 +281,13 @@ const userAccount = async (req, res) => {
         const limit = 4;
 
         const usersData = await User.find({ is_admin: 0 })
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .exec()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec()
 
         const count = await User.countDocuments({ is_admin: 0 });
 
-        res.render('user-account', { users: usersData,totalPages: Math.ceil(count / limit),currentPage: page });
+        res.render('user-account', { users: usersData, totalPages: Math.ceil(count / limit), currentPage: page });
     } catch (error) {
         console.log(error.message);
     }
@@ -159,11 +359,11 @@ const detailedOrder = async (req, res) => {
 }
 
 
-async function generateInvoice(){
+async function generateInvoice() {
     const order = await Order.findOne({ status: 'Delivered' })
         .sort({ deliveryDate: -1 })
-        .limit(1); 
-    let invoiceNumber = 1; 
+        .limit(1);
+    let invoiceNumber = 1;
 
     if (order) {
         invoiceNumber = order.invoiceNumber + 1;
@@ -178,16 +378,17 @@ const ChangeStatus = async (req, res) => {
     const orderId = req.params.orderId;
     const { action } = req.body;
     try {
+        let invoiceNumber;
         const order = await Order.findOne({ _id: orderId });
-        if(action==='Delivered'){
+        if (action === 'Delivered') {
             order.deliveryDate = Date.now();
             await order.save();
-           let invoiceNumber = await generateInvoice();
+            invoiceNumber = await generateInvoice();
         }
         order.status = action;
         const newStatus = order.status;
-        if(invoiceNumber){
-            
+        if (invoiceNumber) {
+            order.invoiceNumber = invoiceNumber;
         }
         await order.save();
         return res.status(200).json({ newStatus });
@@ -247,42 +448,42 @@ const filterReport = async (req, res) => {
         }
         else if (option === 'monthly') {
             const currentDate = new Date();
-        
+
             // Set the date to the first day of the current month
             const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             firstDayOfMonth.setUTCHours(0, 0, 0, 0);
-        
+
             // Set the date to the last day of the current month
             const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
             lastDayOfMonth.setUTCHours(23, 59, 59, 999);
-        
+
             console.log(firstDayOfMonth);
             console.log(lastDayOfMonth);
-        
+
             order = await Order.find({
                 status: 'Delivered',
                 createdAt: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
             }).populate('products.product').populate('user');
-        }else if (option === 'yearly') {
+        } else if (option === 'yearly') {
             const currentDate = new Date();
-            
+
             // Set the date to the first day of the current year
             const firstDayOfYear = new Date(currentDate.getFullYear(), 0, 1);
             firstDayOfYear.setUTCHours(0, 0, 0, 0);
-            
+
             // Set the date to the last day of the current year
             const lastDayOfYear = new Date(currentDate.getFullYear(), 11, 31, 23, 59, 59, 999);
-            
+
             console.log(firstDayOfYear);
             console.log(lastDayOfYear);
-            
+
             order = await Order.find({
                 status: 'Delivered',
                 createdAt: { $gte: firstDayOfYear, $lte: lastDayOfYear }
             }).populate('products.product').populate('user');
         }
-        
-        
+
+
 
 
         console.log(order);
@@ -330,12 +531,12 @@ const couponPage = async (req, res) => {
         const limit = 4;
 
         const coupon = await Coupon.find()
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .exec()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec()
 
         const count = await Coupon.countDocuments();
-        res.render('coupon', { coupon,totalPages: Math.ceil(count / limit),currentPage: page });
+        res.render('coupon', { coupon, totalPages: Math.ceil(count / limit), currentPage: page });
     } catch (error) {
         console.log(error.message);
     }
@@ -405,6 +606,40 @@ const deleteCoupon = async (req, res) => {
     }
 }
 
+
+const updateCoupon = async (req, res) => {
+    try {
+        const { couponId, updatedCoupon } = req.body;
+
+        const coupon = await Coupon.findOne({ couponId });
+
+        if (!coupon) {
+            console.log("Coupon not found");
+            return res.status(404).json({ error: "Coupon not found" });
+        }
+
+        coupon.description = updatedCoupon.description;
+        coupon.maximumDiscount = updatedCoupon.maximumDiscount;
+        coupon.minimumAmount = updatedCoupon.minimumAmount;
+        coupon.maximumAmount = updatedCoupon.maximumAmount;
+        coupon.discountAmount = updatedCoupon.discountAmount;
+        coupon.maximumUser = updatedCoupon.maximumUser;
+        coupon.expireDate = updatedCoupon.expireDate;
+
+        await coupon.save();
+
+        res.status(200).json({ success: "Coupon updated successfully" });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+
+
+
+
 const offerPage = async (req, res) => {
     try {
         var page = 1;
@@ -414,13 +649,13 @@ const offerPage = async (req, res) => {
         const limit = 8;
 
         const products = await Product.find()
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .exec()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec()
 
         const count = await Product.countDocuments();
         const categories = await Category.find();
-        res.render('offer', { products, categories,totalPages: Math.ceil(count / limit),currentPage: page });
+        res.render('offer', { products, categories, totalPages: Math.ceil(count / limit), currentPage: page });
     } catch (error) {
         console.log(error.message);
     }
@@ -434,17 +669,17 @@ const offerModule = async (req, res) => {
         const product = await Product.findById({ _id: productId });
         product.productOffer = offerPrice;
         let price = product.price;
-            console.log(price)
-            let productOfferprice = parseInt(offerPrice);
-            console.log(productOfferprice)
+        console.log(price)
+        let productOfferprice = parseInt(offerPrice);
+        console.log(productOfferprice)
         if (product.categoryOffer) {
             let value = parseInt(product.categoryOffer);
             console.log(value)
             let categoryOfferprice = (price * (value / 100));
             console.log(categoryOfferprice)
             if (productOfferprice <= categoryOfferprice) {
-                console.log(typeof(price))
-                console.log(typeof(categoryOfferprice))
+                console.log(typeof (price))
+                console.log(typeof (categoryOfferprice))
                 product.offprice = price - categoryOfferprice;
                 console.log(price - categoryOfferprice)
                 await product.save();
@@ -457,7 +692,7 @@ const offerModule = async (req, res) => {
             product.offprice = price - productOfferprice;
             await product.save();
         }
-        
+
         res.status(200).json({ success: 'Offer price add successfully' });
     } catch (error) {
         console.log(error.message);
@@ -474,14 +709,14 @@ const categoryOffer = async (req, res) => {
         const limit = 3;
 
         const categories = await Category.find()
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .exec()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec()
 
         const count = await Category.countDocuments();
         const products = await Product.find();
         console.log(categories)
-        res.render('categoryOffer', { products, categories,totalPages: Math.ceil(count / limit),currentPage: page  });
+        res.render('categoryOffer', { products, categories, totalPages: Math.ceil(count / limit), currentPage: page });
     } catch (error) {
         console.log(error.message);
     }
@@ -491,39 +726,51 @@ const applyCategory = async (req, res) => {
     try {
         const categoryId = req.params.categoryId;
         const percentage = req.body.percentage;
-        const category = await Category.findById({ _id: categoryId });
+
+        const category = await Category.findById(categoryId);
+        if (!category) {
+            return res.status(404).json({ error: 'Category not found' });
+        }
+
         const products = await Product.find({ catname: category.catname });
+        if (!products || products.length === 0) {
+            return res.status(404).json({ error: 'No products found for the category' });
+        }
+
         category.offer = percentage;
         await category.save();
-        let value = parseInt(percentage);
+
+        const value = parseInt(percentage);
         for (const product of products) {
             product.categoryOffer = percentage;
-            let price = product.price;
+            const price = product.price;
             let offprice;
-            let categoryOfferprice = (price * (value / 100));
-            
+            const categoryOfferprice = price * (value / 100);
+
             if (product.productOffer) {
-                let productOfferprice = parseInt(product.productOffer);
-                if (categoryOfferprice >= productOfferprice) {
-                    offprice = price - categoryOfferprice;
-                    await Product.updateMany({ catname: category.catname }, { $set: { offprice: offprice, categoryOffer: percentage } });
-                } else {
-                    offprice = price - productOfferprice;
-                    await Product.updateMany({ catname: category.catname }, { $set: { offprice: offprice, categoryOffer: percentage } });
-                }
+                const productOfferprice = parseInt(product.productOffer);
+                offprice = Math.min(price - categoryOfferprice, price - productOfferprice);
+                await Product.updateMany(
+                    { catname: category.catname, productname: product.productname },
+                    { $set: { offprice: offprice, categoryOffer: percentage } }
+                );
             } else {
-                offprice = price - productOfferprice;
-                await Product.updateMany({ catname: category.catname }, { $set: { offprice: offprice, categoryOffer: percentage } });
+                offprice = price - categoryOfferprice;
+                await Product.updateMany(
+                    { catname: category.catname, productname: product.productname },
+                    { $set: { offprice: offprice, categoryOffer: percentage } }
+                );
             }
+
         }
-        
-        
+
         res.status(200).json({ success: 'Discount added successfully' });
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ error: 'Internal servar error' });
+        console.error(error.message);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
+
 
 
 
@@ -548,8 +795,10 @@ module.exports = {
     blockCoupon,
     unblockCoupon,
     deleteCoupon,
+    updateCoupon,
     offerPage,
     offerModule,
     categoryOffer,
-    applyCategory
+    applyCategory,
+    chartRender
 }

@@ -19,7 +19,9 @@
                                             <a href="#" class="title text-truncate"><%= products[i].brandname %></a>
                                             <a href="#" class="title text-truncate"><%= products[i].productname %></a>
                                             <div class="input-group">
+                                                <label for="price" style="height: 25px; ; margin-top: 13px; margin-right: 5px;">MRP:</label>
                                                 <input required="" class="form-control square" style="height: 25px; ; margin-top: 10px; margin-bottom: 8px; margin-right: 8px;" name="price" value="<%= products[i].price %>" id="price_<%= i %>" disabled>
+                                                <label for="offprice" style="height: 25px; ; margin-top: 13px; margin-right: 5px;">Offer:</label>
                                                 <input required="" class="form-control square" style="height: 25px; margin-top: 10px; margin-bottom: 8px; margin-right: 8px;" name="offprice" value="<%= products[i].productOffer %>" id="offprice_<%= i %>">
                                                 <button style="background-color: #007bff; color: #fff;" class="btn btn-sm font-sm rounded btn-brand" onclick="productOffer('<%= products[i]._id %>','<%= i %>')">
                                                     <i class="material-icons md-edit"></i> Apply
@@ -60,7 +62,21 @@
 
     <script>
         async function productOffer(productId,index){
+            console.log("pro");
             const offprice = document.getElementById('offprice_' + index).value;
+            const price = document.getElementById('price_' + index).value
+            console.log(price);
+            if (!offprice || isNaN(offprice) || offprice < price || offprice < 0) {
+                swal({
+                            title: "Invalid offer price.",
+                            text: "Please enter a number between price and 0.",
+                            icon: "warning",
+                            timer:1500,
+                            buttons: false
+                        })
+                        document.getElementById('offprice_' + index).value = "";
+                throw new Error('Invalid offer price. Please enter a number between price and 0.');
+            }
             const response = await fetch(`/admin/offerModule/${productId}`,{
                 method: 'POST',
                 headers: {

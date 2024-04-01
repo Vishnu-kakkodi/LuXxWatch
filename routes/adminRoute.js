@@ -188,6 +188,8 @@ admin_route.get("/UnblockCoupon/:couponId",auth.isLogin, adminController.unblock
 
 admin_route.delete("/deleteCoupon/:couponId",auth.isLogin, adminController.deleteCoupon);
 
+admin_route.put("/updateCoupon",auth.isLogin, adminController.updateCoupon);
+
 
 // -------------OfferManagement-----------------//
 
@@ -199,6 +201,10 @@ admin_route.get("/categoryOffer",auth.isLogin, adminController.categoryOffer);
 
 admin_route.post("/categoryOffer/:categoryId",auth.isLogin, adminController.applyCategory);
 
+
+// -------------OfferManagement-----------------//
+
+admin_route.post("/filterChart",auth.isLogin, adminController.chartRender);
 
 admin_route.get('*',(req,res)=>{
     res.redirect('/admin')

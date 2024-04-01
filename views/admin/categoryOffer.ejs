@@ -17,7 +17,7 @@
                                             <a href="#" class="title text-truncate"><%= category.catname %></a>
                                             <div class="input-group" style="display: flex; align-items: center;">
                                                 <label>Offer Percentage</label>
-                                                <input required="" class="form-control square" style="height: 25px; width: 40px; margin-top: 10px; margin-bottom: 8px; margin-right: 8px; margin-left: 5px;" name="percentage" value="<%= category.offer %>" id="offprice_<%= index %>">
+                                                <input required="" class="form-control square" style="height: 25px; width: 40px; margin-top: 10px; margin-bottom: 8px; margin-right: 8px; margin-left: 5px;" name="percentage" value="<%= category.offer %>" id="offerPercentage_<%= index %>">
                                             </div>
                                         
                                             <button type="submit" style="background-color: #007bff; color: #fff;" class="btn btn-sm font-sm rounded btn-brand" onclick="categoryOffer('<%= category._id %>','<%= index %>')">
@@ -60,8 +60,19 @@
 
     <script>
         async function categoryOffer(categoryId,index){
-            const percentage = document.getElementById('offprice_' + index).value;
+            const percentage = document.getElementById('offerPercentage_' + index).value;
             console.log(percentage);
+            if (!percentage || isNaN(percentage) || percentage < 0 || percentage > 100) {
+                swal({
+                            title: "Invalid offer percentage.",
+                            text: "Please enter a number between 0 and 100.",
+                            icon: "warning",
+                            timer:1500,
+                            buttons: false
+                        })
+                        document.getElementById('offerPercentage_' + index).value = "";
+                throw new Error('Invalid offer percentage. Please enter a number between 0 and 100.');
+            }
             const response = await fetch(`/admin/categoryOffer/${categoryId}`,{
                 method: 'POST',
                 headers: {
@@ -71,6 +82,7 @@
 
             });
             const data = await response.json();
+            console.log(data);
 
             if(response.ok){
                 console.log(data.success);

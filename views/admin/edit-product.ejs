@@ -52,7 +52,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4">
+                                            <!-- <div class="col-lg-4">
                                                 <div class="mb-4">
                                                     <label class="form-label">Special price</label>
                                                     <input id="offprice" name="offprice"
@@ -60,7 +60,7 @@
                                                         class="form-control">
                                                     <div class="error-message" id="offprice-error"></div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="col-lg-4">
                                                 <div class="mb-4">
                                                     <label class="form-label">Stock</label>
@@ -266,15 +266,15 @@
             }
 
             // Validate offprice
-            if (isNaN(offprice) || parseFloat(offprice) <= 0) {
-                document.getElementById('offprice-error').innerText = 'Special price must be a positive number';
-                isValid = false;
-            } else if (parseFloat(offprice) >= parseFloat(price)) {
-                document.getElementById('offprice-error').innerText = 'Special price must be less than regular price';
-                isValid = false;
-            } else {
-                document.getElementById('offprice-error').innerText = '';
-            }
+            // if (isNaN(offprice) || parseFloat(offprice) <= 0) {
+            //     document.getElementById('offprice-error').innerText = 'Special price must be a positive number';
+            //     isValid = false;
+            // } else if (parseFloat(offprice) >= parseFloat(price)) {
+            //     document.getElementById('offprice-error').innerText = 'Special price must be less than regular price';
+            //     isValid = false;
+            // } else {
+            //     document.getElementById('offprice-error').innerText = '';
+            // }
 
             // Validate caseDiameter
             if (isNaN(caseDiameter)) {

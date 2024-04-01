@@ -123,13 +123,21 @@
                                                 <span class="font-small ml-5 text-muted"> (25 reviews)</span>
                                             </div> -->
                                                 </div>
-                                                <div class="ratings mb-2"
-                                                    style="background-color: #28a745; display: inline-block; color: #fff; border-radius: 15px; padding: 5px 10px;  font-size: 16px;">
-                                                    <%= review.averageRating %> <span style="font-size: 16px;">&#9733;</span></div>
-                                                <span class="font-small margin-left: 2px;  text-success"
-                                                    style="font-weight: bold; color: #666;">
-                                                    (<%= review.userReviews.length %> reviews)
-                                                </span>
+                                                <% if (review) { %>
+                                                    <div class="ratings mb-2"
+                                                        style="background-color: #28a745; display: inline-block; color: #fff; border-radius: 15px; padding: 5px 10px; font-size: 16px;">
+                                                        <%= review.averageRating %> <span style="font-size: 16px;">&#9733;</span>
+                                                    </div>
+                                                    <span class="font-small margin-left: 2px; text-success" style="font-weight: bold; color: #666;">
+                                                        (<%= review.userReviews.length %> reviews)
+                                                    </span>
+                                                <% } else { %>
+                                                    <div class="ratings mb-2"
+                                                        style="background-color: #28a745; display: inline-block; color: #fff; border-radius: 15px; padding: 5px 10px; font-size: 16px;">
+                                                        No reviews <span style="font-size: 16px;">&#9733;</span>
+                                                    </div>
+                                                <% } %>
+                                                
                                                 <div class="clearfix product-price-cover">
 
 
@@ -272,30 +280,34 @@
                                                     <div class="col-lg-8">
                                                         <h4 class="mb-30">Customer questions & answers</h4>
                                                         <div class="comment-list">
-                                                           <% review.userReviews.forEach(reviews=>{ %>                                                          
-                                                            <div class="single-comment justify-content-between d-flex">
-                                                                <div class="user justify-content-between d-flex">
-                                                                    <div class="thumb text-center">
-                                                                        <img src="/user-assets/imgs/page/avatar-6.jpg"
-                                                                            alt="">
-                                                                        <h6><a href="#"><%= reviews.user.name %></a></h6>
-                                                                    </div>
-                                                                    <div class="desc">
-                                                                            <div class="product-rate">
-                                                                                <div class="product-rating" style="width: <%= (reviews.rating / 5) * 100 %>%">
+                                                            <% if (review) { %>
+                                                                <% review.userReviews.forEach(reviews=>{ %>                                                          
+                                                                    <div class="single-comment justify-content-between d-flex">
+                                                                        <div class="user justify-content-between d-flex">
+                                                                            <div class="thumb text-center">
+                                                                                <img src="/user-assets/imgs/page/avatar-6.jpg"
+                                                                                    alt="">
+                                                                                <h6><a href="#"><%= reviews.user.name %></a></h6>
+                                                                            </div>
+                                                                            <div class="desc">
+                                                                                    <div class="product-rate">
+                                                                                        <div class="product-rating" style="width: <%= (reviews.rating / 5) * 100 %>%">
+                                                                                        </div>
+                                                                                    </div>                                                                                                                                           
+                                                                                <p><%= reviews.comment %>.</p>
+                                                                                <div class="d-flex justify-content-between">
+                                                                                    <div class="d-flex align-items-center">
+                                                                                        <p class="font-xs mr-30"><%= reviews.createdAt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) %></p>
+                                                                                        <!-- <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a> -->
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>                                                                                                                                           
-                                                                        <p><%= reviews.comment %>.</p>
-                                                                        <div class="d-flex justify-content-between">
-                                                                            <div class="d-flex align-items-center">
-                                                                                <p class="font-xs mr-30"><%= reviews.createdAt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) %></p>
-                                                                                <!-- <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a> -->
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                            <% }) %>
+                                                                    <% }) %>
+                                                            <% } else { %>
+                                                                <h5>No review</h5>
+                                                            <% } %>
                                                             <!--single-comment -->
                                                         </div>
                                                     </div>
