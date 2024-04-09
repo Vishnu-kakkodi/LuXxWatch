@@ -59,22 +59,19 @@ const loadDashboard = async (req, res) => {
         const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
         lastDayOfMonth.setUTCHours(23, 59, 59, 999);
 
-        console.log(firstDayOfMonth);
-        console.log(lastDayOfMonth);
-
         const order = await Order.find({
             status: { $in: ['Delivered', 'Cancelled', 'Returned', 'Return under processing'] },
-            createdAt: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
+            deliveryDate: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
         })
-
-        console.log(order);
 
         const yValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         order.forEach(item => {
-            const date = new Date(item.createdAt);
-            const month = date.getDay();
-            yValues[month - 1] += item.grandTotal;
+            const date = new Date(item.deliveryDate);
+            console.log(date)
+            const day = date.getDay();
+            console.log(day);
+            yValues[day] += item.grandTotal;
         });
 
         const monthlySale = yValues.reduce((total, currentValue) => total + currentValue, 0);
@@ -130,10 +127,10 @@ const loadDashboard = async (req, res) => {
 
         categories.forEach(category => {
             categoryMap.set(category.catname, category);
-          });
+        });
 
-          const sortedCategories = categoryNames.map(categoryName => categoryMap.get(categoryName));
-            
+        const sortedCategories = categoryNames.map(categoryName => categoryMap.get(categoryName));
+
 
         res.render('home', { admin: userData, yValues, yValue, monthlySale, totalProductCount, totalCategoryCount, totalOrderCount, topSellingProducts, sortedCategories });
     } catch (error) {
@@ -146,7 +143,6 @@ const chartRender = async (req, res) => {
 
     try {
         const choice = req.body.chooseValue;
-        console.log(choice);
         if (choice === 'currentMonth') {
             const currentDate = new Date();
             const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), + 2);
@@ -155,25 +151,22 @@ const chartRender = async (req, res) => {
             const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
             lastDayOfMonth.setUTCHours(23, 59, 59, 999);
 
-            console.log(firstDayOfMonth);
-            console.log(lastDayOfMonth);
-
-            const order = await Order.find({
-                status: { $in: ['Delivered', 'Cancelled', 'Returned', 'Return under processing'] },
-                createdAt: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
-            }).populate('products.product').populate('user');
-
-            console.log(order);
+            const order = await Order.aggregate([
+                {
+                    $match: {
+                        status: { $in: ['Delivered', 'Cancelled', 'Returned', 'Return under processing'] },
+                        deliveryDate: { $gte: firstDayOfMonth, $lte: lastDayOfMonth }
+                    }
+                }
+            ]);
 
             const yValues = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
             order.forEach(item => {
-                const date = new Date(item.createdAt);
+                const date = new Date(item.deliveryDate);
                 const month = date.getDay();
                 yValues[month - 1] += item.grandTotal;
             });
-
-            console.log(yValues);
 
             function generateBarColors(daysInMonth) {
                 const barColors = [];
@@ -186,7 +179,6 @@ const chartRender = async (req, res) => {
                 return barColors;
             }
             const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-            console.log(daysInMonth);
             const xValues = [];
             for (let i = 1; i <= daysInMonth; i++) {
                 xValues.push(i.toString());
@@ -205,15 +197,19 @@ const chartRender = async (req, res) => {
             const financialYearStart = new Date(currentDate.getFullYear(), 3, 1);
             const financialYearEnd = new Date(currentDate.getFullYear() + 1, 2, 31);
 
-            const order = await Order.find({
-                status: { $in: ['Delivered', 'Cancelled', 'Returned', 'Return under processing'] },
-                createdAt: { $gte: financialYearStart, $lte: financialYearEnd }
-            }).populate('products.product').populate('user');
+            const order = await Order.aggregate([
+                {
+                    $match: {
+                        status: { $in: ['Delivered', 'Cancelled', 'Returned', 'Return under processing'] },
+                        deliveryDate: { $gte: financialYearStart, $lte: financialYearEnd }
+                    }
+                }
+            ]);
 
             const monthlySales = Array(12).fill(0);
 
             order.forEach(item => {
-                const date = new Date(item.createdAt);
+                const date = new Date(item.deliveryDate);
                 let month = date.getMonth();
 
                 month = (month + 9) % 12;
@@ -250,8 +246,6 @@ const chartRender = async (req, res) => {
 
             res.status(200).json({ success: Data });
 
-        } else if (choice === 'yearly') {
-
         }
     } catch (error) {
         console.log(error.message)
@@ -263,7 +257,7 @@ const adminLogout = async (req, res) => {
 
     try {
         req.session.destroy();
-        res.redirect('/');
+        res.redirect('/admin/');
     } catch (error) {
         console.log(error.message)
     }
@@ -299,12 +293,9 @@ const userAccount = async (req, res) => {
 const userBlock = async (req, res) => {
 
     const userId = req.params.userId;
-    console.log("hai");
 
     try {
         const user = await User.findById(userId);
-        console.log(user);
-
         user.is_blocked = 1;
         await user.save();
         await User.findByIdAndUpdate(userId, { $set: { is_blocked: 1 } });
@@ -318,9 +309,8 @@ const userBlock = async (req, res) => {
 
 const userunBlock = async (req, res) => {
 
-    const userId = req.params.userId;
-
     try {
+        const userId = req.params.userId;
         const user = await User.findById(userId);
         user.is_blocked = 0;
         await user.save();
@@ -338,8 +328,20 @@ const userunBlock = async (req, res) => {
 
 const orderList = async (req, res) => {
     try {
-        const orders = await Order.find().populate('products.product').populate('user');
-        res.render('listOrder', { orders });
+        var page = 1;
+        if (req.query.page) {
+            page = req.query.page;
+        }
+        const limit = 5;
+        const orders = await Order.find().populate('products.product').populate('user')
+            .sort({ createdAt: -1 })
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+
+        const count = await Order.countDocuments();
+
+        res.render('listOrder', { orders, totalPages: Math.ceil(count / limit), currentPage: page });
 
     } catch (error) {
         console.log(error.message);
@@ -375,9 +377,9 @@ async function generateInvoice() {
 
 
 const ChangeStatus = async (req, res) => {
-    const orderId = req.params.orderId;
-    const { action } = req.body;
     try {
+        const orderId = req.params.orderId;
+        const { action } = req.body;
         let invoiceNumber;
         const order = await Order.findOne({ _id: orderId });
         if (action === 'Delivered') {
@@ -412,7 +414,6 @@ const saleReport = async (req, res) => {
 const filterReport = async (req, res) => {
     try {
         const option = req.body.option;
-        console.log(typeof (option));
         let order;
         if (option === 'today') {
             const startOfDay = new Date();
@@ -448,17 +449,11 @@ const filterReport = async (req, res) => {
         }
         else if (option === 'monthly') {
             const currentDate = new Date();
-
-            // Set the date to the first day of the current month
             const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             firstDayOfMonth.setUTCHours(0, 0, 0, 0);
 
-            // Set the date to the last day of the current month
             const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
             lastDayOfMonth.setUTCHours(23, 59, 59, 999);
-
-            console.log(firstDayOfMonth);
-            console.log(lastDayOfMonth);
 
             order = await Order.find({
                 status: 'Delivered',
@@ -467,15 +462,10 @@ const filterReport = async (req, res) => {
         } else if (option === 'yearly') {
             const currentDate = new Date();
 
-            // Set the date to the first day of the current year
             const firstDayOfYear = new Date(currentDate.getFullYear(), 0, 1);
             firstDayOfYear.setUTCHours(0, 0, 0, 0);
 
-            // Set the date to the last day of the current year
             const lastDayOfYear = new Date(currentDate.getFullYear(), 11, 31, 23, 59, 59, 999);
-
-            console.log(firstDayOfYear);
-            console.log(lastDayOfYear);
 
             order = await Order.find({
                 status: 'Delivered',
@@ -483,10 +473,6 @@ const filterReport = async (req, res) => {
             }).populate('products.product').populate('user');
         }
 
-
-
-
-        console.log(order);
         res.status(200).json({ success: order });
     } catch (error) {
         console.log(error.message);
@@ -497,22 +483,18 @@ const filterReport = async (req, res) => {
 
 const customReport = async (req, res) => {
     try {
-        console.log("kkk");
         const { startDate, endDate } = req.body;
         const startOfDay = new Date(startDate);
         const endOfDay = new Date(endDate);
 
         startOfDay.setUTCHours(0, 0, 0, 0);
         endOfDay.setUTCHours(23, 59, 59, 999);
-        console.log(startOfDay);
-        console.log(endOfDay);
 
         const order = await Order.find({
             status: 'Delivered',
             createdAt: { $gte: startOfDay, $lte: endOfDay }
         }).populate('products.product').populate('user');
 
-        console.log(order);
         res.status(200).json({ success: order });
     } catch (error) {
         console.log(error.message);
@@ -545,11 +527,10 @@ const couponPage = async (req, res) => {
 
 const addCoupon = async (req, res) => {
     try {
-        const { couponId, description, maximumDiscount, minimumAmount, maximumAmount, expireDate, maximumUser, discountAmount } = req.body;
+        const { couponId, description, minimumAmount, maximumAmount, expireDate, maximumUser, discountAmount } = req.body;
         const coupon = new Coupon({
             couponId,
             description,
-            maximumDiscount,
             minimumAmount,
             maximumAmount,
             expireDate,
@@ -619,7 +600,6 @@ const updateCoupon = async (req, res) => {
         }
 
         coupon.description = updatedCoupon.description;
-        coupon.maximumDiscount = updatedCoupon.maximumDiscount;
         coupon.minimumAmount = updatedCoupon.minimumAmount;
         coupon.maximumAmount = updatedCoupon.maximumAmount;
         coupon.discountAmount = updatedCoupon.discountAmount;
@@ -669,23 +649,15 @@ const offerModule = async (req, res) => {
         const product = await Product.findById({ _id: productId });
         product.productOffer = offerPrice;
         let price = product.price;
-        console.log(price)
         let productOfferprice = parseInt(offerPrice);
-        console.log(productOfferprice)
         if (product.categoryOffer) {
             let value = parseInt(product.categoryOffer);
-            console.log(value)
             let categoryOfferprice = (price * (value / 100));
-            console.log(categoryOfferprice)
             if (productOfferprice <= categoryOfferprice) {
-                console.log(typeof (price))
-                console.log(typeof (categoryOfferprice))
                 product.offprice = price - categoryOfferprice;
-                console.log(price - categoryOfferprice)
                 await product.save();
             } else {
                 product.offprice = price - productOfferprice;
-                console.log(productOfferprice)
                 await product.save();
             }
         } else {
@@ -715,7 +687,6 @@ const categoryOffer = async (req, res) => {
 
         const count = await Category.countDocuments();
         const products = await Product.find();
-        console.log(categories)
         res.render('categoryOffer', { products, categories, totalPages: Math.ceil(count / limit), currentPage: page });
     } catch (error) {
         console.log(error.message);
@@ -773,6 +744,16 @@ const applyCategory = async (req, res) => {
 
 
 
+const page_404 = async (req, res) => {
+    try {
+        res.render('error404');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+
 
 
 module.exports = {
@@ -800,5 +781,6 @@ module.exports = {
     offerModule,
     categoryOffer,
     applyCategory,
-    chartRender
+    chartRender,
+    page_404
 }

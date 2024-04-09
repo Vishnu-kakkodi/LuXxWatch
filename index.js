@@ -5,78 +5,74 @@ mongoose.connect("mongodb://127.0.0.1:27017/LuxXWatch");
 const express = require("express");
 const app = express();
 const path = require('path');
+require('./auth');
 const passport = require('passport');
 const session = require('express-session');
-require('./auth');
+const cookieParser = require("cookie-parser");
 
 
 
 app.use(session({
     secret: 'mysitesessionsecret',
     resave: false,
-    saveUninitialized: false,
-    cookie: { 
-        maxAge: 3600000 
-    }
-
-
+    saveUninitialized: false
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
-//user router
-const userRoute = require('./routes/userRoute');
-app.use('/',userRoute);
+
+function isLoggedin(req, res, next) {
+    req.user ? next() : res.sendStatus(401);
+}
+
+// For cookie
+app.use(cookieParser());
+
+app.get('/auth/google',
+    passport.authenticate('google', { scope: ['email', 'profile'] })
+);
+
+app.get('/auth/google/callback',
+    passport.authenticate('google', {
+        successRedirect: '/googleSignUp',
+        failureRedirect: '/auth/google/failure'
+    })
+);
+
+app.get('/auth/google/failure', isLoggedin, (req, res) => {
+    console.log(session.user);
+    res.redirect('/login');
+})
+
+
+//facebook
+
+app.get('/auth/facebook',
+  passport.authenticate('facebook', { scope: ['user_friends', 'manage_pages'] }));
+
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/facebookSignUp');
+  });
+
 
 //admin router
 const adminRoute = require('./routes/adminRoute');
-app.use('/admin',adminRoute);
+app.use('/admin', adminRoute);
 
-app.set('view engine','ejs');
-app.set('views','./views/user');
+//user router
+const userRoute = require('./routes/userRoute');
+app.use('/', userRoute);
 
-
-// function isLoggedin(req,res,next){
-//     req.user? next(): res.sendStatus(401);
-// }
-
-
-// app.use(session({
-//     secret: 'mysitesessionsecret',
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { secure: false,
-//         maxAge: 3600000
-//      }
-//   }))
-
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// app.get('/auth/google',
-//   passport.authenticate('google', { scope: ['email', 'profile'] })
-// );
-
-// app.get('/auth/google/callback',
-//   passport.authenticate('google', {
-//     successRedirect: '/auth/google/success',
-//     failureRedirect: '/auth/google/failure'
-//   })
-// );
-
-
-// app.get('/auth/google/success',isLoggedin,(req,res)=>{
-//     console.log(session.user);
-//     res.redirect('/home');
-// })
-
-// app.get('/auth/google/failure',isLoggedin,(req,res)=>{
-//     console.log(session.user);
-//     res.redirect('/login');
-// })
+app.set('view engine', 'ejs');
+app.set('views', './views/user');
 
 
 
-app.listen(4000,function(){
-    console.log("server is running at http://localhost:4000");
+app.listen(3005, function () {
+    console.log("server is running at http://localhost:3005");
 });
 

@@ -126,80 +126,91 @@
                                                 <% if (review) { %>
                                                     <div class="ratings mb-2"
                                                         style="background-color: #28a745; display: inline-block; color: #fff; border-radius: 15px; padding: 5px 10px; font-size: 16px;">
-                                                        <%= review.averageRating %> <span style="font-size: 16px;">&#9733;</span>
+                                                        <%= review.averageRating %> <span
+                                                                style="font-size: 16px;">&#9733;</span>
                                                     </div>
-                                                    <span class="font-small margin-left: 2px; text-success" style="font-weight: bold; color: #666;">
+                                                    <span class="font-small margin-left: 2px; text-success"
+                                                        style="font-weight: bold; color: #666;">
                                                         (<%= review.userReviews.length %> reviews)
                                                     </span>
-                                                <% } else { %>
-                                                    <div class="ratings mb-2"
-                                                        style="background-color: #28a745; display: inline-block; color: #fff; border-radius: 15px; padding: 5px 10px; font-size: 16px;">
-                                                        No reviews <span style="font-size: 16px;">&#9733;</span>
-                                                    </div>
-                                                <% } %>
-                                                
-                                                <div class="clearfix product-price-cover">
+                                                    <% } else { %>
+                                                        <div class="ratings mb-2"
+                                                            style="background-color: #28a745; display: inline-block; color: #fff; border-radius: 15px; padding: 5px 10px; font-size: 16px;">
+                                                            No reviews <span style="font-size: 16px;">&#9733;</span>
+                                                        </div>
+                                                        <% } %>
+
+                                                            <div class="clearfix product-price-cover">
 
 
-                                                    <div class="product-price primary-color float-left">
-                                                        <% if(products[i].offprice){ %>
-                                                            <ins><span class="text-brand">₹<%= products[i].offprice %>
-                                                                </span></ins>
-                                                            <ins><span class="old-price font-md ml-15">₹<%=
-                                                                        products[i].price %></span></ins>
-                                                            <% } else{ %>
-                                                                <ins><span class="text-brand">₹<%= products[i].price %>
-                                                                    </span></ins>
-                                                                <% } %>
-                                                                    <% if(products[i].categoryOffer){ %>
-                                                                        <span
-                                                                            class="save-price text-success font-md color3 ml-15">
-                                                                            <%= products[i].categoryOffer %>% Off
-                                                                        </span>
-                                                                        <% } %>
-                                                    </div>
-                                                </div>
-                                                <div class="bt-1 border-color-1 mt-15 mb-15"></div>
-                                                <!-- <div class="short-desc mb-30">
+                                                                <div class="product-price primary-color float-left">
+                                                                    <% if(products[i].offprice){ %>
+                                                                        <ins><span class="text-brand">₹<%=
+                                                                                    products[i].offprice %>
+                                                                            </span></ins>
+                                                                        <ins><span class="old-price font-md ml-15">₹<%=
+                                                                                    products[i].price %></span></ins>
+                                                                        <% } else{ %>
+                                                                            <ins><span class="text-brand">₹<%=
+                                                                                        products[i].price %>
+                                                                                </span></ins>
+                                                                            <% } %>
+                                                                                <% if(products[i].categoryOffer){ %>
+                                                                                    <span
+                                                                                        class="save-price text-success font-md color3 ml-15">
+                                                                                        <%= products[i].categoryOffer %>
+                                                                                            % Off
+                                                                                    </span>
+                                                                                    <% } %>
+                                                                </div>
+                                                            </div>
+                                                            <div class="bt-1 border-color-1 mt-15 mb-15"></div>
+                                                            <!-- <div class="short-desc mb-30">
                                             <p><%= products[i].description %></p>
                                         </div> -->
-                                                <div class="product_sort_info font-xs mb-30">
-                                                    <ul>
-                                                        <li class="mb-10">Category: <%= products[i].catname %>
-                                                        </li>
-                                                        <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day
-                                                            Return Policy</li>
-                                                        <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery
-                                                            available</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                                                <div class="detail-extralink">
-                                                    <!-- <div class="detail-qty border radius">
+                                                            <div class="product_sort_info font-xs mb-30">
+                                                                <ul>
+                                                                    <li class="mb-10">Category: <%= products[i].catname
+                                                                            %>
+                                                                    </li>
+                                                                    <li class="mb-10"><i class="fi-rs-refresh mr-5"></i>
+                                                                        30 Day
+                                                                        Return Policy</li>
+                                                                    <li><i class="fi-rs-credit-card mr-5"></i> Cash on
+                                                                        Delivery
+                                                                        available</li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                                            <div class="detail-extralink">
+                                                                <!-- <div class="detail-qty border radius">
                                                 <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
                                                 <span class="qty-val">1</span>
                                                 <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
                                             </div> -->
-                                                    <div class="product-extra-link2">
-                                                        <button type="button" class="button button-add-to-cart"
-                                                            data-product-id="<%= products[i]._id %>">Add to
-                                                            cart</button>
-                                                        <a type="button" aria-label="Add To Wishlist"
-                                                            id="add-to-wishlist"
-                                                            data-product-id="<%= products[i]._id %>"
-                                                            class="action-btn hover-up"><i class="fi-rs-heart"></i></a>
-                                                    </div>
-                                                </div>
-                                                <ul class="product-meta font-xs color-grey mt-50">
-                                                    <li>Availability:<span class="in-stock text-success ml-5">
-                                                            <%= products[i].stock %>
-                                                                <% if(typeof message !=='undefined' ){ %>
-                                                                    <p style="color: black;">
-                                                                        <%= message %>
-                                                                    </p>
-                                                                    <% } %>
-                                                        </span></li>
-                                                </ul>
+                                                                <div class="product-extra-link2">
+                                                                    <button type="button"
+                                                                        class="button button-add-to-cart"
+                                                                        data-product-id="<%= products[i]._id %>">Add to
+                                                                        cart</button>
+                                                                    <a type="button" aria-label="Add To Wishlist"
+                                                                        id="add-to-wishlist"
+                                                                        data-product-id="<%= products[i]._id %>"
+                                                                        class="action-btn hover-up"><i
+                                                                            class="fi-rs-heart"></i></a>
+                                                                </div>
+                                                            </div>
+                                                            <ul class="product-meta font-xs color-grey mt-50">
+                                                                <li>Availability:<span
+                                                                        class="in-stock text-success ml-5">
+                                                                        <%= products[i].stock %>
+                                                                            <% if(typeof message !=='undefined' ){ %>
+                                                                                <p style="color: black;">
+                                                                                    <%= message %>
+                                                                                </p>
+                                                                                <% } %>
+                                                                    </span></li>
+                                                            </ul>
                                             </div>
                                             <!-- Detail Info -->
                                         </div>
@@ -281,23 +292,41 @@
                                                         <h4 class="mb-30">Customer questions & answers</h4>
                                                         <div class="comment-list">
                                                             <% if (review) { %>
-                                                                <% review.userReviews.forEach(reviews=>{ %>                                                          
-                                                                    <div class="single-comment justify-content-between d-flex">
-                                                                        <div class="user justify-content-between d-flex">
+                                                                <% review.userReviews.forEach(reviews=>{ %>
+                                                                    <div
+                                                                        class="single-comment justify-content-between d-flex">
+                                                                        <div
+                                                                            class="user justify-content-between d-flex">
                                                                             <div class="thumb text-center">
                                                                                 <img src="/user-assets/imgs/page/avatar-6.jpg"
                                                                                     alt="">
-                                                                                <h6><a href="#"><%= reviews.user.name %></a></h6>
+                                                                                <h6><a href="#">
+                                                                                        <%= reviews.user.name %>
+                                                                                    </a></h6>
                                                                             </div>
                                                                             <div class="desc">
-                                                                                    <div class="product-rate">
-                                                                                        <div class="product-rating" style="width: <%= (reviews.rating / 5) * 100 %>%">
-                                                                                        </div>
-                                                                                    </div>                                                                                                                                           
-                                                                                <p><%= reviews.comment %>.</p>
-                                                                                <div class="d-flex justify-content-between">
-                                                                                    <div class="d-flex align-items-center">
-                                                                                        <p class="font-xs mr-30"><%= reviews.createdAt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) %></p>
+                                                                                <div class="product-rate">
+                                                                                    <div class="product-rating"
+                                                                                        style="width: <%= (reviews.rating / 5) * 100 %>%">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <p>
+                                                                                    <%= reviews.comment %>.
+                                                                                </p>
+                                                                                <div
+                                                                                    class="d-flex justify-content-between">
+                                                                                    <div
+                                                                                        class="d-flex align-items-center">
+                                                                                        <p class="font-xs mr-30">
+                                                                                            <%= reviews.createdAt.toLocaleDateString('en-US',
+                                                                                                { weekday: 'short' ,
+                                                                                                month: 'short' ,
+                                                                                                day: '2-digit' ,
+                                                                                                year: 'numeric' ,
+                                                                                                hour: 'numeric' ,
+                                                                                                minute: '2-digit' ,
+                                                                                                hour12: true }) %>
+                                                                                        </p>
                                                                                         <!-- <a href="#" class="text-brand btn-reply">Reply <i class="fi-rs-arrow-right"></i> </a> -->
                                                                                     </div>
                                                                                 </div>
@@ -305,166 +334,105 @@
                                                                         </div>
                                                                     </div>
                                                                     <% }) %>
-                                                            <% } else { %>
-                                                                <h5>No review</h5>
-                                                            <% } %>
-                                                            <!--single-comment -->
+                                                                        <% } else { %>
+                                                                            <h5>No review</h5>
+                                                                            <% } %>
+                                                                                <!--single-comment -->
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <!--comment form-->
-                                            <button id="comment" type="submit" class="mb-15"
-                                                style="margin-top: 20px; font-size: medium;">Add a review</button>
-                                            <div class="comment-form" style="margin-top: 10px;">
-                                                <div id="reviewAndrating" style="display: none;">
-                                                    <div class="container">
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="card">
-                                                                    <div class="card-body text-center">
-                                                                        <span id="myRating" class="myratings">0</span>
-                                                                        <h4 class="mt-1">Rate us</h4>
-
-                                                                        <fieldset class="rating">
-                                                                            <input type="radio" id="star5" name="rating"
-                                                                                value="5" /><label class="full"
-                                                                                for="star5"
-                                                                                title="Awesome - 5 stars"></label>
-                                                                            <input type="radio" id="star4half"
-                                                                                name="rating" value="4.5" /><label
-                                                                                class="half" for="star4half"
-                                                                                title="Pretty good - 4.5 stars"></label>
-                                                                            <input type="radio" id="star4" name="rating"
-                                                                                value="4" /><label class="full"
-                                                                                for="star4"
-                                                                                title="Pretty good - 4 stars"></label>
-                                                                            <input type="radio" id="star3half"
-                                                                                name="rating" value="3.5" /><label
-                                                                                class="half" for="star3half"
-                                                                                title="Meh - 3.5 stars"></label>
-                                                                            <input type="radio" id="star3" name="rating"
-                                                                                value="3" /><label class="full"
-                                                                                for="star3"
-                                                                                title="Meh - 3 stars"></label>
-                                                                            <input type="radio" id="star2half"
-                                                                                name="rating" value="2.5" /><label
-                                                                                class="half" for="star2half"
-                                                                                title="Kinda bad - 2.5 stars"></label>
-                                                                            <input type="radio" id="star2" name="rating"
-                                                                                value="2" /><label class="full"
-                                                                                for="star2"
-                                                                                title="Kinda bad - 2 stars"></label>
-                                                                            <input type="radio" id="star1half"
-                                                                                name="rating" value="1.5" /><label
-                                                                                class="half" for="star1half"
-                                                                                title="Meh - 1.5 stars"></label>
-                                                                            <input type="radio" id="star1" name="rating"
-                                                                                value="1" /><label class="full"
-                                                                                for="star1"
-                                                                                title="Sucks big time - 1 star"></label>
-                                                                            <input type="radio" id="starhalf"
-                                                                                name="rating" value="0.5" /><label
-                                                                                class="half" for="starhalf"
-                                                                                title="Sucks big time - 0.5 stars"></label>
-                                                                            <input type="radio" class="reset-option"
-                                                                                name="rating" value="reset" />
-                                                                        </fieldset>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mt-20">
-                                                        <div class="col-lg-8 col-md-12">
+                                            <% if(userData){ %>
+                                                <button id="comment" type="submit" class="mb-15"
+                                                    style="margin-top: 20px; font-size: medium;">Add a review</button>
+                                                <div class="comment-form" style="margin-top: 10px;">
+                                                    <div id="reviewAndrating" style="display: none;">
+                                                        <div class="container">
                                                             <div class="row">
-                                                                <div class="col-12">
-                                                                    <div>
-                                                                        <textarea id="user_review" class="form-control w-100"
-                                                                            name="comment"  cols="30"
-                                                                            rows="9"
-                                                                            placeholder="Write Comment"></textarea>
+                                                                <div class="col-md-6">
+                                                                    <div class="card">
+                                                                        <div class="card-body text-center">
+                                                                            <span id="myRating"
+                                                                                class="myratings">0</span>
+                                                                            <h4 class="mt-1">Rate us</h4>
+
+                                                                            <fieldset class="rating">
+                                                                                <input type="radio" id="star5"
+                                                                                    name="rating" value="5" /><label
+                                                                                    class="full" for="star5"
+                                                                                    title="Awesome - 5 stars"></label>
+                                                                                <input type="radio" id="star4half"
+                                                                                    name="rating" value="4.5" /><label
+                                                                                    class="half" for="star4half"
+                                                                                    title="Pretty good - 4.5 stars"></label>
+                                                                                <input type="radio" id="star4"
+                                                                                    name="rating" value="4" /><label
+                                                                                    class="full" for="star4"
+                                                                                    title="Pretty good - 4 stars"></label>
+                                                                                <input type="radio" id="star3half"
+                                                                                    name="rating" value="3.5" /><label
+                                                                                    class="half" for="star3half"
+                                                                                    title="Meh - 3.5 stars"></label>
+                                                                                <input type="radio" id="star3"
+                                                                                    name="rating" value="3" /><label
+                                                                                    class="full" for="star3"
+                                                                                    title="Meh - 3 stars"></label>
+                                                                                <input type="radio" id="star2half"
+                                                                                    name="rating" value="2.5" /><label
+                                                                                    class="half" for="star2half"
+                                                                                    title="Kinda bad - 2.5 stars"></label>
+                                                                                <input type="radio" id="star2"
+                                                                                    name="rating" value="2" /><label
+                                                                                    class="full" for="star2"
+                                                                                    title="Kinda bad - 2 stars"></label>
+                                                                                <input type="radio" id="star1half"
+                                                                                    name="rating" value="1.5" /><label
+                                                                                    class="half" for="star1half"
+                                                                                    title="Meh - 1.5 stars"></label>
+                                                                                <input type="radio" id="star1"
+                                                                                    name="rating" value="1" /><label
+                                                                                    class="full" for="star1"
+                                                                                    title="Sucks big time - 1 star"></label>
+                                                                                <input type="radio" id="starhalf"
+                                                                                    name="rating" value="0.5" /><label
+                                                                                    class="half" for="starhalf"
+                                                                                    title="Sucks big time - 0.5 stars"></label>
+                                                                                <input type="radio" class="reset-option"
+                                                                                    name="rating" value="reset" />
+                                                                            </fieldset>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div>
-                                                                <button type="submit" id="submitButton"
-                                                                    data-product-id="<%= products[i]._id %>"
-                                                                    data-user-id="<%= userData._id %>" class="btn"
-                                                                    onclick="Review(event)">Submit
-                                                                    Review</button>
+                                                        </div>
+                                                        <div class="row mt-20">
+                                                            <div class="col-lg-8 col-md-12">
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        <div>
+                                                                            <textarea id="user_review"
+                                                                                class="form-control w-100"
+                                                                                name="comment" cols="30" rows="9"
+                                                                                placeholder="Write Comment"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <button type="submit" id="submitButton"
+                                                                        data-product-id="<%= products[i]._id %>"
+                                                                        data-user-id="<%= userData._id %>" class="btn"
+                                                                        onclick="Review(event)">Submit
+                                                                        Review</button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                                <% } %>
                                         </div>
                                     </div>
-                                    <!-- <div class="row mt-60">
-                                <div class="col-12">
-                                    <h3 class="section-title style-1 mb-30">Related products</h3>
-                                </div>
-                                <div class="col-12">
-                                    <div class="row related-products">
-                                        <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-                                            <div class="product-cart-wrap small hover-up">
-                                                <div class="product-img-action-wrap">
-                                                    <div class="product-img product-img-zoom">
-                                                        <a href="shop-product-right.html" tabindex="0">
-                                                            <img class="default-img" src="/productImages/<%= products[0].image[0] %>" alt="">
-                                                            <img class="hover-img" src="/productImages/<%= products[0].image[1] %>" alt="">
-                                                        </a>
-                                                    </div>
-                                                    <div class="product-action-1">
-                                                        <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal
-"><i class="fi-rs-search"></i></a>
-                                                        <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="fi-rs-heart"></i></a>
-                                                        <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="fi-rs-shuffle"></i></a>
-                                                    </div>
-                                                    <div class="product-badges product-badges-position product-badges-mrg">
-                                                        <span class="hot">Hot</span>
-                                                    </div>
-                                                </div>
-                                                <div class="product-content-wrap">
-                                                    <h2><a href="shop-product-right.html" tabindex="0"><%= products[0].productname %></a></h2>
-                                                    <div class="product-price">
-                                                        <span>₹<%= products[0].price %></span>
-                                                        <span class="old-price">₹<%= products[0].offprice %></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-                                            <div class="product-cart-wrap small hover-up">
-                                                <div class="product-img-action-wrap">
-                                                    <div class="product-img product-img-zoom">
-                                                        <a href="shop-product-right.html" tabindex="0">
-                                                            <img class="default-img" src="/productImages/<%= products[0].image[0] %>" alt="">
-                                                            <img class="hover-img" src="/productImages/<%= products[0].image[1] %>" alt="">
-                                                        </a>
-                                                    </div>
-                                                    <div class="product-action-1">
-                                                        <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal
-"><i class="fi-rs-search"></i></a>
-                                                        <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="0"><i class="fi-rs-heart"></i></a>
-                                                        <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="0"><i class="fi-rs-shuffle"></i></a>
-                                                    </div>
-                                                    <div class="product-badges product-badges-position product-badges-mrg">
-                                                        <span class="hot">Hot</span>
-                                                    </div>
-                                                </div>
-                                                <div class="product-content-wrap">
-                                                    <h2><a href="shop-product-right.html" tabindex="0"><%= products[0].productname %></a></h2>
-                                                    <div class="product-price">
-                                                        <span>₹<%= products[0].price %></span>
-                                                        <span class="old-price">₹<%= products[0].offprice %></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
+
                                 </div>
 
                             </div>
@@ -685,7 +653,7 @@
 
                 if (data.success) {
                     swal("Success", data.success, "success");
-                } else if(data.error) {
+                } else if (data.error) {
                     swal("Error", data.error, "error");
                 }
             } catch (error) {
@@ -711,7 +679,32 @@
                     if (res.ok) {
                         console.log("data");
                         swal("Success", "Successfully add to cart...", "success");
-                    } else {
+                    } else if (res.status === 404) {
+                        swal({
+                            title: data.error,
+                            text: 'You need to login first!',
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    text: "Go to login",
+                                    value: true,
+                                    visible: true,
+                                    className: "btn btn-primary"
+                                },
+                                cancel: {
+                                    text: "Close",
+                                    value: null,
+                                    visible: true,
+                                    className: "btn btn-secondary"
+                                }
+                            }
+                        }).then((value) => {
+                            if (value) {
+                                window.location.href = "/login";
+                            }
+                        });
+                    }
+                    else {
                         swal("Ooops", "Item is Out of Stock", "error");
                     }
 
@@ -764,6 +757,30 @@
                             }
                         });
 
+                    } else if (res.status === 404) {
+                        swal({
+                            title: data.error,
+                            text: 'You need to login first!',
+                            icon: "error",
+                            buttons: {
+                                confirm: {
+                                    text: "Go to login",
+                                    value: true,
+                                    visible: true,
+                                    className: "btn btn-primary"
+                                },
+                                cancel: {
+                                    text: "Close",
+                                    value: null,
+                                    visible: true,
+                                    className: "btn btn-secondary"
+                                }
+                            }
+                        }).then((value) => {
+                            if (value) {
+                                window.location.href = "/login";
+                            }
+                        });
                     } else {
                         swal("Ooops", data.error, "error");
                     }

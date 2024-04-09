@@ -210,7 +210,8 @@
                         <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                             <span>
                                 <i class="material-icons md-calendar_today"></i> <b>Order Date: <%=
-                                        orderDetails.createdAt %></b>
+                                        orderDetails.createdAt.toLocaleDateString('en-US', { day: '2-digit' ,
+                                        month: '2-digit' , year: 'numeric' }) %></b>
                             </span> <br>
                             <small class="text-muted">OrderId: <%= orderDetails.orderId %></small>
                         </div>
@@ -286,7 +287,8 @@
 
                         <div id="invoicePopup-window" class="py-3 py-md-5" style="display: none;">
                             <div>
-                                <span type="button" onclick="closePopup()" style='font-size:10px;' title="Close">&#10060;</span>
+                                <span type="button" onclick="closePopup()" style='font-size:10px;'
+                                    title="Close">&#10060;</span>
                             </div>
                             <div style="margin-left: 950px;">
                                 <a type="submit" id="invoiceDownload" style="border-style: none;" title="Download">
@@ -299,7 +301,8 @@
                             </div>
                             <div id="invoice_download" class="container">
                                 <div class="row justify-content-center">
-                                    <div id="setA4size" class="col-12 col-lg-9 col-xl-8 col-xxl-7" style=" margin-top: 120px; margin-left: 10px; margin-right: 10px;">
+                                    <div id="setA4size" class="col-12 col-lg-9 col-xl-8 col-xxl-7"
+                                        style=" margin-top: 120px; margin-left: 10px; margin-right: 10px;">
                                         <div class="row gy-3 mb-3">
                                             <div class="col-6">
                                                 <h2 class="text-uppercase text-endx m-0">Invoice</h2>
@@ -429,139 +432,139 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div> <!-- row // -->
-        <div class="row">
-            <div class="col-lg-7">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th width="40%">Product</th>
-                                <th width="20%">Unit Price</th>
-                                <th width="20%">Quantity</th>
-                                <th width="20%" class="text-end">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% orderDetails.products.forEach(product=> { %>
+            </div> <!-- row // -->
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <a class="itemside" href="#">
-                                            <div class="left">
-                                                <img src="/productImages/<%= product.product.image[0] %>" width="40"
-                                                    height="40" class="img-xs" alt="Item">
-                                            </div>
-                                            <div class="info">
-                                                <%= product.product.productname %>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <% if(product.offprice){ %>
-                                        <td> ₹ <%= product.product.offprice %>
-                                        </td>
-                                        <% } else{ %>
-                                            <td> ₹ <%= product.product.price %>
-                                            </td>
-                                            <% } %>
-                                                <td>
-                                                    <%= product.quantity %>
-                                                </td>
-                                                <td class="text-end">₹ <%= product.subtotal %>
-                                                </td>
+                                    <th width="40%">Product</th>
+                                    <th width="20%">Unit Price</th>
+                                    <th width="20%">Quantity</th>
+                                    <th width="20%" class="text-end">Total</th>
                                 </tr>
-                                <% }); %>
+                            </thead>
+                            <tbody>
+                                <% orderDetails.products.forEach(product=> { %>
                                     <tr>
-                                        <td colspan="4">
-                                            <article class="float-end">
-                                                <dl class="dlist"
-                                                    style="display: flex; justify-content: space-between;">
-                                                    <dt>Subtotal:</dt>
-                                                    <dd>₹ <%= orderDetails.total %>
-                                                    </dd>
-                                                </dl>
-                                                <dl class="dlist"
-                                                    style="display: flex; justify-content: space-between;">
-                                                    <dt>Shipping cost:</dt>
-                                                    <dd>₹ 0.00</dd>
-                                                </dl>
-                                                <dl class="dlist"
-                                                    style="display: flex; justify-content: space-between;">
-                                                    <dt>Discount:</dt>
-                                                    <dd>₹ <%= orderDetails.discountAmount %>
-                                                    </dd>
-                                                </dl>
-                                                <dl class="dlist"
-                                                    style="display: flex; justify-content: space-between;">
-                                                    <dt>Grand total:</dt>
-                                                    <dd>₹ <%= orderDetails.grandTotal %>
-                                                    </dd>
-                                                </dl>
-                                            </article>
+                                        <td>
+                                            <a class="itemside" href="#">
+                                                <div class="left">
+                                                    <img src="/productImages/<%= product.product.image[0] %>" width="40"
+                                                        height="40" class="img-xs" alt="Item">
+                                                </div>
+                                                <div class="info">
+                                                    <%= product.product.productname %>
+                                                </div>
+                                            </a>
                                         </td>
+                                        <% if(product.offprice){ %>
+                                            <td> ₹ <%= product.product.offprice %>
+                                            </td>
+                                            <% } else{ %>
+                                                <td> ₹ <%= product.product.price %>
+                                                </td>
+                                                <% } %>
+                                                    <td>
+                                                        <%= product.quantity %>
+                                                    </td>
+                                                    <td class="text-end">₹ <%= product.subtotal %>
+                                                    </td>
                                     </tr>
-                        </tbody>
+                                    <% }); %>
+                                        <tr>
+                                            <td colspan="4">
+                                                <article class="float-end">
+                                                    <dl class="dlist"
+                                                        style="display: flex; justify-content: space-between;">
+                                                        <dt>Subtotal:</dt>
+                                                        <dd>₹ <%= orderDetails.total %>
+                                                        </dd>
+                                                    </dl>
+                                                    <dl class="dlist"
+                                                        style="display: flex; justify-content: space-between;">
+                                                        <dt>Shipping cost:</dt>
+                                                        <dd>₹ 0.00</dd>
+                                                    </dl>
+                                                    <dl class="dlist"
+                                                        style="display: flex; justify-content: space-between;">
+                                                        <dt>Discount:</dt>
+                                                        <dd>₹ <%= orderDetails.discountAmount %>
+                                                        </dd>
+                                                    </dl>
+                                                    <dl class="dlist"
+                                                        style="display: flex; justify-content: space-between;">
+                                                        <dt>Grand total:</dt>
+                                                        <dd>₹ <%= orderDetails.grandTotal %>
+                                                        </dd>
+                                                    </dl>
+                                                </article>
+                                            </td>
+                                        </tr>
+                            </tbody>
 
 
-                    </table>
-                </div> <!-- table-responsive// -->
-                <!-- <a class="btn btn-primary" href="/orderTracking?orderId= <%= orderDetails._id %>">View Order
+                        </table>
+                    </div> <!-- table-responsive// -->
+                    <!-- <a class="btn btn-primary" href="/orderTracking?orderId= <%= orderDetails._id %>">View Order
                                 Tracking</a> -->
-            </div> <!-- col// -->
-            <div class="col-lg-1"></div>
-            <div class="col-lg-4">
-                <div class="box shadow-sm bg-light">
-                    <h6 class="mb-15">Payment info</h6>
-                    <!-- <p>
+                </div> <!-- col// -->
+                <div class="col-lg-1"></div>
+                <div class="col-lg-4">
+                    <div class="box shadow-sm bg-light">
+                        <h6 class="mb-15">Payment info</h6>
+                        <!-- <p>
                                     <img src="admin-asset/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br>
                                     Business name: Grand Market LLC <br>
                                     Phone: +1 (800) 555-154-52
                                 </p> -->
-                    <p>
-                    <p style="color: black;">Payment Mode: <%= orderDetails.paymentOption %>
-                    </p>
-                    <% if((orderDetails.paymentOption==='Cash On Delivery' &&
-                        (orderDetails.status==='Return under processing' ))|| (orderDetails.paymentOption==='Razorpay'
-                        && (orderDetails.status==='Cancelled' || orderDetails.status==='Return under processing' ))) {
-                        %>
-                        <p id="statusRefund" style="color: black;"></p>
+                        <p>
+                        <p style="color: black;">Payment Mode: <%= orderDetails.paymentOption %>
                         </p>
-                        <% } %>
-                </div>
-                <% if(orderDetails.status !=='Cancelled' && orderDetails.status !=='Returned' && orderDetails.status
-                    !=='Return under processing' && orderDetails.status !=='Payment pending' && orderDetails.status
-                    !=='Delivered' ) { %>
-                    <form id="Formcancel">
-                        <div id="cancel" class="h-25 pt-4">
-                            <div class="mb-3">
-                                <label style="color: red; font-weight: bold;">Cancel</label>
-                                <textarea class="form-control" name="notes" id="notes"
-                                    placeholder="Type reson"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Cancel</button>
-                        </div>
-                    </form>
-                    <% } %>
-                        <% if(orderDetails.status==='Delivered' ) { %>
-                            <form id="Formreturn">
-                                <div id="return" class="h-25 pt-4">
-                                    <div class="mb-3">
-                                        <label style="color: red; font-weight: bold;">Return</label>
-                                        <textarea class="form-control" name="notes" id="notes"
-                                            placeholder="Type reson"></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Return</button>
-                                </div>
-                            </form>
+                        <% if((orderDetails.paymentOption==='Cash On Delivery' &&
+                            (orderDetails.status==='Return under processing' ))||
+                            (orderDetails.paymentOption==='Razorpay' && (orderDetails.status==='Cancelled' ||
+                            orderDetails.status==='Return under processing' ))) { %>
+                            <p id="statusRefund" style="color: black;"></p>
+                            </p>
                             <% } %>
+                    </div>
+                    <% if(orderDetails.status !=='Cancelled' && orderDetails.status !=='Returned' && orderDetails.status
+                        !=='Return under processing' && orderDetails.status !=='Payment pending' && orderDetails.status
+                        !=='Delivered' ) { %>
+                        <form id="Formcancel">
+                            <div id="cancel" class="h-25 pt-4">
+                                <div class="mb-3">
+                                    <label style="color: red; font-weight: bold;">Cancel</label>
+                                    <textarea class="form-control" name="notes" id="notes"
+                                        placeholder="Type reson"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Cancel</button>
+                            </div>
+                        </form>
+                        <% } %>
+                            <% if(orderDetails.status==='Delivered' ) { %>
+                                <form id="Formreturn">
+                                    <div id="return" class="h-25 pt-4">
+                                        <div class="mb-3">
+                                            <label style="color: red; font-weight: bold;">Return</label>
+                                            <textarea class="form-control" name="notes" id="notes"
+                                                placeholder="Type reson"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Return</button>
+                                    </div>
+                                </form>
+                                <% } %>
 
-            </div> <!-- col// -->
-        </div>
-        </div> <!-- card-body end// -->
-        </div> <!-- card end// -->
+                </div> <!-- col// -->
+            </div>
+            </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
         </section> <!-- content-main end// -->
 
     </main>
@@ -582,7 +585,7 @@
             max-height: 90%;
             overflow: auto;
         }
-    
+
         /* Media query for smaller screens */
         @media (max-width: 768px) {
             #invoicePopup-window {
@@ -661,7 +664,6 @@
 
                 const data = await response.json();
                 if (data.error) {
-                    console.log(data.error);
                     if (data.error === 'Out of stock') {
                         swal({
                             title: data.error,
@@ -739,7 +741,6 @@
 
         async function verifyPayment(payment, order) {
             try {
-                console.log("kokkkk");
                 const response = await fetch('/paymentVerify', {
                     method: 'POST',
                     headers: {

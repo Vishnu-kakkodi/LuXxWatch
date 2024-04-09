@@ -1,9 +1,10 @@
 <%- include('../layouts/adminHeader.ejs') %>
-<style>
-    .custom-table {
-        background-color: rgb(243, 243, 243); /* Change this to any color you prefer */
-    }
-</style>
+    <style>
+        .custom-table {
+            background-color: rgb(243, 243, 243);
+            /* Change this to any color you prefer */
+        }
+    </style>
     <section class="content-main">
         <div class="content-header">
             <div>
@@ -18,7 +19,9 @@
                         <span class="icon icon-sm rounded-circle bg-success-light"><i
                                 class="text-success material-icons md-local_shipping"></i></span>
                         <div class="text">
-                            <h6 class="mb-1 card-title">Total Orders</h6> <span><%= totalOrderCount %></span>
+                            <h6 class="mb-1 card-title">Total Orders</h6> <span>
+                                <%= totalOrderCount %>
+                            </span>
                         </div>
                     </article>
                 </div>
@@ -29,7 +32,9 @@
                         <span class="icon icon-sm rounded-circle bg-warning-light"><i
                                 class="text-warning material-icons md-qr_code"></i></span>
                         <div class="text">
-                            <h6 class="mb-1 card-title">Products</h6> <span><%= totalProductCount %></span>
+                            <h6 class="mb-1 card-title">Products</h6> <span>
+                                <%= totalProductCount %>
+                            </span>
                             <span class="text-sm">
                                 In <%= totalCategoryCount %> Categories
                             </span>
@@ -61,154 +66,10 @@
                             onclick="filterChart('currentMonth')">Current Month</button>
                         <button style="background-color: greenyellow; border-radius: 40px;"
                             onclick="filterChart('monthly')">Monthly</button>
-                        <button style="background-color: rgb(255, 165, 47); border-radius: 40px;"
-                            onclick="yeafilterChartrly('yearly')">Yearly</button>
                         <canvas id="weekChart" height="120px"></canvas>
 
                     </article>
                 </div>
-                <!-- <div class="row">
-                    <div class="col-lg-5">
-                        <div class="card mb-4">
-                            <article class="card-body">
-                                <h5 class="card-title">New Members</h5>
-                                <div class="new-member-list">
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <div class="d-flex align-items-center">
-                                            <img src="/admin-assets/imgs/people/avatar4.jpg" alt="" class="avatar">
-                                            <div>
-                                                <h6>Patric Adams</h6>
-                                                <p class="text-muted font-xs">
-                                                    Sanfrancisco
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <div class="d-flex align-items-center">
-                                            <img src="/admin-assets/imgs/people/avatar2.jpg" alt="" class="avatar">
-                                            <div>
-                                                <h6>Dilan Specter</h6>
-                                                <p class="text-muted font-xs">
-                                                    Sanfrancisco
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-between mb-4">
-                                        <div class="d-flex align-items-center">
-                                            <img src="/admin-assets/imgs/people/avatar3.jpg" alt="" class="avatar">
-                                            <div>
-                                                <h6>Tomas Baker</h6>
-                                                <p class="text-muted font-xs">
-                                                    Sanfrancisco
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                    </div>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                    <div class="col-lg-7">
-                        <div class="card mb-4">
-                            <article class="card-body">
-                                <h5 class="card-title">Recent activities</h5>
-                                <ul class="verti-timeline list-unstyled font-sm">
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>Today</span> <i
-                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                </h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>
-                                                    Lorem ipsum dolor sit amet consectetur
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list active">
-                                        <div class="event-timeline-dot">
-                                            <i
-                                                class="material-icons md-play_circle_outline font-xxl animation-fade-right"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>17 May</span> <i
-                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                </h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>
-                                                    Debitis nesciunt voluptatum dicta reprehenderit
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>13 May</span> <i
-                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                </h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>
-                                                    Accusamus voluptatibus voluptas.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>05 April</span> <i
-                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                </h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>
-                                                    At vero eos et accusamus et iusto odio dignissi
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="event-list">
-                                        <div class="event-timeline-dot">
-                                            <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                        </div>
-                                        <div class="media">
-                                            <div class="me-3">
-                                                <h6><span>26 Mar</span> <i
-                                                        class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i>
-                                                </h6>
-                                            </div>
-                                            <div class="media-body">
-                                                <div>
-                                                    Responded to need “Volunteer Activities
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </article>
-                        </div>
-                    </div>
-                </div> -->
             </div>
             <div class="col-xl-4 col-lg-12">
                 <div class="card mb-4">
@@ -222,7 +83,7 @@
         <div class="card-body" style="height: 300px; overflow: auto;">
             <table class="table custom-table">
                 <h4 style="color: rgb(252, 22, 22);">Best selling products</h4>
-                <thead style="background-color: darkgray;"> 
+                <thead style="background-color: darkgray;">
                     <tr>
                         <th scope="col">Image</th>
                         <th scope="col">Product Name</th>
@@ -231,28 +92,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% if(topSellingProducts.length > 0) { %>
-                        <% for(let i = 0; i < topSellingProducts.length; i++) { %>
+                    <% if(topSellingProducts.length> 0) { %>
+                        <% for(let i=0; i < topSellingProducts.length; i++) { %>
                             <tr>
                                 <td>
-                                    <img src="/productImages/<%= topSellingProducts[i].image[0] %>" class="img-thumbnail" alt="Item" style="max-width: 50px; max-height: 50px;">
+                                    <img src="/productImages/<%= topSellingProducts[i].image[0] %>"
+                                        class="img-thumbnail" alt="Item" style="max-width: 50px; max-height: 50px;">
                                 </td>
-                                <td><%= topSellingProducts[i].productname %></td>
-                                <td><%= topSellingProducts[i].brandname %></td>
                                 <td>
-                                    <% if(topSellingProducts[i].is_active === 1) { %>
+                                    <%= topSellingProducts[i].productname %>
+                                </td>
+                                <td>
+                                    <%= topSellingProducts[i].brandname %>
+                                </td>
+                                <td>
+                                    <% if(topSellingProducts[i].is_active===1) { %>
                                         <span class="user-status" style="color: green;">Active</span>
-                                    <% } else { %>
-                                        <span style="color: red;">Inactive</span>
-                                    <% } %>
+                                        <% } else { %>
+                                            <span style="color: red;">Inactive</span>
+                                            <% } %>
                                 </td>
                             </tr>
-                        <% } %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="4">Products Not Found</td>
-                        </tr>
-                    <% } %>
+                            <% } %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="4">Products Not Found</td>
+                                    </tr>
+                                    <% } %>
                 </tbody>
             </table>
         </div>
@@ -260,7 +126,7 @@
         <div class="card-body" style="height: 300px; overflow: auto; margin-top: 50px;">
             <table class="table custom-table">
                 <h4 style="color: rgb(252, 22, 22);">Best selling category</h4>
-                <thead style="background-color: darkgray;"> 
+                <thead style="background-color: darkgray;">
                     <tr>
                         <th scope="col">Image</th>
                         <th scope="col">Description</th>
@@ -269,30 +135,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% if(sortedCategories.length > 0) { %>
-                        <% for(let i = 0; i < sortedCategories.length; i++) { %>
+                    <% if(sortedCategories.length> 0) { %>
+                        <% for(let i=0; i < sortedCategories.length; i++) { %>
                             <tr>
                                 <td>
-                                    <img src="/productImages/<%= sortedCategories[i].image %>" class="img-thumbnail" alt="Item" style="max-width: 50px; max-height: 50px;">
+                                    <img src="/productImages/<%= sortedCategories[i].image %>" class="img-thumbnail"
+                                        alt="Item" style="max-width: 50px; max-height: 50px;">
                                 </td>
-                                <td><%= sortedCategories[i].description %></td>
-                                <td><%= sortedCategories[i].catname %></td>
+                                <td>
+                                    <%= sortedCategories[i].description %>
+                                </td>
+                                <td>
+                                    <%= sortedCategories[i].catname %>
+                                </td>
                                 <% if(sortedCategories[i].status===0) {%>
-                                <td style="color: green;">Active</td>
-                                <% }else{ %>
-                                    <td style="color: red">Deactive</td>
-                               <% } %>
+                                    <td style="color: green;">Active</td>
+                                    <% }else{ %>
+                                        <td style="color: red">Deactive</td>
+                                        <% } %>
                             </tr>
-                        <% } %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="4">Products Not Found</td>
-                        </tr>
-                    <% } %>
+                            <% } %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="4">Products Not Found</td>
+                                    </tr>
+                                    <% } %>
                 </tbody>
             </table>
         </div>
-    
+
     </section> <!-- content-main end// -->
     </main>
 
@@ -315,9 +186,9 @@
             </div>
         </section>
     </footer>
-    
-    
-    
+
+
+
 
     <script>
         async function filterChart(choice) {
@@ -346,12 +217,10 @@
             const data = await response.json();
 
             if (data.success) {
-                console.log("before");
                 const xValues = data.success.xValues
                 const yValues = data.success.yValues;
                 const barColors = data.success.barColors;
-                console.log(xValues);
-                console.log("after");
+
 
                 const chartData = {
                     labels: xValues,
@@ -415,7 +284,6 @@
         }
         const Values = '<%= JSON.stringify(yValues) %>'
         const yValues = JSON.parse(Values);
-        console.log(yValues, "hai");
         const barColors = generateBarColors(daysInMonth);
 
         new Chart("weekChart", {
@@ -433,14 +301,12 @@
     <script>
 
         const barColor = ["red", "green", "blue", "orange", "brown", "yellow", "violet", "grey", "pink"];
-        const valueX =  ['Pending', 'Placed', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Failed', 'Return under processing', 'Payment pending']
+        const valueX = ['Pending', 'Placed', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Failed', 'Return under processing', 'Payment pending']
         const Value1 = '<%= JSON.stringify(yValue) %>';
-
-        console.log("Value1:", Value1);
 
         const valueY = JSON.parse(Value1);
 
-        console.log(valueX, valueY, "joj");
+        const yValue = valueY.map(value => value);
 
 
         new Chart("weekChart2", {
@@ -449,7 +315,7 @@
                 labels: valueX,
                 datasets: [{
                     backgroundColor: barColor,
-                    data: valueY
+                    data: yValue
                 }]
             }
         });

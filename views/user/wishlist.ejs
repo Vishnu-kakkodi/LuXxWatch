@@ -16,46 +16,59 @@
                         <div class="table-responsive">
                             <table class="table shopping-summery text-center">
                                 <% if (wishlistItems && wishlistItems.products && wishlistItems.products.length> 0) { %>
-                                <thead>
-                                    <tr class="main-heading">
-                                        <th scope="col" colspan="2">Product</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Stock Status</th>
-                                        <th scope="col">Action</th>
-                                        <th scope="col">Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                    <thead>
+                                        <tr class="main-heading">
+                                            <th scope="col" colspan="2">Product</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Stock Status</th>
+                                            <th scope="col">Action</th>
+                                            <th scope="col">Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         <% wishlistItems.products.forEach(product=> { %>
-                                    <tr>
-                                        <td class="image product-thumbnail"><img src="/productImages/<%= product.product.image[0] %>" alt="#" style="max-width: 50px; max-height: 50px;"></td>
-                                        <td class="product-des product-name">
-                                            <h5 class="product-name"><a href="shop-product-right.html"><%= product.product.productname %></a></h5>
-                                            </p>
-                                        </td>
-                                        <% if(product.product.offprice){ %>
-                                        <td class="price" data-title="Price"><span>₹<%= product.product.offprice %> </span></td>
-                                        <% } else{ %>
-                                            <td class="price" data-title="Price"><span>₹<%= product.product.price %> </span></td>
-                                            <% } %>
-                                        <td class="text-center" data-title="Stock">
-                                            <span class="stock-status color3 font-weight-bold" data-value="<%= product.product.stock %>"></span>
-                                        </td>
-                                        <td class="text-right" data-title="Cart">
-                                            <button id="button-add-to-cart" class="btn btn-sm" type="button"
-                                            data-product-id="<%= product.product._id %>"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
-                                        </td>
-                                        <td class="action" data-title="Remove"><a href="#" onclick="deleteWishlisttitem('<%= product.product._id %>' , '<%= wishlistItems._id %>')"><i class="fi-rs-trash"></i></a></td>
-                                    </tr>
-                                    <% }) %>
-                                    <% } else { %>
-                                        <div id="error-message"
-                                            style="display: flex; align-items: center; justify-content: center; background-color: #f8d7da; color: #ff0019; padding: 20px; border-radius: 5px; text-align: center;">
-                                            <p style="color: red; font-weight: bold;">Oops, Your wishlist is empty!. Please add to
-                                                wishlist...</p>
-                                        </div>
-                                        <% } %>                                   
-                                </tbody>
+                                            <tr>
+                                                <td class="image product-thumbnail"><img
+                                                        src="/productImages/<%= product.product.image[0] %>" alt="#"
+                                                        style="max-width: 50px; max-height: 50px;"></td>
+                                                <td class="product-des product-name">
+                                                    <h5 class="product-name"><a href="shop-product-right.html">
+                                                            <%= product.product.productname %>
+                                                        </a></h5>
+                                                    </p>
+                                                </td>
+                                                <% if(product.product.offprice){ %>
+                                                    <td class="price" data-title="Price"><span>₹<%=
+                                                                product.product.offprice %> </span></td>
+                                                    <% } else{ %>
+                                                        <td class="price" data-title="Price"><span>₹<%=
+                                                                    product.product.price %> </span></td>
+                                                        <% } %>
+                                                            <td class="text-center" data-title="Stock">
+                                                                <span class="stock-status color3 font-weight-bold"
+                                                                    data-value="<%= product.product.stock %>"></span>
+                                                            </td>
+                                                            <td class="text-right" data-title="Cart">
+                                                                <button id="button-add-to-cart" class="btn btn-sm"
+                                                                    type="button"
+                                                                    data-product-id="<%= product.product._id %>"><i
+                                                                        class="fi-rs-shopping-bag mr-5"></i>Add to
+                                                                    cart</button>
+                                                            </td>
+                                                            <td class="action" data-title="Remove"><a href="#"
+                                                                    onclick="deleteWishlisttitem('<%= product.product._id %>' , '<%= wishlistItems._id %>')"><i
+                                                                        class="fi-rs-trash"></i></a></td>
+                                            </tr>
+                                            <% }) %>
+                                                <% } else { %>
+                                                    <div id="error-message"
+                                                        style="display: flex; align-items: center; justify-content: center; background-color: #f8d7da; color: #ff0019; padding: 20px; border-radius: 5px; text-align: center;">
+                                                        <p style="color: red; font-weight: bold;">Oops, Your wishlist is
+                                                            empty!. Please add to
+                                                            wishlist...</p>
+                                                    </div>
+                                                    <% } %>
+                                    </tbody>
                             </table>
                         </div>
                     </div>
@@ -66,8 +79,8 @@
 
     <script>
         var stockStatusElements = document.querySelectorAll('.stock-status');
-    
-        stockStatusElements.forEach(function(element) {
+
+        stockStatusElements.forEach(function (element) {
             var stockValue = parseInt(element.getAttribute('data-value'));
             if (stockValue > 0) {
                 element.innerText = 'In stock';
@@ -78,59 +91,59 @@
     </script>
 
 
-<script>
-    const buttons = document.querySelectorAll('#button-add-to-cart');
+    <script>
+        const buttons = document.querySelectorAll('#button-add-to-cart');
 
-    buttons.forEach(button => {
-        button.addEventListener('click', async () => {
-            try {
-                const productId = button.dataset.productId;
-                const res = await fetch(`/add-cart/${productId}`, {
-                    method: 'GET'
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    console.log("data");
-                    swal({
-                        title: "Success",
-                        text: data.success,
-                        icon: "success",
-                        buttons: {
-                            confirm: {
-                                text: "Go to Cart",
-                                value: true,
-                                visible: true,
-                                className: "btn btn-primary"
-                            },
-                            cancel: {
-                                text: "Close",
-                                value: null,
-                                visible: true,
-                                className: "btn btn-secondary"
-                            }
-                        }
-                    }).then((value) => {
-                        if (value) {
-                            window.location.href = "/cart";
-                        }
+        buttons.forEach(button => {
+            button.addEventListener('click', async () => {
+                try {
+                    const productId = button.dataset.productId;
+                    const res = await fetch(`/add-cart/${productId}`, {
+                        method: 'GET'
                     });
 
-                } else {
-                    swal("Ooops", data.error, "error");
+                    const data = await res.json();
+
+                    if (res.ok) {
+                        console.log("data");
+                        swal({
+                            title: "Success",
+                            text: data.success,
+                            icon: "success",
+                            buttons: {
+                                confirm: {
+                                    text: "Go to Cart",
+                                    value: true,
+                                    visible: true,
+                                    className: "btn btn-primary"
+                                },
+                                cancel: {
+                                    text: "Close",
+                                    value: null,
+                                    visible: true,
+                                    className: "btn btn-secondary"
+                                }
+                            }
+                        }).then((value) => {
+                            if (value) {
+                                window.location.href = "/cart";
+                            }
+                        });
+
+                    } else {
+                        swal("Ooops", data.error, "error");
+                    }
+
+                } catch (error) {
+                    console.log(error);
                 }
-
-            } catch (error) {
-                console.log(error);
-            }
+            });
         });
-    });
-</script>
+    </script>
 
 
-<script>
-    async function deleteWishlisttitem(productId, wishlistId) {
+    <script>
+        async function deleteWishlisttitem(productId, wishlistId) {
             try {
                 const response = await fetch(`/remove-wishlistItem/?productId=${productId}&wishlistId=${wishlistId}`, {
                     method: 'DELETE'
@@ -165,9 +178,9 @@
                 console.error('Error:', error);
             }
         }
-</script>
-    
-    
+    </script>
+
+
 
 
 

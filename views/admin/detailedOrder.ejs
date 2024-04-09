@@ -12,7 +12,7 @@
                             <small class="text-muted">OrderId: <%= orders.orderId %></small>
                         </div>
                         <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                            <select id="orderStatusSelect"  class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                            <select id="orderStatusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
                                 <option>
                                     <%= orders.status %>
                                 </option>
@@ -22,6 +22,7 @@
                                 <option>Shipped</option>
                                 <option>Delivered</option>
                                 <option>Cancelled</option>
+                                <option>Returned</option>
                             </select>
                             <a class="btn btn-primary" href="#" onclick="changeStatus('<%= orders._id %>')">Save</a>
                             <!-- <a class="btn btn-secondary print ms-2" href="#"><i
@@ -128,14 +129,16 @@
                                                             </dl>
                                                             <dl class="dlist">
                                                                 <dt>Discount:</dt>
-                                                                <dd>₹ <%= orders.discountAmount %></dd>
+                                                                <dd>₹ <%= orders.discountAmount %>
+                                                                </dd>
                                                             </dl>
                                                             <dl class="dlist">
                                                                 <dt>Grand total:</dt>
                                                                 <dd> <b class="h5">₹ <%= orders.grandTotal %></b> </dd>
                                                             </dl>
                                                             <dl class="dlist">
-                                                                <dt id="status" class="text-muted">Status:<%= orders.status %>
+                                                                <dt id="status" class="text-muted">Status:<%=
+                                                                        orders.status %>
                                                                 </dt>
                                                                 <dd>
                                                                     <span
@@ -157,20 +160,23 @@
                             <div class="box shadow-sm bg-light">
                                 <h6 class="mb-15">Payment info</h6>
                                 <p>
-                                    <p style="color: black;">Payment Mode: <%= orders.paymentOption %></p>
-                                    <p id="refundstatus" style="color: black; display: none;">Amount <%= orders.total %> Successfully refunded</p>
+                                <p style="color: black;">Payment Mode: <%= orders.paymentOption %>
+                                </p>
+                                <p id="refundstatus" style="color: black; display: none;">Amount <%= orders.total %>
+                                        Successfully refunded</p>
                                 </p>
                             </div>
                             <div class="h-25 pt-4">
                                 <div class="mb-3">
                                     <label>Reson of Cancel</label>
-                                    <textarea class="form-control" style="background-color: lightgray; color: black;" name="notes" id="notes"
-                                    readonly><%= orders.resonOfcancel %></textarea>
+                                    <textarea class="form-control" style="background-color: lightgray; color: black;"
+                                        name="notes" id="notes" readonly><%= orders.resonOfcancel %></textarea>
                                 </div>
                             </div>
                             <div class="h-25 pt-4 mt-50">
                                 <div class="mb-3">
-                                    <a class="btn btn-primary" type="button" id="refund" style="display: none;" href="#" onclick="refund('<%= orders._id %>')">Approve for Refund</a>
+                                    <a class="btn btn-primary" type="button" id="refund" style="display: none;" href="#"
+                                        onclick="refund('<%= orders._id %>')">Approve for Refund</a>
                                 </div>
                             </div>
                         </div> <!-- col// -->
@@ -181,10 +187,10 @@
     </main>
 
     <script>
-            if ((('<%= orders.status %>' === 'Cancelled' || '<%= orders.status %>' === 'Returned')  && '<%= orders.paymentOption %>' === 'Razorpay') || ('<%= orders.status %>' === 'Returned' && '<%= orders.paymentOption %>' === 'Cash On Delivery') ) {
-                const refund = document.getElementById('refund');
-                refund.style.display = 'block';
-            }
+        if ((('<%= orders.status %>' === 'Cancelled' || '<%= orders.status %>' === 'Returned') && '<%= orders.paymentOption %>' === 'Razorpay') || ('<%= orders.status %>' === 'Returned' && '<%= orders.paymentOption %>' === 'Cash On Delivery')) {
+            const refund = document.getElementById('refund');
+            refund.style.display = 'block';
+        }
 
     </script>
 
@@ -204,7 +210,7 @@
                 if (response.ok) {
                     // Status updated successfully
                     document.getElementById('status').innerText = "Status:" + "" + data.newStatus;
-                    
+
                 }
 
             } catch (error) {
@@ -214,19 +220,19 @@
     </script>
 
     <script>
-        async function refund(orderId){
-            try{
-                const response = await fetch (`/admin/cancelRefund/${orderId}`, {
-                    method:'GET'
+        async function refund(orderId) {
+            try {
+                const response = await fetch(`/admin/cancelRefund/${orderId}`, {
+                    method: 'GET'
                 });
                 const data = await response.json();
-                if(data.success){
+                if (data.success) {
                     const refundstatus = document.getElementById('refundstatus');
                     refundstatus.style.display = 'block';
                     const refund = document.getElementById('refund');
                     refund.style.display = 'none';
                 }
-            }catch(error){
+            } catch (error) {
                 console.log(error.message);
             }
         }

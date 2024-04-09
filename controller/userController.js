@@ -14,6 +14,7 @@ const Address = require("../model/addressModel.js");
 const Cart = require("../model/cartModel.js");
 const Order = require("../model/orderModel.js");
 const Wallet = require("../model/walletModel.js");
+const Coupon = require("../model/couponModel.js");
 const Review = require("../model/reviewModel.js");
 const { Long } = require('mongodb')
 const mongoose = require('mongoose');
@@ -50,13 +51,15 @@ const securePassword = async (password) => {
 
 //++++++++ */ landingload */ +++++++++//
 
-// const landingload = async(req,res)=>{
-//     try{
-//         res.render('landing');
-//     }catch(error){
-//         console.log(error.message);
-//     }
-// }
+const landingload = async (req, res) => {
+    try {
+        const categories = await Category.find({ status: 0 });
+        const products = await Product.find({ is_active: 1 }).limit(8);
+        res.render('landingPage', { products, categories });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 //++++++++ */ logingload */ +++++++++//
 
@@ -95,7 +98,7 @@ const generateOTP = () => {
 const insertUser = async (req, res) => {
     try {
         const otp = generateOTP();
-        console.log(otp);
+        console.log("This is your OTP", otp);
         const { name, mobile, email, password } = req.body;
         const data = {
             name,
@@ -110,8 +113,6 @@ const insertUser = async (req, res) => {
         }
         req.session.Data = data;
         req.session.save();
-        console.log(otp, 'this is otp');
-
 
         const mailOptions = {
             from: config.emailUser,
@@ -164,8 +165,7 @@ const resendOTP = async (req, res) => {
                 if (err) {
                     console.log(err.message);
                 } else {
-                    console.log("New OTP sent successfully");
-                    console.log(newOTP);
+                    console.log("New OTP sent successfully", newOTP);
                     res.status(200).json({ message: 'New otp send' });
                 }
             });
@@ -190,8 +190,6 @@ const getOtp = async (req, res) => {
         const otpCreatedAt = req.session.Data.otpCreatedAt;
         const otpExpirationTime = 60 * 1000;
         const currentTime = Date.now();
-        console.log(genOtp);
-        console.log(userOtp);
         if (currentTime - otpCreatedAt > otpExpirationTime) {
 
             return res.status(400).json({ message: 'OTP has expired. Please request a new OTP.' });
@@ -209,7 +207,6 @@ const getOtp = async (req, res) => {
                 const customCodes = generateCustomCodes(length, count);
                 const customCode = customCodes[0];
                 couponId = customCode;
-                console.log(couponId)
 
             };
             UniqueId();
@@ -321,14 +318,8 @@ const verifyLogin = async (req, res) => {
 const loadhome = async (req, res) => {
     try {
         const email = req.session.email;
-        const userdata = await User.findOne({ email: email });
-        const cartItems = await Cart.findOne({ user: userdata._id }).populate('products.product')
-        let userData
-        if (userdata) {
-            userData = userdata;
-        } else {
-            userData = req.session;
-        }
+        const userData = await User.findOne({ email: email });
+        const cartItems = await Cart.findOne({ user: userData._id }).populate('products.product')
         const categories = await Category.find({ status: 0 });
         const products = await Product.find({ is_active: 1 }).limit(8);
         res.render('home', { userData, products, categories, cartItems });
@@ -358,6 +349,15 @@ const profile = async (req, res) => {
         const categories = await Category.find();
         const useraddress = await Address.find({ user: userData._id });
         const wallet = await Wallet.findOne({ user: userData._id });
+        const usedCoupons = userData.appliedCoupon.map(coupon => coupon);
+
+
+        const coupons = await Coupon.find({
+            $and: [
+                { is_active: 1 },
+                { couponId: { $nin: usedCoupons } }
+            ]
+        });
 
         var page = 1;
         if (req.query.page) {
@@ -367,7 +367,7 @@ const profile = async (req, res) => {
         const limit = 5;
 
         const order = await Order.find({ user: userData._id })
-            .sort({createdAt:-1})
+            .sort({ createdAt: -1 })
             .limit(limit * 1)
             .skip((page - 1) * limit)
             .exec()
@@ -376,8 +376,7 @@ const profile = async (req, res) => {
 
         res.locals.categories = categories;
         res.locals.userData = userData;
-        // res.locals.useraddress = useraddress;
-        res.render('profile', { userData: userData, useraddress: useraddress, categories: categories, order: order, wallet: wallet, totalPages: Math.ceil(count / limit), currentPage: page });
+        res.render('profile', { userData: userData, useraddress: useraddress, categories: categories, order: order, wallet: wallet, coupons: coupons, totalPages: Math.ceil(count / limit), currentPage: page });
     } catch (error) {
         console.log(error.message)
     }
@@ -385,9 +384,8 @@ const profile = async (req, res) => {
 
 
 const editname = async (req, res) => {
-    const userId = req.params.userId;
     try {
-        console.log(req.body);
+        const userId = req.params.userId;
         const { name } = req.body;
         const userData = await User.findById({ _id: userId });
         userData.name = name
@@ -400,8 +398,8 @@ const editname = async (req, res) => {
 }
 
 const editmobile = async (req, res) => {
-    const userId = req.params.userId;
     try {
+        const userId = req.params.userId;
         const { mobile } = req.body;
         const userData = await User.findById({ _id: userId });
         userData.mobile = mobile
@@ -467,8 +465,8 @@ const createAddress = async (req, res) => {
 
 
 const editpage = async (req, res) => {
-    const addressId = req.params.addressId;
     try {
+        const addressId = req.params.addressId;
         const email = req.session.email
         const userData = await User.findOne({ email: email });
         const categories = await Category.find();
@@ -484,10 +482,9 @@ const editpage = async (req, res) => {
 
 
 const editAddress = async (req, res) => {
-    const addressId = req.params.addressId;
-    const { name, email, mobile, pincode, locality, address, district, state, addressType } = req.body;
-
     try {
+        const addressId = req.params.addressId;
+        const { name, email, mobile, pincode, locality, address, district, state, addressType } = req.body;
         const addres = await Address.findById(addressId);
         addres.name = name;
         addres.email = email;
@@ -515,8 +512,8 @@ const editAddress = async (req, res) => {
 
 
 const deleteAddress = async (req, res) => {
-    const addressId = req.params.addressId;
     try {
+        const addressId = req.params.addressId;
         await Address.findByIdAndDelete(addressId);
         res.redirect('/profile');
     } catch (error) {
@@ -526,8 +523,8 @@ const deleteAddress = async (req, res) => {
 
 
 const cPassword = async (req, res) => {
-    const userId = req.params.userId;
     try {
+        const userId = req.params.userId;
         const { currentPassword, newPassword, confirmPassword } = req.body;
 
         if (currentPassword == newPassword) {
@@ -638,21 +635,12 @@ const newPassword = async (req, res) => {
     try {
         const password = req.body.password;
         const hashedPassword = await securePassword(password);
-
-        // Find the user by email
         const userdata = await User.findOne({ email: req.session.Data.email });
         if (!userdata) {
-            // Handle case where user is not found
             return res.status(404).send("User not found");
         }
-
-        // Update the password field in the user data
         userdata.password = hashedPassword;
-
-        // Save the updated user data
         await userdata.save();
-
-        // Redirect to login page
         res.redirect('/login');
     } catch (error) {
         console.log(error.message);
@@ -661,23 +649,19 @@ const newPassword = async (req, res) => {
 }
 
 
-
-
-
-
 const loadproductdetail = async (req, res) => {
-    
+
     try {
         const productId = req.query.productId;
         const email = req.session.email;
         const categories = await Category.find();
         const userdata = await User.findOne({ email: email });
-        const review = await Review.findOne({product:productId}).populate('product').populate('userReviews.user');
+        const review = await Review.findOne({ product: productId }).populate('product').populate('userReviews.user');
         let userData
         if (userdata) {
             userData = userdata;
         } else {
-            userData = req.session;
+            userData = req.session.user;
             console.log(req.session.user);
         }
         const products = await Product.find({ _id: productId });
@@ -717,14 +701,12 @@ const shop = async (req, res) => {
 
         const regex = new RegExp(searchValue);
 
-        const products = await Product.find({ $and: [{ is_active: 1 }, { catname: { $regex: regex } }] })
+        const products = await Product.find({ $and: [{ is_active: 1 }, { productname: { $regex: regex } }] })
             .limit(limit * 1)
             .skip((page - 1) * limit)
             .exec()
 
-        const count = await Product.countDocuments({ $and: [{ is_active: 1 }, { catname: { $regex: regex } }] });
-
-        console.log(count)
+        const count = await Product.countDocuments({ $and: [{ is_active: 1 }, { productname: { $regex: regex } }] });
 
         res.render('shop', {
             products,
@@ -734,7 +716,6 @@ const shop = async (req, res) => {
             currentPage: page,
             searchValue
         });
-        console.log(searchValue);
     } catch (error) {
         console.log(error.message);
     }
@@ -754,11 +735,18 @@ const shopFilter = async (req, res) => {
         let category = [];
         let sort = '';
 
+        const conditions = req.query.conditions;
+
         if (req.body.conditions) {
             searchValue = req.body.conditions.search || '';
             brand = req.body.conditions.brand || [];
             category = req.body.conditions.category || [];
             sort = req.body.conditions.sort || '';
+        } else if (conditions) {
+            searchValue = req.query.conditions.search || '';
+            brand = req.query.conditions.brand || [];
+            category = req.query.conditions.category || [];
+            sort = req.query.conditions.sort || '';
         }
 
         let filterCriteria = { is_active: 1 };
@@ -773,13 +761,13 @@ const shopFilter = async (req, res) => {
 
         let sortCriteria = {};
         if (sort === 'asc') {
-            if (!('offprice' in sortCriteria)) {
+            if (!('offprice')) {
                 sortCriteria.price = 1;
             } else {
                 sortCriteria.offprice = 1;
             }
         } else if (sort === 'desc') {
-            if (!('offprice' in sortCriteria)) {
+            if (!('offprice')) {
                 sortCriteria.price = -1;
             } else {
                 sortCriteria.offprice = -1;
@@ -812,8 +800,6 @@ const shopFilter = async (req, res) => {
                 filterCriteria
             ]
         });
-
-        console.log(products)
 
         res.json({
             products,
@@ -855,12 +841,10 @@ const contact = async (req, res) => {
 const addReview = async (req, res) => {
     try {
         const { productId, userId } = req.query;
-        console.log(userId);
         const comment = req.body.commentValue;
         const rating = req.body.rating;
 
         if (typeof comment !== 'string') {
-            console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkk");
             return res.status(400).json({ error: 'Comment must be a string' });
         }
 
@@ -888,11 +872,7 @@ const addReview = async (req, res) => {
                 review.userReviews.push(userReview);
             } else {
                 let userReviewed = false;
-                console.log(review.userReviews)
-                
-                console.log(userId)
                 for (const users of review.userReviews) {
-                    console.log(users.user)
                     if (users.user.equals(new ObjectId(userId))) {
                         userReviewed = true;
                         break;
@@ -900,7 +880,6 @@ const addReview = async (req, res) => {
                 }
 
                 if (userReviewed) {
-                    console.log("haaaaaaaaaaai");
                     return res.status(400).json({ error: 'Already added' });
                 } else {
                     review.userReviews.push(userReview);
@@ -912,8 +891,8 @@ const addReview = async (req, res) => {
         review.averageRating = review.userReviews.reduce((acc, curr) => {
             return acc + curr.rating;
         }, 0) / review.userReviews.length;
-        
-        
+
+
         await review.save();
 
         res.status(200).json({ success: "Review added successfully" });
@@ -924,16 +903,112 @@ const addReview = async (req, res) => {
 }
 
 
+const googleSignUp = async (req, res) => {
+    try {
+        const email = req.user.email;
+        let userData;
+        userData = await User.findOne({ email: email });
+        console.log(userData);
+        if (!userData) {
+            let couponId;
+            function UniqueId() {
+                const generateCustomCode = length => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]).join('');
+                const generateCustomCodes = (length, count) => Array.from({ length: count }, () => generateCustomCode(length));
+
+                const length = 8;
+                const count = 1;
+
+                const customCodes = generateCustomCodes(length, count);
+                const customCode = customCodes[0];
+                couponId = customCode;
+
+            };
+            UniqueId();
+            const user = new User({
+                name: req.user.name,
+                mobile: "1234566543",
+                email: req.user.email,
+                is_admin: 0,
+                is_verified: 1,
+                referralCode: couponId
+            })
+            userData = await user.save()
+
+        }
+
+        req.session.user_id = userData._id
+        req.session.email = email;
+        req.session.save();
+        res.redirect('/home');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const facebookSignUp = async (req, res) => {
+    try {
+        const email = req.user.email;
+        let userData;
+        userData = await User.findOne({ email: email });
+        console.log(userData);
+        if (!userData) {
+            let couponId;
+            function UniqueId() {
+                const generateCustomCode = length => Array.from({ length }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]).join('');
+                const generateCustomCodes = (length, count) => Array.from({ length: count }, () => generateCustomCode(length));
+
+                const length = 8;
+                const count = 1;
+
+                const customCodes = generateCustomCodes(length, count);
+                const customCode = customCodes[0];
+                couponId = customCode;
+
+            };
+            UniqueId();
+            const user = new User({
+                name: req.user.name,
+                mobile: "1234566543",
+                email: req.user.email,
+                is_admin: 0,
+                is_verified: 1,
+                referralCode: couponId
+            })
+            userData = await user.save()
+
+        }
+
+        req.session.user_id = userData._id
+        req.session.email = email;
+        req.session.save();
+        res.redirect('/home');
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 
 
 
 
 
+
+
+const page_404 = async (req, res) => {
+    try {
+        const email = req.session.email;
+        const userData = await User.findOne({ email: email });
+        res.render('error404', { userData });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 
 
 module.exports = {
+    landingload,
     loginload,
     loadRegister,
     insertUser,
@@ -962,5 +1037,8 @@ module.exports = {
     shop,
     shopFilter,
     contact,
-    addReview
+    addReview,
+    googleSignUp,
+    facebookSignUp,
+    page_404
 }

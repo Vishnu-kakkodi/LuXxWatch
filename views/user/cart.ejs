@@ -183,8 +183,8 @@
                         title: "Warning",
                         text: data.error,
                         icon: "warning",
-                        timer: 1500, 
-                        buttons: false 
+                        timer: 1500,
+                        buttons: false
                     });
 
 
@@ -212,7 +212,7 @@
                     dangerMode: true,
                 });
 
-                const willDelete = await alert; 
+                const willDelete = await alert;
 
                 if (willDelete) {
                     const response = await fetch(`/remove-cartItem/?productId=${productId}&cartId=${cartId}`, {
@@ -252,21 +252,21 @@
 
                 if (willDelete) {
 
-                const response = await fetch(`/removeall/?cartId=${cartId}`, {
-                    method: 'DELETE'
-                });
+                    const response = await fetch(`/removeall/?cartId=${cartId}`, {
+                        method: 'DELETE'
+                    });
 
-                const data = await response.json();
+                    const data = await response.json();
 
-                if (response.ok) {
-                    
-                    swal("All items removed!", {
+                    if (response.ok) {
+
+                        swal("All items removed!", {
                             icon: "success",
                         }).then(() => {
                             window.location.href = "/cart";
                         });
                     }
-                }else {
+                } else {
                     console.error('Deletion canceled');
                 }
             } catch (error) {

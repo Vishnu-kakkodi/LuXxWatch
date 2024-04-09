@@ -18,7 +18,7 @@ const { Long } = require('mongodb')
 require("dotenv").config();
 const Razorpay = require('razorpay');
 
-var {RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY} = process.env;
+var { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
 var razorpayInstance = new Razorpay({
     key_id: RAZORPAY_ID_KEY,
@@ -45,23 +45,20 @@ const addWallet = async (req, res) => {
 
         // Create a Razorpay order
         var options = {
-            amount: amount*100, 
+            amount: amount * 100,
             currency: 'INR',
             receipt: orderId
         };
         razorpayInstance.orders.create(options, function (err, order) {
             if (err) {
-                console.error('Error creating Razorpay order:', err);
                 res.status(500).json({ error: 'Error creating Razorpay order' });
             } else {
-                console.log("New Order", order);
                 res.json({ success: true, razorpay: order, id: RAZORPAY_ID_KEY });
             }
         });
 
 
-        } catch (error) {
-        console.log(error.message);
+    } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -78,7 +75,7 @@ const walletMoney = async (req, res) => {
         const wallet = await Wallet.findOne({ user: userData._id });
 
         let balance = wallet ? wallet.walletbalance : 0;
-        balance = balance + req.body.order.amount;
+        balance = balance + (req.body.order.amount) / 100;
 
         if (wallet) {
             wallet.walletbalance = balance;
@@ -86,7 +83,7 @@ const walletMoney = async (req, res) => {
                 createdAt: Date.now(),
                 paymentType: "Razorpay",
                 transationMode: "Credit",
-                transationamount: req.body.order.amount
+                transationamount: (req.body.order.amount) / 100
             });
             await wallet.save();
         } else {
@@ -97,7 +94,7 @@ const walletMoney = async (req, res) => {
                     createdAt: Date.now(),
                     paymentType: "Razorpay",
                     transationMode: "Credit",
-                    transationamount: req.body.order.amount
+                    transationamount: (req.body.order.amount) / 100
                 }],
                 totalRefund: 0
             });
@@ -112,11 +109,10 @@ const walletMoney = async (req, res) => {
 };
 
 
-const cancelRefund = async (req,res)=>{
-    try{
+const cancelRefund = async (req, res) => {
+    try {
         const orderId = req.params.orderId;
-        console.log(orderId);
-        const order = await Order.findOne({_id: orderId}).populate('user');
+        const order = await Order.findOne({ _id: orderId }).populate('user');
         const wallet = await Wallet.findOne({ user: order.user });
         wallet.walletbalance = wallet.walletbalance + order.grandTotal;
         wallet.transationHistory.push({
@@ -131,8 +127,8 @@ const cancelRefund = async (req,res)=>{
         await wallet.save();
         order.refund = "1";
         await order.save();
-        res.json({success: true})
-    }catch(error){
+        res.json({ success: true })
+    } catch (error) {
         console.log(error.message);
     }
 }

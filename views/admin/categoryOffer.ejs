@@ -1,105 +1,112 @@
 <%- include('../layouts/adminHeader.ejs') %>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Category offer management</h2>
-                </div>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Category offer management</h2>
             </div>
-            <div class="card mb-4">
-                <div class="card-body">
-                    <% if(categories.length > 0) { %>
-                        <div class="row row-cols-1 row-cols-md-3"> <!-- Use Bootstrap grid classes to display 3 columns in a row for medium devices and above -->
-                            <% categories.forEach((category,index)=>{ %>
-                                <div class="col">
-                                    <div class="card card-product-grid">
-                                        <a href="#" class="img-wrap"> <img src="/productImages/<%= category.image[0] %>" class="img-sm img-thumbnail" alt="Item"> </a>
-                                        <div class="info-wrap">
-                                            <a href="#" class="title text-truncate"><%= category.catname %></a>
-                                            <div class="input-group" style="display: flex; align-items: center;">
-                                                <label>Offer Percentage</label>
-                                                <input required="" class="form-control square" style="height: 25px; width: 40px; margin-top: 10px; margin-bottom: 8px; margin-right: 8px; margin-left: 5px;" name="percentage" value="<%= category.offer %>" id="offerPercentage_<%= index %>">
-                                            </div>
-                                        
-                                            <button type="submit" style="background-color: #007bff; color: #fff;" class="btn btn-sm font-sm rounded btn-brand" onclick="categoryOffer('<%= category._id %>','<%= index %>')">
-                                                <i class="material-icons md-edit"></i> Apply
-                                            </button>
-                                        
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <% if(categories.length> 0) { %>
+                    <div class="row row-cols-1 row-cols-md-3">
+                        <!-- Use Bootstrap grid classes to display 3 columns in a row for medium devices and above -->
+                        <% categories.forEach((category,index)=>{ %>
+                            <div class="col">
+                                <div class="card card-product-grid">
+                                    <a href="#" class="img-wrap"> <img src="/productImages/<%= category.image[0] %>"
+                                            class="img-sm img-thumbnail" alt="Item"> </a>
+                                    <div class="info-wrap">
+                                        <a href="#" class="title text-truncate">
+                                            <%= category.catname %>
+                                        </a>
+                                        <div class="input-group" style="display: flex; align-items: center;">
+                                            <label>Offer Percentage</label>
+                                            <input required="" class="form-control square"
+                                                style="height: 25px; width: 40px; margin-top: 10px; margin-bottom: 8px; margin-right: 8px; margin-left: 5px;"
+                                                name="percentage" value="<%= category.offer %>"
+                                                id="offerPercentage_<%= index %>">
                                         </div>
-                                        
-                                    </div> <!-- card-product end// -->
-                                </div> <!-- col.// -->
+
+                                        <button type="submit" style="background-color: #007bff; color: #fff;"
+                                            class="btn btn-sm font-sm rounded btn-brand"
+                                            onclick="categoryOffer('<%= category._id %>','<%= index %>')">
+                                            <i class="material-icons md-edit"></i> Apply
+                                        </button>
+
+                                    </div>
+
+                                </div> <!-- card-product end// -->
+                            </div> <!-- col.// -->
                             <% } ) %>
-                        </div> <!-- row end// -->
+                    </div> <!-- row end// -->
                     <% } else { %>
                         <tr>
                             <td colspan="6">products Not Found</td>
                         </tr>
-                    <% } %>
-                </div> <!-- card-body end// -->
-                 <!-- card end// -->
+                        <% } %>
+            </div> <!-- card-body end// -->
+            <!-- card end// -->
             <!--pagination-->
             <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
                         <% for(let i=1; i<=totalPages; i++){ %>
-                        <li class="page-item active">
-                            <a class="page-link" href="?page=<%= i %>">
-                                <%= i %>
-                            </a>
-                        </li>
-                        <% } %>
+                            <li class="page-item active">
+                                <a class="page-link" href="?page=<%= i %>">
+                                    <%= i %>
+                                </a>
+                            </li>
+                            <% } %>
                     </ul>
                 </nav>
             </div>
-        </section> <!-- content-main end// -->
-       
+    </section> <!-- content-main end// -->
+
     </main>
 
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
-        async function categoryOffer(categoryId,index){
+        async function categoryOffer(categoryId, index) {
             const percentage = document.getElementById('offerPercentage_' + index).value;
-            console.log(percentage);
             if (!percentage || isNaN(percentage) || percentage < 0 || percentage > 100) {
                 swal({
-                            title: "Invalid offer percentage.",
-                            text: "Please enter a number between 0 and 100.",
-                            icon: "warning",
-                            timer:1500,
-                            buttons: false
-                        })
-                        document.getElementById('offerPercentage_' + index).value = "";
+                    title: "Invalid offer percentage.",
+                    text: "Please enter a number between 0 and 100.",
+                    icon: "warning",
+                    timer: 1500,
+                    buttons: false
+                })
+                document.getElementById('offerPercentage_' + index).value = "";
                 throw new Error('Invalid offer percentage. Please enter a number between 0 and 100.');
             }
-            const response = await fetch(`/admin/categoryOffer/${categoryId}`,{
+            const response = await fetch(`/admin/categoryOffer/${categoryId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({percentage})
+                body: JSON.stringify({ percentage })
 
             });
             const data = await response.json();
-            console.log(data);
 
-            if(response.ok){
+            if (response.ok) {
                 console.log(data.success);
                 swal({
-                            title: "Success",
-                            text: data.success,
-                            icon: "success",
-                            buttons: {
-                                confirm: {
-                                    text: "Ok",
-                                    value: true,
-                                    visible: true,
-                                    className: "btn btn-primary"
-                                }
-                            }
-                        })
-            }else{
+                    title: "Success",
+                    text: data.success,
+                    icon: "success",
+                    buttons: {
+                        confirm: {
+                            text: "Ok",
+                            value: true,
+                            visible: true,
+                            className: "btn btn-primary"
+                        }
+                    }
+                })
+            } else {
                 console.log(data.error);
             }
         }
@@ -113,6 +120,6 @@
     <script src="/admin-admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="/admin-admin-assets/js/main.js" type="text/javascript"></script>
-</body>
+    </body>
 
-</html>
+    </html>

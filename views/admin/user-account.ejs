@@ -16,42 +16,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% if(users.length > 0) { %>
-                            <% for(let i = 0; i < users.length; i++) { %>
+                        <% if(users.length> 0) { %>
+                            <% for(let i=0; i < users.length; i++) { %>
                                 <tr>
-                                    <td><%= users[i].name %></td>
-                                    <td><%= users[i].email %></td>
-                                    <td><%= users[i].mobile %></td>
                                     <td>
-                                        <% if(users[i].is_blocked === 0) { %>
-                                            <span class="badge" style="color: green;">Active</span>
-                                        <% } else { %>
-                                            <span style="color: red;">Blocked</span>
-                                        <% } %>
+                                        <%= users[i].name %>
                                     </td>
                                     <td>
-                                        <% if(users[i].is_blocked === 0) { %>
-                                            <a href="/admin/user-block/<%= users[i]._id %>" class="btn btn-sm font-sm rounded btn-brand btn-block">
+                                        <%= users[i].email %>
+                                    </td>
+                                    <td>
+                                        <%= users[i].mobile %>
+                                    </td>
+                                    <td>
+                                        <% if(users[i].is_blocked===0) { %>
+                                            <span class="badge" style="color: green;">Active</span>
+                                            <% } else { %>
+                                                <span style="color: red;">Blocked</span>
+                                                <% } %>
+                                    </td>
+                                    <td>
+                                        <% if(users[i].is_blocked===0) { %>
+                                            <a href="/admin/user-block/<%= users[i]._id %>"
+                                                class="btn btn-sm font-sm rounded btn-brand btn-block">
                                                 Block
                                             </a>
-                                        <% } else { %>
-                                            <a href="/admin/user-unblock/<%= users[i]._id %>" class="btn btn-sm font-sm btn-light rounded btn-unblock">
-                                                Unblock
-                                            </a>
-                                        <% } %>
+                                            <% } else { %>
+                                                <a href="/admin/user-unblock/<%= users[i]._id %>"
+                                                    class="btn btn-sm font-sm btn-light rounded btn-unblock">
+                                                    Unblock
+                                                </a>
+                                                <% } %>
                                     </td>
                                 </tr>
-                            <% } %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="5">Users Not Found</td>
-                            </tr>
-                        <% } %>
+                                <% } %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="5">Users Not Found</td>
+                                        </tr>
+                                        <% } %>
                     </tbody>
                 </table>
             </div> <!-- card-body end// -->
         </div>
-         <!-- card end// -->
+        <!-- card end// -->
         <!--pagination-->
         <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
             <nav aria-label="Page navigation example">

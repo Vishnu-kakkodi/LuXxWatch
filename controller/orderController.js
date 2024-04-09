@@ -117,8 +117,6 @@ const placeorder = async (req, res) => {
             req.session.OrderId = orderId;
             req.session.save();
 
-            console.log(orderId);
-
             const savedOrder = await order.save();
 
             for (const product of cart.products) {
@@ -147,7 +145,6 @@ const placeorder = async (req, res) => {
             res.json({ cod_success: true, order: savedOrder });
 
         } else if (paymentOption === 'Razorpay') {
-            console.log("kjkjkj");
 
             // generate orderId
             const generateOrderId = () => {
@@ -162,7 +159,6 @@ const placeorder = async (req, res) => {
 
             req.session.OrderId = orderId;
             req.session.save();
-            console.log("kjkjkj");
 
             const order = new Order({
                 user: cart.user,
@@ -176,10 +172,8 @@ const placeorder = async (req, res) => {
                 orderId: orderId,
                 coupon_applied: couponStatus
             });
-            console.log("kjkjkj");
-    
+
             await order.save();
-            console.log("kjkjkj");
 
             // Create a Razorpay order
             var options = {
@@ -189,10 +183,8 @@ const placeorder = async (req, res) => {
             };
             razorpayInstance.orders.create(options, function (err, order) {
                 if (err) {
-                    console.error('Error creating Razorpay order:', err);
                     res.status(400).json({ error: 'Error creating Razorpay order' });
                 } else {
-                    console.log("New Order", order);
                     res.status(200).json({ success: true, razorpay: order, id: RAZORPAY_ID_KEY });
                 }
             });
@@ -202,6 +194,81 @@ const placeorder = async (req, res) => {
                 { $set: { products: [] } }
             );
 
+        } else if (paymentOption === 'Wallet') {
+
+            const wallet = await Wallet.findOne({ user: userData._id });
+
+            if (!wallet) {
+                return res.status(404).json({ error: 'Wallet not found' });
+            }
+
+            if (wallet.walletbalance < grandTotal) {
+                return res.status(400).json({ error: 'Wallet amount is not enough for purchase' })
+            }
+
+            const generateOrderId = () => {
+                const p = randomstring.generate({
+                    length: 4,
+                    charset: 'numeric'
+                })
+                return p;
+            };
+
+            let orderId = generateOrderId();
+
+            req.session.OrderId = orderId;
+            req.session.save();
+
+            const order = new Order({
+                user: cart.user,
+                products: cart.products,
+                discountAmount: discount,
+                total: total,
+                grandTotal: grandTotal,
+                shippingAddress: address,
+                paymentOption: paymentOption,
+                status: 'Placed',
+                orderId: orderId,
+                coupon_applied: couponStatus
+            });
+
+            console.log(orderId);
+
+            const savedOrder = await order.save();
+
+            for (const product of cart.products) {
+                const orderProduct = await Product.findById(product.product._id);
+                orderProduct.stock -= product.quantity;
+                orderProduct.popularity++
+                await orderProduct.save();
+            }
+
+
+            await Cart.updateOne(
+                { _id: cartId },
+                { $set: { products: [] } }
+            );
+
+            if (couponDetail) {
+                userData.appliedCoupon.push(couponDetail.couponId)
+                await userData.save()
+
+                await Coupon.updateOne(
+                    { couponId: couponId },
+                    { $inc: { maximumUser: -1 } }
+                )
+            }
+            wallet.walletbalance -= grandTotal;
+            wallet.transationHistory.push({
+                createdAt: Date.now(),
+                paymentType: "Purchase",
+                transationMode: "Debit",
+                transationamount: grandTotal
+            });
+            wallet.save();
+
+
+            res.json({ wallet_success: true, order: savedOrder });
         }
     } catch (error) {
         console.log(error.message);
@@ -212,12 +279,11 @@ const placeorder = async (req, res) => {
 
 const createRazorpayOrder = async (req, res) => {
     try {
-        console.log("jjjjjjjjjjjjj");
         const { cartId } = req.body;
         const orderId = req.body.order.receipt;
-        const order = await Order.findOne({orderId:orderId});
+        const order = await Order.findOne({ orderId: orderId });
         const cart = await Cart.findById(cartId).populate('products.product');
-        order .status = "Placed"
+        order.status = "Placed"
 
         await order.save();
 
@@ -229,7 +295,6 @@ const createRazorpayOrder = async (req, res) => {
         }
 
         res.json({ razorpay_success: true });
-        console.log("555555555555");
 
     } catch (error) {
         console.log(error.message);
@@ -258,8 +323,8 @@ const Orderpage = async (req, res) => {
 
 
 const viewOrder = async (req, res) => {
-    const orderId = req.query.orderId;
     try {
+        const orderId = req.query.orderId;
         const email = req.session.email;
         const userData = await User.findOne({ email: email });
         const categories = await Category.find();
@@ -274,10 +339,9 @@ const viewOrder = async (req, res) => {
 
 
 const cancelOrder = async (req, res) => {
-    const orderId = req.params.orderId;
-    const { notes } = req.body;
-    console.log(notes);
     try {
+        const orderId = req.params.orderId;
+        const { notes } = req.body;
         const email = req.session.email;
         const userData = await User.findOne({ email: email });
         const categories = await Category.find();
@@ -304,10 +368,9 @@ const cancelOrder = async (req, res) => {
 
 
 const returnOrder = async (req, res) => {
-    const orderId = req.params.orderId;
-    const { notes } = req.body;
-    console.log(notes);
     try {
+        const orderId = req.params.orderId;
+        const { notes } = req.body;
         const email = req.session.email;
         const userData = await User.findOne({ email: email });
         const categories = await Category.find();
@@ -334,10 +397,8 @@ const returnOrder = async (req, res) => {
 
 const trackOrder = async (req, res) => {
     try {
-        const Id = req.query.orderId.trim(); 
-        
+        const Id = req.query.orderId.trim();
         const order = await Order.findOne({ _id: Id });
-        console.log(order);
         res.render('orderTracking', { order: order });
     } catch (error) {
         console.log(error.message);
@@ -348,16 +409,13 @@ const trackOrder = async (req, res) => {
 const continuePayment = async (req, res) => {
     try {
         const orderId = req.body.orderId;
+        const order = await Order.findOne({ orderId: orderId }).populate('products.product');
 
-        const order =  await Order.findOne({ orderId: orderId }).populate('products.product');
-
-        
-
-        order.products.forEach(item=>{
+        order.products.forEach(item => {
             console.log("ppppppppppp");
-            if(item.product.stock < item.quantity){
+            if (item.product.stock < item.quantity) {
                 console.log("lllllooooo");
-                res.status(400).json({error:'Out of stock'});
+                res.status(400).json({ error: 'Out of stock' });
             }
         })
 
@@ -373,10 +431,8 @@ const continuePayment = async (req, res) => {
             };
             razorpayInstance.orders.create(options, function (err, order) {
                 if (err) {
-                    console.error('Error creating Razorpay order:', err);
                     res.status(400).json({ error: 'Error creating Razorpay order' });
                 } else {
-                    console.log("New Order", order);
                     res.json({ success: true, razorpay: order, id: RAZORPAY_ID_KEY });
                 }
             });
@@ -390,11 +446,9 @@ const continuePayment = async (req, res) => {
 
 
 const RazorpayOrder = async (req, res) => {
-    console.log("hhhhh")
     try {
         const orderId = req.body.order.receipt;
-        const order = await Order.findOne({orderId:orderId});
-        console.log(order);
+        const order = await Order.findOne({ orderId: orderId });
         order.status = "Placed"
 
         await order.save();
@@ -416,18 +470,9 @@ const RazorpayOrder = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
 async function deletePendingOrders() {
     try {
         await Order.deleteMany({ status: 'Payment pending' });
-        console.log('Payment pending orders deleted successfully');
     } catch (error) {
         console.error('Error deleting payment pending orders:', error);
     }

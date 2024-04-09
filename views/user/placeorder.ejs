@@ -13,7 +13,7 @@
             <img src="/user-assets/imgs/theme/orderPlaced.jpg" alt="Item" style="max-width: 70px; max-height: 70px;">
             <div>
                 <h3 style="margin-top: 10px; color: red;">Order placed successfully</h3>
-                <h5 style="margin-top: 10px; color: red;">Order placed for ₹ <%= orderDetails.total %>!</h5>
+                <h5 style="margin-top: 10px; color: red;">Order placed for ₹ <%= orderDetails.grandTotal %>!</h5>
                 <h5 style="margin-top: 10px; color: rgb(255, 153, 0);">Status: <%= orderDetails.status %>
                 </h5>
             </div>
@@ -58,7 +58,7 @@
                                                                 product.product.offprice %> </span></td>
                                                     <% } else{ %>
                                                         <td class="price" data-title="Price"><span>₹<%=
-                                                            product.product.price %> </span></td>
+                                                                    product.product.price %> </span></td>
                                                         <% } %>
                                                             <td class="text-center" data-title="Stock">
                                                                 <div class="detail-qty border radius  m-auto">
@@ -83,7 +83,8 @@
                             </table>
                         </div>
                         <div class="cart-action text-end" style="margin-top: 10px;">
-                            <a  href="/orderView/?orderId=<%= orderDetails._id %>" class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Order Summary</a>
+                            <a href="/orderView/?orderId=<%= orderDetails._id %>" class="btn  mr-10 mb-sm-15"><i
+                                    class="fi-rs-shuffle mr-10"></i>Order Summary</a>
                             <a href="/shop" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue
                                 Shopping</a>
                         </div>

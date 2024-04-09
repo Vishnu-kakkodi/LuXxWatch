@@ -1,67 +1,68 @@
 <%- include('../layouts/adminHeader.ejs') %>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Products</h2>
-                </div>
-                <div>
-                    <a href="/admin/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
-                </div>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Products</h2>
             </div>
-            <div class="card mb-4">
-                <header class="card-header">
-                    <div class="row gx-3">
-                        <div class="col-lg-4 col-md-6 me-auto">
-                            <input type="text" placeholder="Search..." class="form-control">
-                        </div>
-                        <!-- <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>All category</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Latest added</option>
-                            </select>
-                        </div> -->
+            <div>
+                <a href="/admin/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row gx-3">
+                    <div class="col-lg-4 col-md-6 me-auto">
+                        <input type="text" placeholder="Search..." class="form-control">
                     </div>
-                </header> <!-- card-header end// -->
-                <div class="card-body">
-                    <% if(products.length > 0) { %>
-                        <div class="row row-cols-1 row-cols-md-3"> <!-- Use Bootstrap grid classes to display 3 columns in a row for medium devices and above -->
-                            <% for(let i = 0; i < products.length; i++) { %>
-                                <div class="col">
-                                    <div class="card card-product-grid">
-                                        <a href="#" class="img-wrap"> <img src="/productImages/<%= products[i].image[0] %>" class="img-sm img-thumbnail" alt="Item"> </a>
-                                        <div class="info-wrap">
-                                            <a href="#" class="title text-truncate"><%= products[i].brandname %></a>
-                                            <a href="#" class="title text-truncate"><%= products[i].productname %></a>
-                                            <div class="price mb-2">₹<%= products[i].price %></div> <!-- price.// -->
-                                        
-                                            <button style="background-color: #007bff; color: #fff;" class="btn btn-sm font-sm rounded btn-brand" onclick="window.location.href='/admin/edit-product/<%= products[i]._id %>'">
-                                                <i class="material-icons md-edit"></i> Edit
-                                            </button>
-                                        
-                                            <button style="background-color: #dc3545; color: #fff;" class="btn btn-sm font-sm btn-light rounded" onclick="window.location.href='/admin/softdelete-product/<%= products[i]._id %>'">
-                                                <i class="material-icons md-delete_forever"></i> Soft Delete
-                                            </button>
-                                        
-                                            <!-- <button style="background-color: #6c757d; color: #fff;" class="btn btn-sm font-sm btn-light rounded" onclick="window.location.href='/admin/delete-product/<%= products[i]._id %>'">
+                </div>
+            </header> <!-- card-header end// -->
+            <div class="card-body">
+                <% if(products.length> 0) { %>
+                    <div class="row row-cols-1 row-cols-md-3">
+                        <!-- Use Bootstrap grid classes to display 3 columns in a row for medium devices and above -->
+                        <% for(let i=0; i < products.length; i++) { %>
+                            <div class="col">
+                                <div class="card card-product-grid">
+                                    <a href="#" class="img-wrap"> <img src="/productImages/<%= products[i].image[0] %>"
+                                            class="img-sm img-thumbnail" alt="Item"> </a>
+                                    <div class="info-wrap">
+                                        <a href="#" class="title text-truncate">
+                                            <%= products[i].brandname %>
+                                        </a>
+                                        <a href="#" class="title text-truncate">
+                                            <%= products[i].productname %>
+                                        </a>
+                                        <div class="price mb-2">₹<%= products[i].price %>
+                                        </div> <!-- price.// -->
+
+                                        <button style="background-color: #007bff; color: #fff;"
+                                            class="btn btn-sm font-sm rounded btn-brand"
+                                            onclick="window.location.href='/admin/edit-product/<%= products[i]._id %>'">
+                                            <i class="material-icons md-edit"></i> Edit
+                                        </button>
+
+                                        <button style="background-color: #dc3545; color: #fff;"
+                                            class="btn btn-sm font-sm btn-light rounded"
+                                            onclick="window.location.href='/admin/softdelete-product/<%= products[i]._id %>'">
+                                            <i class="material-icons md-delete_forever"></i> Soft Delete
+                                        </button>
+
+                                        <!-- <button style="background-color: #6c757d; color: #fff;" class="btn btn-sm font-sm btn-light rounded" onclick="window.location.href='/admin/delete-product/<%= products[i]._id %>'">
                                                 <i class="material-icons md-delete_forever"></i> Delete
                                             </button> -->
-                                        </div>
-                                        
-                                    </div> <!-- card-product end// -->
-                                </div> <!-- col.// -->
+                                    </div>
+
+                                </div> <!-- card-product end// -->
+                            </div> <!-- col.// -->
                             <% } %>
-                        </div> <!-- row end// -->
+                    </div> <!-- row end// -->
                     <% } else { %>
                         <tr>
                             <td colspan="6">products Not Found</td>
                         </tr>
-                    <% } %>
-                </div> <!-- card-body end// -->
-                 <!-- card end// -->
+                        <% } %>
+            </div> <!-- card-body end// -->
+            <!-- card end// -->
             <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-start">
@@ -70,12 +71,13 @@
                         <li class="page-item"><a class="page-link" href="#">3</a></li>
                         <li class="page-item"><a class="page-link dot" href="#">...</a></li>
                         <li class="page-item"><a class="page-link" href="#">7</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                        <li class="page-item"><a class="page-link" href="#"><i
+                                    class="material-icons md-chevron_right"></i></a></li>
                     </ul>
                 </nav>
             </div>
-        </section> <!-- content-main end// -->
-       
+    </section> <!-- content-main end// -->
+
     </main>
     <script src="/admin-admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin-admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -84,6 +86,6 @@
     <script src="/admin-admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="/admin-admin-assets/js/main.js" type="text/javascript"></script>
-</body>
+    </body>
 
-</html>
+    </html>

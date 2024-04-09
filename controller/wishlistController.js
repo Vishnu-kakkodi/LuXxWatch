@@ -4,7 +4,7 @@ const session = require("express-session")
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer")
 const randomstring = require('randomstring');
-const config=require("../configuration/config");
+const config = require("../configuration/config");
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -18,43 +18,50 @@ const { Long } = require('mongodb')
 
 
 
-const wishlist = async(req,res)=>{
-    try{
+const wishlist = async (req, res) => {
+    try {
         const email = req.session.email;
         const categories = await Category.find();
-        const userData = await User.findOne({email:email});
+        const userData = await User.findOne({ email: email });
         const wishlistItems = await Wishlist.findOne({ user: userData._id }).populate('products.product').populate('user');
-        res.render('wishlist',{categories,userData,wishlistItems});
-    }catch(error){
+        res.render('wishlist', { categories, userData, wishlistItems });
+    } catch (error) {
         console.log(error.message);
     }
 }
 
 
 const addTowishlist = async (req, res) => {
-    const productId = req.params.productId;
+
     try {
+        const email = req.session.email;
+        const userData = await User.findOne({ email: email });
+        if (userData) {
+            const productId = req.params.productId;
             const wishlistProduct = {
                 product: productId
             };
-    
+
             let wishlist = await Wishlist.findOne({ user: req.session.userId });
             if (!wishlist) {
                 wishlist = new Wishlist({ user: req.session.userId, products: [] });
             }
-    
+
             const existingProductIndex = wishlist.products.findIndex(p => p.product.toString() === productId);
             if (existingProductIndex !== -1) {
-                return res.status(400).json({error: 'Already added to wishlist'})
+                return res.status(400).json({ error: 'Already added to wishlist' })
             } else {
                 wishlist.products.push(wishlistProduct);
             }
-    
+
             await wishlist.save();
 
-            res.status(200).json({success: 'Successfully added to wishlist' });
-    
-        } catch (error) {
+            res.status(200).json({ success: 'Successfully added to wishlist' });
+        } else {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+    } catch (error) {
         console.log(error.message);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -62,11 +69,11 @@ const addTowishlist = async (req, res) => {
 
 
 const removewishlistItem = async (req, res) => {
-    const { productId, wishlistId } = req.query;
     try {
+        const { productId, wishlistId } = req.query;
         await Wishlist.updateOne(
             { _id: wishlistId },
-            { $pull: { products: { product: productId } } } 
+            { $pull: { products: { product: productId } } }
         );
         res.status(200).json({});
     } catch (error) {
@@ -80,7 +87,7 @@ const removewishlistItem = async (req, res) => {
 
 
 
-module.exports={
+module.exports = {
     wishlist,
     addTowishlist,
     removewishlistItem

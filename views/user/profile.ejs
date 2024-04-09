@@ -8,7 +8,7 @@
                 </div>
             </div>
         </div>
-        <section class="pt-50  pb-150">
+        <section class="pt-20  pb-150">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-10 m-auto">
@@ -28,19 +28,13 @@
                                                     class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
-                                                href="#track-orders" role="tab" aria-controls="track-orders"
-                                                aria-selected="false"><i
-                                                    class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a>
-                                        </li>
-                                        <li class="nav-item">
                                             <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address"
                                                 role="tab" aria-controls="address" aria-selected="true"><i
                                                     class="fi-rs-marker mr-10"></i>My Address</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="address-tab" href="/coupons" role="tab"
-                                                aria-controls="coupons" aria-selected="true">
+                                            <a class="nav-link" id="coupons-tab" data-bs-toggle="tab" href="#coupons"
+                                                role="tab" aria-controls="coupons" aria-selected="true">
                                                 <i class="fi-rs-marker mr-10"></i>My Coupons
                                             </a>
                                         </li>
@@ -61,9 +55,8 @@
                                     </ul>
                                 </div>
                             </div>
-
                             <div class="col-md-8">
-                                <div class="tab-content dashboard-content">
+                                <div class="tab-content dashboard-content" style="border-style: none;">
                                     <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
                                         aria-labelledby="dashboard-tab">
                                         <div
@@ -198,7 +191,7 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>OrderId</th>
-                                                                <th>Date</th>
+                                                                <th>Date (DD/MM/YYYY)</th>
                                                                 <th>Status</th>
                                                                 <th>Total</th>
                                                                 <th>Actions</th>
@@ -211,7 +204,9 @@
                                                                         <%= order.orderId %>
                                                                     </td>
                                                                     <td>
-                                                                        <%= order.createdAt %>
+                                                                        <%= order.createdAt.toLocaleDateString('en-US',
+                                                                            { day: '2-digit' , month: '2-digit' ,
+                                                                            year: 'numeric' }) %>
                                                                     </td>
                                                                     <td>
                                                                         <%= order.status %>
@@ -275,7 +270,8 @@
                                                             </form>
                                                         </div>
                                                     </div>
-                                                    <div class="table-responsive mt-4">
+                                                    <div class="table-responsive mt-4"
+                                                        style="height: 200px; overflow: scroll;">
                                                         <table class="table">
                                                             <thead>
                                                                 <tr>
@@ -325,42 +321,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-                                    <div class="tab-pane fade" id="track-orders" role="tabpanel"
-                                        aria-labelledby="track-orders-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Orders tracking</h5>
-                                            </div>
-                                            <div class="card-body contact-from-area">
-                                                <p>To track your order please enter your OrderID in the box below and
-                                                    press "Track" button. This was given to you on your receipt and in
-                                                    the confirmation email you should have received.</p>
-                                                <div class="row">
-                                                    <div class="col-lg-8">
-                                                        <form class="contact-form-style mt-30 mb-50" action="#"
-                                                            method="post">
-                                                            <div class="input-style mb-20">
-                                                                <label>Order ID</label>
-                                                                <input name="order-id"
-                                                                    placeholder="Found in your order confirmation email"
-                                                                    type="text" class="square">
-                                                            </div>
-                                                            <div class="input-style mb-20">
-                                                                <label>Billing email</label>
-                                                                <input name="billing-email"
-                                                                    placeholder="Email you used during checkout"
-                                                                    type="email" class="square">
-                                                            </div>
-                                                            <button class="submit submit-auto-width"
-                                                                type="submit">Track</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="tab-pane fade" id="address" role="tabpanel"
                                         aria-labelledby="address-tab">
                                         <a href="/addAddress"
@@ -405,6 +365,69 @@
                                                     <td colspan="6">Address Not Found</td>
                                                 </tr>
                                                 <% } %>
+                                    </div>
+                                    <div class="tab-pane fade" id="coupons" role="tabpanel"
+                                        aria-labelledby="coupons-tab">
+                                        <div style="padding-left: 10px;">
+                                            <div
+                                                style="display: flexbox; width: 700px; border-style: solid; border-width: 0.5px; border-color: black; height: 500px; overflow: scroll;">
+                                                <% if (coupons && coupons.length> 0) { %>
+                                                    <% coupons.forEach(function(coupon) { %>
+                                                        <div class="col-md-12 mb-12">
+                                                            <div
+                                                                style="background-color: rgb(255, 255, 255); padding: 10px; border-radius: 5px;">
+                                                                <div>
+                                                                    <div style="display: flex;">
+                                                                        <p
+                                                                            style="margin-left: 0px; font-size: medium; font-weight: bold; color: rgb(1, 119, 1);">
+                                                                            <%= coupon.description %>
+                                                                        </p>
+                                                                        <p style="margin-left: 400px;">Valid till <%=
+                                                                                coupon.expireDate %>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p>Get extra <%= coupon.maximumDiscount %>
+                                                                        </p>
+                                                                        <p>Spend a minimum of <%= coupon.minimumAmount
+                                                                                %> to
+                                                                                use this coupon.</p>
+                                                                        <div style="display: flex;">
+                                                                            <p>You can use this coupon for purchases up
+                                                                                to
+                                                                                <%= coupon.maximumAmount %> max.
+                                                                            </p>
+                                                                            <div style="margin-left: auto;">
+                                                                                <p
+                                                                                    style="color: rgb(255, 153, 0); font-weight: bold;">
+                                                                                    Coupon code: <%= coupon.couponId %>
+                                                                                </p>
+                                                                            </div>
+                                                                            <div>
+                                                                                <button class="btn btn-secondary"
+                                                                                    id="close-button"
+                                                                                    style="padding: 0.125rem 0.25rem; font-size: 0.575rem; margin-left: 4px; margin-top: 3px;"
+                                                                                    onclick="copyCoupon('<%= coupon.couponId %>')">Copy</button>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            style="margin-top: 3px; border-top: 1px solid black; width: 100%;">
+                                                        </div>
+                                                        <% }); %>
+                                                            <% } else { %>
+                                                                <div class="col-md-12">
+                                                                    <p>No more coupons available right now. Keep in
+                                                                        touch
+                                                                        with us!</p>
+                                                                </div>
+                                                                <% } %>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="tab-pane fade" id="account-detail" role="tabpanel"
                                         aria-labelledby="account-detail-tab">

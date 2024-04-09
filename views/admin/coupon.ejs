@@ -62,17 +62,12 @@
                             placeholder="Enter description" required>
                     </div>
                     <div class="form-group">
-                        <label for="maximumDiscount">Maximum Discount:</label>
-                        <input type="text" class="form-control" id="maximumDiscount" name="maximumDiscount"
-                            placeholder="Enter maximum discount" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="minimumAmount">Minimum Amount:</label>
+                        <label for="minimumAmount">Minimum Purchase Amount:</label>
                         <input type="number" class="form-control" id="minimumAmount" name="minimumAmount"
                             placeholder="Enter minimum Amount" required inputmode="decimal" min="0">
                     </div>
                     <div class="form-group">
-                        <label for="maximumAmount">Maximum Amount:</label>
+                        <label for="maximumAmount">Maximum Purchase Amount:</label>
                         <input type="number" class="form-control" id="maximumAmount" name="maximumAmount"
                             placeholder="Enter maximum Amount" required inputmode="decimal" min="0">
                     </div>
@@ -98,53 +93,48 @@
             <div id="allCoupons" data-coupons="<%= JSON.stringify(coupon) %>">
             </div>
             <div id="edit_coupon" style="display: none;">
-                    <div class="form-group">
-                        <label for="couponId">Coupon ID:</label>
-                        <div class="col-sm-8">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="edit_couponId" name="couponId"
-                                    placeholder="Enter coupon ID" required disabled>
-                            </div>
+                <div class="form-group">
+                    <label for="couponId">Coupon ID:</label>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="edit_couponId" name="couponId"
+                                placeholder="Enter coupon ID" required disabled>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <input type="text" class="form-control" id="edit_description" name="description"
-                            placeholder="Enter description" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="maximumDiscount">Maximum Discount:</label>
-                        <input type="text" class="form-control" id="edit_maximumDiscount" name="maximumDiscount"
-                            placeholder="Enter maximum discount" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="minimumAmount">Minimum Amount:</label>
-                        <input type="number" class="form-control" id="edit_minimumAmount" name="minimumAmount"
-                            placeholder="Enter minimum Amount" required inputmode="decimal" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="maximumAmount">Maximum Amount:</label>
-                        <input type="number" class="form-control" id="edit_maximumAmount" name="maximumAmount"
-                            placeholder="Enter maximum Amount" required inputmode="decimal" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="discountAmount">Discount Amount:</label>
-                        <input type="number" class="form-control" id="edit_discountAmount" name="discountAmount"
-                            placeholder="Enter discount Amount" required inputmode="decimal" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="maximumUser">Maximum User:</label>
-                        <input type="number" class="form-control" id="edit_maximumUser" name="maximumUser"
-                            placeholder="Enter maximum User" required inputmode="decimal" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="expireDate">Expire Date:</label>
-                        <input type="date" class="form-control" id="edit_expireDate" name="expireDate" required>
-                    </div>
-                    <br>
-                    <button type="submit" onclick="updateCoupon()" class="btn btn-primary">Update
-                        Coupon</button>
-                    <button type="submit" id="editclose-button" class="btn btn-secondary">Close</button>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" class="form-control" id="edit_description" name="description"
+                        placeholder="Enter description" required>
+                </div>
+                <div class="form-group">
+                    <label for="minimumAmount">Minimum Purchase Amount:</label>
+                    <input type="number" class="form-control" id="edit_minimumAmount" name="minimumAmount"
+                        placeholder="Enter minimum Amount" required inputmode="decimal" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="maximumAmount">Maximum Purchase Amount:</label>
+                    <input type="number" class="form-control" id="edit_maximumAmount" name="maximumAmount"
+                        placeholder="Enter maximum Amount" required inputmode="decimal" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="discountAmount">Discount Amount:</label>
+                    <input type="number" class="form-control" id="edit_discountAmount" name="discountAmount"
+                        placeholder="Enter discount Amount" required inputmode="decimal" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="maximumUser">Maximum User:</label>
+                    <input type="number" class="form-control" id="edit_maximumUser" name="maximumUser"
+                        placeholder="Enter maximum User" required inputmode="decimal" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="expireDate">Expire Date:</label>
+                    <input type="date" class="form-control" id="edit_expireDate" name="expireDate" required>
+                </div>
+                <br>
+                <button type="submit" onclick="validateAndUpdateCoupon()" class="btn btn-primary">Update
+                    Coupon</button>
+                <button type="submit" id="editclose-button" class="btn btn-secondary">Close</button>
             </div>
 
 
@@ -318,7 +308,6 @@
 
                 document.getElementById('edit_couponId').value = coupon.couponId;
                 document.getElementById('edit_description').value = coupon.description;
-                document.getElementById('edit_maximumDiscount').value = coupon.maximumDiscount;
                 document.getElementById('edit_minimumAmount').value = coupon.minimumAmount;
                 document.getElementById('edit_maximumAmount').value = coupon.maximumAmount;
                 document.getElementById('edit_discountAmount').value = coupon.discountAmount;
@@ -339,6 +328,107 @@
         form.addEventListener('submit', function submitForm(event) {
             event.preventDefault();
 
+            const couponId = document.getElementById('couponId').value;
+            const description = document.getElementById('description').value;
+            const minimumAmount = document.getElementById('minimumAmount').value;
+            const maximumAmount = document.getElementById('maximumAmount').value;
+            const discountAmount = document.getElementById('discountAmount').value;
+            const maximumUser = document.getElementById('maximumUser').value;
+            const expireDate = document.getElementById('expireDate').value;
+
+            if (!couponId || !description || !minimumAmount || !maximumAmount || !discountAmount || !maximumUser || !expireDate) {
+                swal({
+                    title: "Validation Error",
+                    text: "Please fill out all fields",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            var descriptionPattern = /^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/;
+            if (!descriptionPattern.test(description)) {
+                swal({
+                    title: "Validation Error",
+                    text: "Enter proper description",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (isNaN(minimumAmount) || parseInt(minimumAmount) <= 0) {
+                swal({
+                    title: "Validation Error",
+                    text: "Minimum purchase amount must be positive number",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (isNaN(maximumAmount) || parseInt(maximumAmount) <= 0) {
+                swal({
+                    title: "Validation Error",
+                    text: "Maximum purchase amount must be positive number",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (parseFloat(minimumAmount) >= parseFloat(maximumAmount)) {
+                swal({
+                    title: "Validation Error",
+                    text: "Minimum purchase amount must be less than maximum purchase amount",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (isNaN(discountAmount) || parseInt(discountAmount) <= 0) {
+                swal({
+                    title: "Validation Error",
+                    text: "Discount amount must be positive number",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (parseFloat(minimumAmount) <= parseFloat(discountAmount)) {
+                swal({
+                    title: "Validation Error",
+                    text: "Discount amount must be less than minimum purchase amount",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (isNaN(maximumUser) || parseInt(maximumUser) <= 0) {
+                swal({
+                    title: "Validation Error",
+                    text: "MaximumUser  must be positive number",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+
+            const currentDate = new Date();
+            const selectedDate = new Date(expireDate);
+            if (selectedDate <= currentDate) {
+                swal({
+                    title: "Validation Error",
+                    text: "Expiration date must be in the future",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
             const preformData = new FormData(form);
             const formData = new URLSearchParams(preformData);
 
@@ -351,7 +441,6 @@
                     if (data.error) {
                         console.log(data.error)
                     } else {
-
                         swal({
                             title: "Coupon created",
                             text: "Successfully created new coupon",
@@ -367,61 +456,179 @@
                 });
 
         });
+
     </script>
 
+    <script>
+        async function validateAndUpdateCoupon() {
+    try {
+        var couponIdValue = document.getElementById("edit_couponId").value;
+        var descriptionValue = document.getElementById("edit_description").value;
+        var minimumAmountValue = document.getElementById("edit_minimumAmount").value;
+        var maximumAmountValue = document.getElementById("edit_maximumAmount").value;
+        var discountAmountValue = document.getElementById("edit_discountAmount").value;
+        var maximumUserValue = document.getElementById("edit_maximumUser").value;
+        var expireDateValue = document.getElementById("edit_expireDate").value;
 
-<script>
-    async function updateCoupon() {
-        try {
-            var couponIdValue = document.getElementById("edit_couponId").value;
-            var descriptionValue = document.getElementById("edit_description").value;
-            var maximumDiscountValue = document.getElementById("edit_maximumDiscount").value;
-            var minimumAmountValue = document.getElementById("edit_minimumAmount").value;
-            var maximumAmountValue = document.getElementById("edit_maximumAmount").value;
-            var discountAmountValue = document.getElementById("edit_discountAmount").value;
-            var maximumUserValue = document.getElementById("edit_maximumUser").value;
-            var expireDateValue = document.getElementById("edit_expireDate").value;
-
-            var data = {
-                couponId: couponIdValue,
-                updatedCoupon: {
-                    description: descriptionValue,
-                    maximumDiscount: maximumDiscountValue,
-                    minimumAmount: minimumAmountValue,
-                    maximumAmount: maximumAmountValue,
-                    discountAmount: discountAmountValue,
-                    maximumUser: maximumUserValue,
-                    expireDate: expireDateValue
-                }
-            };
-
-            const response = await fetch('/admin/updateCoupon', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+        // Validation
+        if (!couponIdValue || !descriptionValue || !minimumAmountValue || !maximumAmountValue || !discountAmountValue || !maximumUserValue || !expireDateValue) {
+            swal({
+                title: "Validation Error",
+                text: "Please fill out all fields",
+                icon: "error",
+                button: "OK",
             });
-
-            const responseData = await response.json();
-
-            if (responseData.error) {
-                console.log(responseData.error);
-            } else {
-                swal({
-                    title: "Updated",
-                    text: responseData.success,
-                    icon: "success",
-                    buttons: true
-                }).then(() => {
-                    window.location.href = "/admin/coupon";
-                });
-            }
-        } catch (error) {
-            console.error("Error:", error);
+            return;
         }
+
+        var descriptionPattern = /^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/;
+        if (!descriptionPattern.test(descriptionValue)) {
+            swal({
+                title: "Validation Error",
+                text: "Enter proper description",
+                icon: "error",
+                button: "OK",
+            });
+            return;
+        }
+
+        if (isNaN(minimumAmountValue) || parseInt(minimumAmountValue) <= 0) {
+                swal({
+                    title: "Validation Error",
+                    text: "Minimum purchase amount must be positive number",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (isNaN(maximumAmountValue) || parseInt(maximumAmountValue) <= 0) {
+                swal({
+                    title: "Validation Error",
+                    text: "Maximum purchase amount must be positive number",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (parseFloat(minimumAmountValue) >= parseFloat(maximumAmountValue)) {
+                swal({
+                    title: "Validation Error",
+                    text: "Minimum purchase amount must be less than maximum purchase amount",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (isNaN(discountAmountValue) || parseInt(discountAmountValue) <= 0) {
+                swal({
+                    title: "Validation Error",
+                    text: "Discount amount must be positive number",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (parseFloat(minimumAmountValue) <= parseFloat(discountAmountValue)) {
+                swal({
+                    title: "Validation Error",
+                    text: "Discount amount must be less than minimum purchase amount",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+            if (isNaN(maximumUserValue) || parseInt(maximumUserValue) <= 0) {
+                swal({
+                    title: "Validation Error",
+                    text: "MaximumUser  must be positive number",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+
+            const currentDate = new Date();
+            const selectedDate = new Date(expireDateValue);
+            if (selectedDate <= currentDate) {
+                swal({
+                    title: "Validation Error",
+                    text: "Expiration date must be in the future",
+                    icon: "error",
+                    button: "OK",
+                });
+                return;
+            }
+
+        // If validation passes, proceed with updating the coupon
+        await updateCoupon();
+    } catch (error) {
+        console.error("Error:", error);
     }
-</script>
+}
+
+    </script>
+
+    
+
+
+    <script>
+        async function updateCoupon() {
+            console.log("Hello");
+    try {
+        var couponIdValue = document.getElementById("edit_couponId").value;
+        var descriptionValue = document.getElementById("edit_description").value;
+        var minimumAmountValue = document.getElementById("edit_minimumAmount").value;
+        var maximumAmountValue = document.getElementById("edit_maximumAmount").value;
+        var discountAmountValue = document.getElementById("edit_discountAmount").value;
+        var maximumUserValue = document.getElementById("edit_maximumUser").value;
+        var expireDateValue = document.getElementById("edit_expireDate").value;
+
+        var data = {
+            couponId: couponIdValue,
+            updatedCoupon: {
+                description: descriptionValue,
+                minimumAmount: minimumAmountValue,
+                maximumAmount: maximumAmountValue,
+                discountAmount: discountAmountValue,
+                maximumUser: maximumUserValue,
+                expireDate: expireDateValue
+            }
+        };
+
+        const response = await fetch('/admin/updateCoupon', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const responseData = await response.json();
+
+        if (responseData.error) {
+            console.log(responseData.error);
+        } else {
+            swal({
+                title: "Updated",
+                text: responseData.success,
+                icon: "success",
+                buttons: true
+            }).then(() => {
+                window.location.href = "/admin/coupon";
+            });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+    </script>
 
 
 
@@ -434,7 +641,6 @@
                 });
                 const data = await response.json();
                 if (data) {
-                    console.log(data.error);
                     document.getElementById('couponblock').innerText = 'Active'
                     window.location.href = "/admin/coupon"
                 }

@@ -214,91 +214,66 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-10 m-auto">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="dashboard-menu">
-                                    <ul class="nav flex-column" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="dashboard-tab" href="/profile">Dashboard</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="orders-tab" href="/order">Orders</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="track-orders-tab" href="/profile">Track Your
-                                                Order</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="track-orders-tab" href="/coupons">My
-                                                Coupons</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="orders-tab" href="/wallet">Wallet</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="address-tab" href="/profile">My Address</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="account-detail-tab" href="/profile">Change
-                                                Password</a>
-                                        </li>
-                                        <li class="nav-item text-danger">
-                                            <a class="nav-link text-danger" href="/logout"><i
-                                                    class="fi-rs-sign-out mr-10 text-danger"></i>Logout</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                        <div class="row" style="margin-top: 10px;">
                             <div class="col-md-8">
-                                <div class="tab-content dashboard-content">
-
-
+                                <div class="tab-content dashboard-content" style="border-style: none;">
                                     <div>
                                         <h5 class="mb-0" style=" color: black;">Available Coupons</h5>
-                                        <div>
-                                            <div style="display: flexbox; width: 700px; border-style: solid; border-width: 0.5px; border-color: black;">
-                                                <% if (coupons && coupons.length > 0) { %>
+                                        <div style=" height: 600px; width: 800px; overflow: auto;">
+                                            <div
+                                                style="display: flexbox; width: 700px; border-style: solid; border-width: 0.5px; border-color: black;">
+                                                <% if (coupons && coupons.length> 0) { %>
                                                     <% coupons.forEach(function(coupon) { %>
-                                                        <div  class="col-md-12 mb-12">
-                                                            <div style="background-color: rgb(255, 255, 255); padding: 10px; border-radius: 5px;">
+                                                        <div class="col-md-12 mb-12">
+                                                            <div
+                                                                style="background-color: rgb(255, 255, 255); padding: 10px; border-radius: 5px;">
                                                                 <div>
                                                                     <div style="display: flex;">
-                                                                        <p style="margin-left: 0px; font-size: medium; font-weight: bold; color: rgb(1, 119, 1);"><%= coupon.description %></p>
-                                                                        <p style="margin-left: 400px;">Valid till <%= coupon.expireDate %></p>
+                                                                        <p
+                                                                            style="margin-left: 0px; font-size: medium; font-weight: bold; color: rgb(1, 119, 1);">
+                                                                            <%= coupon.description %>
+                                                                        </p>
+                                                                        <p style="margin-left: 400px;">Valid till <%=
+                                                                                coupon.expireDate %>
+                                                                        </p>
                                                                     </div>
                                                                     <div>
-                                                                        <p>Get extra <%= coupon.maximumDiscount %></p>
-                                                                        <p>Spend a minimum of <%= coupon.minimumAmount %> to use this coupon.</p>
+                                                                        <p>Get extra <%= coupon.maximumDiscount %>
+                                                                        </p>
+                                                                        <p>Spend a minimum of <%= coupon.minimumAmount
+                                                                                %> to use this coupon.</p>
                                                                         <div style="display: flex;">
-                                                                            <p>You can use this coupon for purchases up to <%= coupon.maximumAmount %> max.</p>
+                                                                            <p>You can use this coupon for purchases up
+                                                                                to <%= coupon.maximumAmount %> max.</p>
                                                                             <div style="margin-left: auto;">
-                                                                                <p style="color: rgb(255, 153, 0); font-weight: bold;">Coupon code:  <%= coupon.couponId %></p>
+                                                                                <p
+                                                                                    style="color: rgb(255, 153, 0); font-weight: bold;">
+                                                                                    Coupon code: <%= coupon.couponId %>
+                                                                                </p>
                                                                             </div>
                                                                             <div>
-                                                                                <button class="btn btn-secondary" style="padding: 0.125rem 0.25rem; font-size: 0.575rem; margin-left: 4px; margin-top: 3px;" onclick="copyCoupon('<%= coupon.couponId %>')">Copy</button>
+                                                                                <button class="btn btn-secondary"
+                                                                                    style="padding: 0.125rem 0.25rem; font-size: 0.575rem; margin-left: 4px; margin-top: 3px;"
+                                                                                    onclick="copyCoupon('<%= coupon.couponId %>')">Copy</button>
                                                                             </div>
                                                                         </div>
-                                                                        
+
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div style="margin-top: 3px; border-top: 1px solid black; width: 100%;"></div>
-                                                    <% }); %>
-                                                <% } else { %>
-                                                    <div class="col-md-12">
-                                                        <p>No more coupons available right now. Keep in touch with us!</p>
-                                                    </div>
-                                                <% } %>
+                                                        <div
+                                                            style="margin-top: 3px; border-top: 1px solid black; width: 100%;">
+                                                        </div>
+                                                        <% }); %>
+                                                            <% } else { %>
+                                                                <div class="col-md-12">
+                                                                    <p>No more coupons available right now. Keep in
+                                                                        touch with us!</p>
+                                                                </div>
+                                                                <% } %>
                                             </div>
                                         </div>
-                                    </div>
-                                    
-                                    
-                                    <div>
-
-
-
                                     </div>
                                 </div>
                             </div>
@@ -312,17 +287,15 @@
     <script>
         function copyCoupon(couponId) {
             var tempInput = document.createElement('input');
-                tempInput.value = couponId;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                alert('Coupon code copied to clipboard!');
+            tempInput.value = couponId;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Coupon code copied to clipboard!');
         }
     </script>
-    
 
-    
+
+
     <%- include('../layouts/userFooter.ejs') %>
-
-    

@@ -52,15 +52,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- <div class="col-lg-4">
-                                                <div class="mb-4">
-                                                    <label class="form-label">Special price</label>
-                                                    <input id="offprice" name="offprice"
-                                                        value="<%= products.offprice %>" placeholder="₹" type="text"
-                                                        class="form-control">
-                                                    <div class="error-message" id="offprice-error"></div>
-                                                </div>
-                                            </div> -->
                                             <div class="col-lg-4">
                                                 <div class="mb-4">
                                                     <label class="form-label">Stock</label>
@@ -70,32 +61,32 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                     </div>
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <div  class="card-header">
+                        <div class="card-header">
                             <label class="form-label">Category</label>
-                                        <select class="form-select" name="catname">
-                                            <% if(categories.length> 0) { %>
-                                                <!-- Show the category of the particular image first -->
-                                                <option value="<%= products.catname %>">
-                                                    <%= products.catname %>
-                                                </option>
+                            <select class="form-select" name="catname">
+                                <% if(categories.length> 0) { %>
+                                    <!-- Show the category of the particular image first -->
+                                    <option value="<%= products.catname %>">
+                                        <%= products.catname %>
+                                    </option>
 
-                                                <!-- Show other categories as submenu -->
-                                                <% for(let i=0; i < categories.length; i++) { %>
-                                                    <% if(categories[i].catname !==products.catname) { %>
-                                                        <option value="<%= categories[i].catname %>">
-                                                            <%= categories[i].catname %>
-                                                        </option>
+                                    <!-- Show other categories as submenu -->
+                                    <% for(let i=0; i < categories.length; i++) { %>
+                                        <% if(categories[i].catname !==products.catname) { %>
+                                            <option value="<%= categories[i].catname %>">
+                                                <%= categories[i].catname %>
+                                            </option>
+                                            <% } %>
+                                                <% } %>
+                                                    <% } else { %>
+                                                        <option value="">No categories found</option>
                                                         <% } %>
-                                                            <% } %>
-                                                                <% } else { %>
-                                                                    <option value="">No categories found</option>
-                                                                    <% } %>
-                                        </select>
+                            </select>
                         </div>
                         <div class="card-header">
                             <h4>Product details</h4>
@@ -153,31 +144,33 @@
                     <button type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
                 </div>
         </form>
-        
+
         <div style="margin-top: 10px;">
             <input class="form-check-input category-checkbox" type="checkbox" name="checkbox" id="imageEdit" value="">
-        <label class="form-check-label" for="exampleCheckbox1" style="color: #000; font-weight: bold;">
-            <span>Image Edit</span>
-        </label>
-        <div style="display: flexbox; justify-content: space-between;">
+            <label class="form-check-label" for="exampleCheckbox1" style="color: #000; font-weight: bold;">
+                <span>Image Edit</span>
+            </label>
+            <div style="display: flexbox; justify-content: space-between;">
                 <div id="imageID" class="card mb-4" style="display: none;">
                     <% products.image.forEach((image,index)=>{ %>
-                    <div class="card-body" style="display: flex; justify-content: space-between;">
-                        <% if(image=="nill" ){ %>
-                        <div>
-                        <input id="newImage" class="" type="file" name="imageNew">
-                        <input type="button" class="btn" onclick="add('<%= products._id %>', '<%= index %>')" value="Add">
+                        <div class="card-body" style="display: flex; justify-content: space-between;">
+                            <% if(image=="nill" ){ %>
+                                <div>
+                                    <input id="newImage" class="" type="file" name="imageNew">
+                                    <input type="button" class="btn"
+                                        onclick="add('<%= products._id %>', '<%= index %>')" value="Add">
+                                </div>
+                                <% }else{ %>
+                                    <div class="input-upload" style="display: flex; justify-content: flex-end;">
+                                        <img src="/productImages/<%= image %>" alt="">
+                                        <input type="button" class="btn"
+                                            onclick="replace('<%= products._id %>', '<%= index %>')" value="Remove">
+                                    </div>
+                                    <% } %>
                         </div>
-                        <% }else{ %>
-                        <div class="input-upload" style="display: flex; justify-content: flex-end;">
-                            <img src="/productImages/<%= image %>" alt="">
-                            <input type="button" class="btn" onclick="replace('<%= products._id %>', '<%= index %>')" value="Remove">
-                        </div>
-                        <% } %>
-                    </div>
-                    <% }) %>
+                        <% }) %>
+                </div>
             </div>
-        </div>
         </div>
 
 
@@ -265,16 +258,6 @@
                 document.getElementById('price-error').innerText = '';
             }
 
-            // Validate offprice
-            // if (isNaN(offprice) || parseFloat(offprice) <= 0) {
-            //     document.getElementById('offprice-error').innerText = 'Special price must be a positive number';
-            //     isValid = false;
-            // } else if (parseFloat(offprice) >= parseFloat(price)) {
-            //     document.getElementById('offprice-error').innerText = 'Special price must be less than regular price';
-            //     isValid = false;
-            // } else {
-            //     document.getElementById('offprice-error').innerText = '';
-            // }
 
             // Validate caseDiameter
             if (isNaN(caseDiameter)) {

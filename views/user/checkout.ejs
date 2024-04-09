@@ -36,64 +36,7 @@
         </div>
         <section class="mt- mb-50">
             <div class="container">
-                <!-- <div class="row">
-                    <div class="col-lg-6 mb-sm-15">
-                        <div class="toggle_info">
-                            <span><i class="fi-rs-user mr-10"></i><span class="text-muted">Already have an
-                                    account?</span> <a href="#loginform" data-bs-toggle="collapse" class="collapsed"
-                                    aria-expanded="false">Click here to login</a></span>
-                        </div>
-                        <div class="panel-collapse collapse login_form" id="loginform">
-                            <div class="panel-body">
-                                <p class="mb-30 font-sm">If you have shopped with us before, please enter your details
-                                    below. If you are a new customer, please proceed to the Billing &amp; Shipping
-                                    section.</p>
-                                <form method="post">
-                                    <div class="form-group">
-                                        <input type="text" name="email" placeholder="Username Or Email">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" name="password" placeholder="Password">
-                                    </div>
-                                    <div class="login_footer form-group">
-                                        <div class="chek-form">
-                                            <div class="custome-checkbox">
-                                                <input class="form-check-input" type="checkbox" name="checkbox"
-                                                    id="remember" value="">
-                                                <label class="form-check-label" for="remember"><span>Remember
-                                                        me</span></label>
-                                            </div>
-                                        </div>
-                                        <a href="#">Forgot password?</a>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-md" name="login">Log in</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="toggle_info">
-                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a
-                                    href="#coupon" data-bs-toggle="collapse" class="collapsed"
-                                    aria-expanded="false">Click here to enter your code</a></span>
-                        </div>
-                        <div class="panel-collapse collapse coupon_form " id="coupon">
-                            <div class="panel-body">
-                                <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
-                                <form method="post">
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Enter Coupon Code...">
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn  btn-md" name="login">Apply Coupon</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+
                 <div class="row">
                     <div class="col-12">
                         <div class="divider mt-50 mb-50"></div>
@@ -346,7 +289,7 @@
                                             </div>
                                             <div>
                                                 <span type="button" onclick="closePopup()"
-                                                style='font-size:10px;'>&#10060;</span>
+                                                    style='font-size:10px;'>&#10060;</span>
                                             </div>
                                         </div>
                                         <div>
@@ -420,36 +363,65 @@
                                     <div class="mb-25">
                                         <h5>Payment</h5>
                                     </div>
-                                    <% if (cartItems.total <=1000) { %>
-                                        <div class="payment_option">
-                                            <div id="COD" class="custome-radio">
-                                                <input class="form-check-input" required="" type="radio"
-                                                    name="payment_option" id="Cash On Delivery" checked="">
-                                                <label class="form-check-label" for="Cash On Delivery"
-                                                    data-bs-toggle="collapse" data-target="#bankTranfer"
-                                                    aria-controls="bankTranfer">Cash on Delivery</label>
-                                            </div>
+
+                                    <% if(walletBalance<=cartItems.total){ %>
+                                        <div class="custome-radio">
+                                            <input class="form-check-input" required="" type="radio"
+                                                name="payment_option" id="Wallet" checked="" disabled>
+                                            <label class="form-check-label" for="Wallet" data-bs-toggle="collapse"
+                                                data-target="#Wallet" aria-controls="Wallet">
+                                                Wallet <% if (walletBalance) { %>(Balance <%= walletBalance %>) <% } %>
+                                                            </label>
+                                            <a href="/profile">Add Money to wallet</a>
                                         </div>
                                         <% } else { %>
-                                            <div class="payment_option">
-                                                <div id="COD" class="custome-radio">
-                                                    <input class="form-check-input" required="" type="radio"
-                                                        name="payment_option" id="Cash On Delivery" checked="" disabled>
-                                                    <label class="form-check-label" for="Cash On Delivery"
-                                                        data-bs-toggle="collapse" data-target="#bankTranfer"
-                                                        aria-controls="bankTranfer">Cash on Delivery (Not available for
-                                                        orders over 1000)</label>
-                                                </div>
+                                            <div class="custome-radio">
+                                                <input class="form-check-input" required="" type="radio"
+                                                    name="payment_option" id="Wallet" checked="">
+                                                <label class="form-check-label" for="Wallet" data-bs-toggle="collapse"
+                                                    data-target="#Wallet" aria-controls="Wallet">
+                                                    Wallet <% if (walletBalance) { %>(Balance <%= walletBalance %>) <% }
+                                                                %></label>
                                             </div>
+
                                             <% } %>
 
-                                                <div class="custome-radio">
-                                                    <input class="form-check-input" required="" type="radio"
-                                                        name="payment_option" id="Razorpay" checked="">
-                                                    <label class="form-check-label" for="Razorpay"
-                                                        data-bs-toggle="collapse" data-target="#Razorpay"
-                                                        aria-controls="Razorpay">Razorpay</label>
-                                                </div>
+
+                                                <% if (cartItems.total <=1000) { %>
+                                                    <div class="payment_option">
+                                                        <div id="COD" class="custome-radio">
+                                                            <input class="form-check-input" required="" type="radio"
+                                                                name="payment_option" id="Cash On Delivery" checked="">
+                                                            <label class="form-check-label" for="Cash On Delivery"
+                                                                data-bs-toggle="collapse" data-target="#bankTranfer"
+                                                                aria-controls="bankTranfer">Cash on Delivery</label>
+                                                        </div>
+                                                    </div>
+                                                    <% } else { %>
+                                                        <div class="payment_option">
+                                                            <div id="COD" class="custome-radio">
+                                                                <input class="form-check-input" required="" type="radio"
+                                                                    name="payment_option" id="Cash On Delivery"
+                                                                    checked="" disabled>
+                                                                <label class="form-check-label" for="Cash On Delivery"
+                                                                    data-bs-toggle="collapse" data-target="#bankTranfer"
+                                                                    aria-controls="bankTranfer">Cash on Delivery (Not
+                                                                    available for
+                                                                    orders over 1000)</label>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+
+                                                            <div class="custome-radio">
+                                                                <input class="form-check-input" required="" type="radio"
+                                                                    name="payment_option" id="Razorpay" checked="">
+                                                                <label class="form-check-label" for="Razorpay"
+                                                                    data-bs-toggle="collapse" data-target="#Razorpay"
+                                                                    aria-controls="Razorpay">Razorpay</label>
+                                                            </div>
+
+
+
                                 </div>
 
                             </div>
@@ -729,7 +701,7 @@
                     body: JSON.stringify({ action: action, index: index })
                 });
 
-                const data = await response.json();
+                var data = await response.json();
 
 
                 if (response.status === 200) {
@@ -741,6 +713,17 @@
                     document.getElementById('checkout-subtotal').innerText = "₹" + data.Total;
                     // // Update the total display
                     document.getElementById('checkout-total').innerText = "₹" + data.Total;
+
+                    let balance = JSON.stringify('<%= walletBalance %>');
+                    let walletBalance = JSON.parse(balance);
+
+                    if (data.Total > walletBalance) {
+                        document.getElementById('Wallet').disabled = true;
+                        document.getElementById('Wallet').removeAttribute('checked');
+                    } else {
+                        document.getElementById('Wallet').disabled = false;
+                        document.getElementById('Wallet').setAttribute('checked', 'checked');
+                    }
                 } else if (response.status === 400) {
 
                     swal({
@@ -780,7 +763,6 @@
             const data = await response.json();
             if (data) {
                 let deliveryCharge = data.success;
-                console.log(deliveryCharge)
                 document.getElementById('shippingAmount').innerText = deliveryCharge;
             }
         }
@@ -790,9 +772,7 @@
                 let deliveryCharge = document.getElementById('shippingAmount').innerText
                 if (deliveryCharge === "No Shipping charge") {
                     deliveryCharge = 0;
-                    console.log(deliveryCharge);
                 }
-                console.log(deliveryCharge);
                 let couponId = document.getElementById('appliedCoupon').value
                 let selectedPaymentOption = document.querySelector('input[name="payment_option"]:checked').id;
 
@@ -808,12 +788,14 @@
                 if (data.error) {
                     swal({
                         title: "Alert",
-                        text: "Choose any address.",
+                        text: data.error,
                         icon: "warning",
                         button: "OK"
                     })
                 }
                 else if (data.cod_success) {
+                    window.location.href = "/orderpage";
+                } else if (data.wallet_success) {
                     window.location.href = "/orderpage";
                 } else {
                     console.log(data.razorpay);
