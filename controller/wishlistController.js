@@ -4,7 +4,6 @@ const session = require("express-session")
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer")
 const randomstring = require('randomstring');
-const config = require("../configuration/config");
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
