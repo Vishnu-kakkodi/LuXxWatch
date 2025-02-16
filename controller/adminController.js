@@ -1,3 +1,4 @@
+
 const User = require("../model/userModel");
 const Order = require("../model/orderModel");
 const Product = require("../model/productModel");
@@ -490,6 +491,7 @@ const customReport = async (req, res) => {
         startOfDay.setUTCHours(0, 0, 0, 0);
         endOfDay.setUTCHours(23, 59, 59, 999);
 
+        
         const order = await Order.find({
             status: 'Delivered',
             createdAt: { $gte: startOfDay, $lte: endOfDay }
