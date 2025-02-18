@@ -287,6 +287,7 @@ const verifyLogin = async (req, res) => {
         const password = req.body.password;
 
         const userData = await User.findOne({ email: email });
+        console.log(userData,"OPOP")
 
         req.session.userId = userData._id
         req.session.email = email;
