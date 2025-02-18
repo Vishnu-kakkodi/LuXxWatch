@@ -706,6 +706,7 @@ const shop = async (req, res) => {
             .limit(limit * 1)
             .skip((page - 1) * limit)
             .exec()
+            console.log(products,"Product");
 
         const count = await Product.countDocuments({ $and: [{ is_active: 1 }, { productname: { $regex: regex } }] });
 
